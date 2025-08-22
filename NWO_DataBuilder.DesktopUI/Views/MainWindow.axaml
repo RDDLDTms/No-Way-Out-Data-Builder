@@ -1,0 +1,144 @@
+<rui:ReactiveWindow xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="using:NWO_DataBuilder.Core.ViewModels"
+		            xmlns:rui="using:Avalonia.ReactiveUI"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:views="clr-namespace:NWO_DataBuilder.DesktopUI.Views"
+                    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="550"
+                    x:Class="NWO_DataBuilder.DesktopUI.Views.MainWindow"
+					x:TypeArguments="vm:MainWindowViewModel"
+					Height="550"
+                    Title="NWO Builder, v 0.0.0.1">
+
+
+	<Window.Styles>
+
+		<Style Selector="Button.MainButton">
+			<Setter Property="Width"
+					Value="300"/>
+			<Setter Property="Height"
+					Value="30"/>
+			<Setter Property="VerticalAlignment"
+					Value="Top"/>
+			<Setter Property="Margin"
+					Value="5,5,0,0"/>
+		</Style>
+
+		<Style Selector="TextBlock.MainButtonTextBlock">
+			<Setter Property="Foreground"
+					Value="Black"/>
+			<Setter Property="FontFamily"
+					Value="Arial"/>
+			<Setter Property="FontWeight"
+					Value="Medium"/>
+			<Setter Property="Margin"
+					Value="5,0,0,0"/>
+		</Style>
+
+	</Window.Styles>
+
+	<StackPanel Orientation="Horizontal">
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="300"></ColumnDefinition>
+				<ColumnDefinition Width="300"></ColumnDefinition>
+				<ColumnDefinition Width="300"></ColumnDefinition>
+				<ColumnDefinition Width="300"></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="20"></RowDefinition>
+				<RowDefinition Height="35"></RowDefinition>
+				<RowDefinition Height="35"></RowDefinition>
+				<RowDefinition Height="35"></RowDefinition>
+			</Grid.RowDefinitions>
+
+			<TextBlock Grid.Row="0"
+					   Grid.Column="0"
+					   Text="Первичные словари"
+					   Margin="5,5,0,0"/>
+			
+			<TextBlock Grid.Row="0"
+					   Grid.Column="1"
+					   Text="Составные типы"
+					   Margin="5,5,0,0"/>
+
+			<TextBlock Grid.Row="0"
+					   Grid.Column="2"
+					   Text="Составные сложные объекты"
+					   Margin="5,5,0,0"/>
+
+			<TextBlock Grid.Row="0"
+					   Grid.Column="3"
+					   Text="Моделирование боя"
+					   Margin="5,5,0,0"/>
+			
+			<!-- Типы воздействий -->
+			<Button x:Name="leverageTypesButton"
+					Grid.Row="1"
+					Grid.Column="0"
+					Classes="MainButton"/>
+
+			<!-- Фракции -->
+			<Button x:Name="factionsButton"
+					Grid.Row="2"
+					Grid.Column="0"
+					Classes="MainButton"/>
+
+			<!-- Уровни -->
+			<Button x:Name="levelsButton"
+					Grid.Row="3"
+					Grid.Column="0"
+					Classes="MainButton"/>
+
+			<!-- Добываемые ресурсы -->
+			<Button x:Name="resourcesButton"
+					Grid.Row="2"
+					Grid.Column="1"
+					Classes="MainButton"/>
+
+			<!-- Создаваемые вещи -->
+			<Button x:Name="craftItemsButton"
+					Grid.Row="3"
+					Grid.Column="1"
+					Classes="MainButton"/>
+
+			<!-- Воздействия -->
+			<Button x:Name="leveragesButton"
+					Grid.Row="1"
+					Grid.Column="1"
+					Classes="MainButton"/>
+
+			<!-- Юниты -->
+			<Button x:Name="unitsButton"
+					Grid.Row="1"
+					Grid.Column="2"
+					Classes="MainButton"/>
+
+			<!-- Здания -->
+			<Button x:Name="buildingsButton"
+					Grid.Row="2"
+					Grid.Column="2"
+					Classes="MainButton"/>
+			
+			<!-- Муляж яростня! -->
+			<Button x:Name="fakeRagerButton"
+					Grid.Row="3"
+					Grid.Column="2"
+					Classes="MainButton"/>
+
+			<!-- Муляж яростня! -->
+			<Button x:Name="battleUnitVsDummy"
+					Grid.Row="1"
+					Grid.Column="3"
+					Classes="MainButton"/>
+
+			<!-- Муляж яростня! -->
+			<Button x:Name="battleUnitVsUnit"
+					Grid.Row="2"
+					Grid.Column="3"
+					Classes="MainButton"/>
+
+		</Grid>
+	</StackPanel>
+</rui:ReactiveWindow>

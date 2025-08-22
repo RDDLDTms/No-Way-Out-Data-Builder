@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ReactiveUI" Version="19.6.12" />
+    <PackageReference Include="ReactiveUI.Fody" Version="19.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataBuilder.Data.Loader\DataBuilder.Data.Loader.csproj" />
+    <ProjectReference Include="..\DataBuilder.Units\DataBuilder.Units.csproj" />
+    <ProjectReference Include="..\NWO_Abstractions\NWO_Abstractions.csproj" />
+    <ProjectReference Include="..\NWO_Battles\NWO_Battles.csproj" />
+  </ItemGroup>
+
+</Project>

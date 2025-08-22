@@ -1,0 +1,92 @@
+﻿using NWO_Abstractions;
+
+namespace DataBuilder.Effects
+{
+    public class EffectBase : ILeverageEffect
+    {
+        public event EffectTimeHandler? OnEffectTick;
+        public event EffectEndHandler? OnEffectEnd;
+
+        public Guid Id { get; }
+
+        public virtual EffectCarrier Carrier { get; protected set; }
+
+        public virtual LeverageType Type { get; protected set; }
+
+        public ILeverageClass EffectClass { get; }
+
+        public int Duration { get; }
+
+        public string EffectName { get; }
+
+        public string EffectDisplayName { get; protected set; } = string.Empty;
+
+        public double Cooldown { get; }
+
+        public Timer? EffectTimer { get; protected set; }
+
+        public int EffectCounter { get; protected set; }
+
+        public ITarget? TargetForEffect { get; protected set; }
+
+        protected bool TargetIsNull => TargetForEffect is null;
+
+        public EffectBase(int duration, ILeverageClass effectClass, double cooldown, string effectName)
+        {
+            Duration = duration;
+            EffectClass = effectClass;
+            Cooldown = cooldown;
+            EffectName = effectName;
+            Id = Guid.NewGuid();
+        }
+
+        public virtual void Start(ITarget target, double battleSpeed, int effectDelay = 0)
+        {
+            TargetForEffect = target;
+            EffectCounter = Duration;
+            EffectTimer = new Timer(TimerCallback, null, effectDelay, (int)Math.Round(1000 / battleSpeed));
+        }
+
+        protected virtual void TimerCallback(object? state)
+        {
+
+        }
+
+        protected void OnTimerTick(string logMessage)
+        {
+            OnEffectTick?.Invoke(this, EffectCounter, logMessage);
+        }
+
+        protected void OnEffectEnds(string logMessage)
+        {
+            OnEffectEnd?.Invoke(this, logMessage);
+            EffectTimer?.Dispose();
+        }
+
+        protected bool EffectImmuneFound()
+        {
+            string logMessage;
+            if (TargetForEffect!.Immunes.Any(x => x.ImmuneClass == EffectClass))
+            {
+                EffectCounter = 0;
+                logMessage = $"\"Эффект {EffectName}\" снят иммунитетом к классу {EffectClass.RussianDisplayName}";
+                OnTimerTick(logMessage);
+                return true;
+            }
+            return false;
+        }
+
+        protected void DecreaseCounterByOne()
+        {
+            EffectCounter--;
+            if (EffectCounter == 0)
+            {
+                OnEffectEnds(string.Empty);
+            }
+            if (EffectCounter >= 0)
+            { 
+                OnTimerTick(string.Empty);
+            }
+        }
+    }
+}

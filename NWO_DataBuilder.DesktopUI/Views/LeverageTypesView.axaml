@@ -1,0 +1,96 @@
+<rui:ReactiveWindow xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+					xmlns:vm="using:NWO_DataBuilder.Core.ViewModels"
+					xmlns:rui="using:Avalonia.ReactiveUI"
+                    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                    x:Class="NWO_DataBuilder.DesktopUI.Views.LeverageTypesView"
+					x:TypeArguments="vm:LeverageTypesViewModel"
+                    Title="Типы воздействий"
+					Width="620"
+					Height="600">
+	<StackPanel>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="340"/>
+				<RowDefinition Height="260"/>
+			</Grid.RowDefinitions>
+			<StackPanel Grid.Row="0"
+						Orientation="Vertical">
+				<TextBlock Text="Типы воздействий"
+						   Margin="5,5,5,5"/>
+				<ListBox x:Name="leverageTypesListBox"
+						 Margin="5,5,5,5"
+						 SelectionMode="Single"
+						 MaxHeight="320">
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<StackPanel Orientation="Vertical">
+								<TextBlock Text="Имя"/>
+								<Border BorderBrush="Blue"
+										BorderThickness="1"
+										CornerRadius="3"
+										Padding="4"
+										Margin="0,0,0,4">
+									<TextBlock Text="{Binding Name}"/>
+								</Border>
+								<TextBlock Text="Описание"/>
+								<Border BorderBrush="Blue"
+										BorderThickness="1"
+										CornerRadius="4"
+										Padding="4">
+									<TextBlock Text="{Binding Description}"/>
+								</Border>
+							</StackPanel>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</StackPanel>
+			
+			<StackPanel Orientation="Vertical"
+						Grid.Row="1"
+						VerticalAlignment="Bottom">
+				<StackPanel Orientation="Vertical">
+					<!--Название типа воздействия-->
+					
+					<TextBlock Text="Тип воздействия"
+							   Margin="5,5,5,5"
+							   VerticalAlignment="Top"/>
+					<TextBox x:Name="leverageNameTextBox"
+							 Margin="5,5,5,5"
+							 Width="300"
+							 Height="25"
+							 VerticalAlignment="Top"
+							 HorizontalAlignment="Left"/>
+
+					<!--Описание типа воздействия-->
+					<TextBlock Text="Описание"
+							   Margin="5,5,5,5"
+							   VerticalAlignment="Top"/>
+					<TextBox x:Name="leverageDescriptionTextBox"
+							 TextWrapping="NoWrap"
+							 Height="100"
+							 Width="600"
+							 Margin="5,5,5,5"
+							 HorizontalAlignment="Left"
+							 VerticalAlignment="Top"/>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<!-- Добавить тип воздействия -->
+					<Button x:Name="addLeverageTypeButton"
+							Classes="MainButton"
+							Margin="5,5,5,5"/>
+
+					<!-- Удалить тип воздействия -->
+					<Button x:Name="deleteLeverageTypeButton"
+							Classes="MainButton"
+							Margin="5,5,5,5"
+							HorizontalAlignment="Right"/>
+				</StackPanel>
+			
+			</StackPanel>
+		</Grid>
+	</StackPanel>
+
+</rui:ReactiveWindow>

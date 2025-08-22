@@ -1,0 +1,542 @@
+<rui:ReactiveWindow xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+					xmlns:vm="using:NWO_DataBuilder.Core.ViewModels"
+		            xmlns:rui="using:Avalonia.ReactiveUI"
+                    mc:Ignorable="d" d:DesignWidth="1450" d:DesignHeight="1000"
+                    x:Class="NWO_DataBuilder.DesktopUI.Views.BattleUnitVsDummyView"
+                    Title="Моделирование боя с манекеном"
+					Height="1000"
+					Width="1450"
+		            x:TypeArguments="vm:BattleUnitVsDummyViewModel">
+	
+	<!-- Битва против манекена! -->
+	<StackPanel Orientation="Vertical"
+				Margin="30,0,0,0">
+		<TabControl Height="340">
+			
+			<!--Настройки манекена-->
+			<TabItem x:Name="DummySettings"
+					 Header="Настройки манекена">
+
+				<!-- Вся панель настроек манекена! -->
+				<StackPanel Orientation="Horizontal">
+
+					<StackPanel Orientation="Vertical"
+								Margin="0,8,0,0">
+
+						<!--Здоровье манекена -->
+						<TextBlock Text="Здоровье манекена" 
+								   FontSize="18"
+								   FontWeight="Bold"/>
+							
+						<CheckBox x:Name="immortalDummyCheckBox" Margin="4,8,4,0">Бессмертный манекен</CheckBox>
+
+						<!--Здоровье манекена на старте-->
+						<StackPanel Orientation="Horizontal"
+									Margin="0,8,0,0">
+							<Label Content="Здоровье манекена на старте"
+								   Margin="0,6,4,0"
+								   Width="300"/>
+							<NumericUpDown x:Name="startDummyHealthNUD"
+										   Value="1000"
+										   Width="200"
+										   Margin="8,0,0,0"
+										   Increment="10"
+										   FormatString="0.00"
+										   Minimum="1"
+										   Maximum="100000"/>
+							</StackPanel>
+
+						<!--Максимальное здоровье манекена-->
+						<StackPanel Orientation="Horizontal"
+									Margin="0,8,0,0">
+							<Label Content="Максимальное здоровье манекена"
+								   Margin="0,6,4,0"
+								   Width="300"/>
+							<NumericUpDown x:Name="maxDummyHealthNUD"
+										   Value="1000"
+										   Width="200"
+										   Margin="8,0,0,0"
+										   Increment="10"
+										   FormatString="0.00"
+										   Minimum="1"
+										   Maximum="100000"/>
+						</StackPanel>
+						
+						<!--Все воздействия по манекену -->
+						<TextBlock Text="Воздействия по манекену"
+								   FontSize="18"
+								   FontWeight="Bold"
+								   Margin="2,16,2,2"/>
+
+						<!--Увеличение всех воздействий по манекену-->
+						<StackPanel Orientation="Horizontal"
+									Margin="0,8,0,0">
+							<Label Content="Все воздействия по манкену увеличены на (%):"
+									Margin="0,6,4,0"
+									Width="350"/>
+							<NumericUpDown x:Name="allLeveragesForDummyIncreaseOn"
+											Value="0"
+											Width="150"
+											Margin="8,0,0,0"
+											Increment="10"
+											FormatString="0.0"
+											Minimum="0"
+											Maximum="1000"/>
+						</StackPanel>
+
+						<!--Уменьшение всех воздействий по манекену-->
+						<StackPanel Orientation="Horizontal"
+									Margin="0,8,0,0">
+							<Label Content="Все воздействия по манкену уменьшены на (%):"
+									Margin="0,6,4,0"
+									Width="350"/>
+							<NumericUpDown x:Name="allLeveragesForDummyDecreaseOn"
+											Value="0"
+											Width="150"
+											Margin="8,0,0,0"
+											Increment="10"
+											FormatString="0.0"
+											Minimum="0"
+											Maximum="1000"/>
+						</StackPanel>
+						
+					</StackPanel>
+
+					<StackPanel Orientation="Vertical"
+								Margin="40,0,0,0">
+
+						<!--Урон по манекену -->
+						<TextBlock Text="Урон по манекену"
+								   FontSize="18"
+								   FontWeight="Bold"/>
+						
+						<!--Увеличение урона по манекену-->
+						<StackPanel Orientation="Horizontal"
+									Margin="0,52,0,0">
+							<Label Content="Урон по манекену увеличен на (%):"
+								   Margin="0,6,4,0"
+								   Width="330"/>
+							<NumericUpDown x:Name="damageForDummyIncreaseOn"
+										   Value="0"
+										   Width="150"
+										   Margin="8,0,0,0"
+										   Increment="10"
+										   FormatString="0.0"
+										   Minimum="0"
+										   Maximum="1000"/>
+						</StackPanel>
+						
+						<!--Уменьшение урона по манекену-->
+						<StackPanel Orientation="Horizontal"
+									Margin="0,8,0,0">
+							<Label Content="Урон по манекену уменьшен на (%):"
+								   Margin="0,6,4,0"
+								   Width="330"/>
+							<NumericUpDown x:Name="damageForDummyDecreaseOn"
+										   Value="0"
+										   Width="150"
+										   Margin="8,0,0,0"
+										   Increment="10"
+										   FormatString="0.0"
+										   Minimum="0"
+										   Maximum="1000"/>
+						</StackPanel>
+
+						<!--Восстановление манекена -->
+						<TextBlock Text="Восстановление манекена"
+								   FontSize="18"
+								   FontWeight="Bold"
+								   Margin="2,20,2,2"/>
+
+						<!--Увеличение восстановления манекена-->
+						<StackPanel Orientation="Horizontal"
+									Margin="0,8,0,0">
+							<Label Content="Восстановление манекена увеличено на (%):"
+								   Margin="0,6,4,0"
+								   Width="330"/>
+							<NumericUpDown x:Name="recoverForDummyIncreaseOn"
+										   Value="0"
+										   Width="150"
+										   Margin="8,0,0,0"
+										   Increment="10"
+										   FormatString="0.0"
+										   Minimum="0"
+										   Maximum="1000"/>
+						</StackPanel>
+
+						<!--Уменьшение восстановления манекена-->
+						<StackPanel Orientation="Horizontal"
+									Margin="0,8,0,0">
+							<Label Content="Восстановление манекена уменьшено на (%):"
+								   Margin="0,6,4,0"
+								   Width="330"/>
+							<NumericUpDown x:Name="recoverForDummyDecreaseOn"
+										   Value="0"
+										   Width="150"
+										   Margin="8,0,0,0"
+										   Increment="10"
+										   FormatString="0.0"
+										   Minimum="0"
+										   Maximum="1000"/>
+						</StackPanel>
+						
+					</StackPanel>
+					
+				</StackPanel>
+			</TabItem>
+
+			<!--Настройки юнита-->
+			<TabItem x:Name="UnitSettings"
+					 Header="Настройки юнита">
+				<StackPanel Orientation="Horizontal">
+					<StackPanel Orientation="Vertical">
+
+						<!-- Юнит-->
+						<TextBlock Text="Юнит"
+								   FontSize="18"
+								   FontWeight="Bold"
+								   Margin="0,4,24,16"/>
+						<StackPanel Orientation="Horizontal">
+							<Label Content="Название юнита:"
+									Margin="0,6,4,0"/>
+							<ComboBox x:Name="unitComboBox"
+										Width="300">
+								<ComboBox.ItemTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding RussianDisplayName}" FontFamily="{Binding}" />
+									</DataTemplate>
+								</ComboBox.ItemTemplate>
+							</ComboBox>	
+						</StackPanel>
+
+						<!--Все воздействия юнита-->
+						<TextBlock Text="Все воздействия юнита"
+								   FontSize="18"
+								   FontWeight="Bold"
+								   Margin="0,24,24,16"/>
+						
+						<!--Увеличение всех воздействий юнита-->				
+						<StackPanel Orientation="Horizontal">
+							<Label Content="Все воздействия юнита увеличены на (%):"
+								   Margin="0,6,4,0"
+								   Width="300"/>
+							<NumericUpDown x:Name="unitLeveragesIncreaseOn"
+											Value="0"
+											Width="150"
+											Margin="8,0,0,0"
+											Increment="10"
+											FormatString="0.0"
+											Minimum="0"
+											Maximum="1000"/>
+						</StackPanel>
+
+						<!--Уменьшение всех воздействий юнита-->
+						<StackPanel Orientation="Horizontal"
+									Margin="0,8,0,0">
+							<Label Content="Все воздействия юнита уменьшены на (%):"
+								   Margin="0,6,4,0"
+								   Width="300"/>
+							<NumericUpDown x:Name="unitLeveragesDecreaseOn"
+											Value="0"
+											Width="150"
+											Margin="8,0,0,0"
+											Increment="10"
+											FormatString="0.0"
+											Minimum="0"
+											Maximum="1000"/>
+						</StackPanel>
+					</StackPanel>
+					<StackPanel Orientation="Vertical"
+								Margin="40,0,0,0">
+						
+						<!--Урон от юнита-->
+						<TextBlock Text="Урон юнита"
+								   FontSize="18"
+								   FontWeight="Bold"
+								   Margin="0,0,24,8"/>
+
+						<!--Увеличение урона от юнита-->
+						<StackPanel Orientation="Horizontal">
+							<Label Content="Урон юнита увеличен на (%):"
+								   Margin="0,6,4,0"
+								   Width="330"/>
+							<NumericUpDown x:Name="unitDamageIncreaseOn"
+											Value="0"
+											Width="150"
+											Margin="8,0,0,0"
+											Increment="10"
+											FormatString="0.0"
+											Minimum="0"
+											Maximum="1000"/>
+						</StackPanel>
+
+						<!--Уменьшение рона от юнита-->
+						<StackPanel Orientation="Horizontal">
+							<Label Content="Урон юнита уменьшен на (%):"
+								   Margin="0,6,4,0"
+								   Width="330"/>
+							<NumericUpDown x:Name="unitDamageDecreaseOn"
+											Value="0"
+											Width="150"
+											Margin="8,8,0,0"
+											Increment="10"
+											FormatString="0.0"
+											Minimum="0"
+											Maximum="1000"/>
+						</StackPanel>
+
+						<!--Восстановление от юнита-->
+						<TextBlock Text="Восстановление юнита"
+								   FontSize="18"
+								   FontWeight="Bold"
+								   Margin="0,0,24,16"/>
+
+						<!--Увеличение восстановления от юнита-->
+						<StackPanel Orientation="Horizontal">
+							<Label Content="Воссталение от юнита увеличено на (%):"
+								   Margin="0,6,4,0"
+								   Width="330"/>
+							<NumericUpDown x:Name="unitRecoveryIncreaseOn"
+											Value="0"
+											Width="150"
+											Margin="8,0,0,0"
+											Increment="10"
+											FormatString="0.0"
+											Minimum="0"
+											Maximum="1000"/>
+						</StackPanel>
+
+						<!--Уменьшение восстановления от юнита-->
+						<StackPanel Orientation="Horizontal">
+							<Label Content="Восстановление от юнита уменьшено на (%):"
+								   Margin="0,8,4,0"
+								   Width="330"/>
+							<NumericUpDown x:Name="unitRecoveryDecreaseOn"
+											Value="0"
+											Width="150"
+											Margin="8,8,0,0"
+											Increment="10"
+											FormatString="0.0"
+											Minimum="0"
+											Maximum="1000"/>
+						</StackPanel>
+					</StackPanel>
+				</StackPanel>
+			</TabItem>
+
+			<!--Настройки боя-->
+			<TabItem x:Name="BattleSettings"
+					 Header="Настройки боя">
+				<StackPanel Orientation="Horizontal">
+					<StackPanel Orientation="Vertical">
+						<Label Content="Цель боя:"
+							   Margin="0,6,4,0"/>
+						<ComboBox x:Name="purposeComboBox"
+								  Width="300"
+								  Margin="0,8,0,0">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding RussianDisplayName}" FontFamily="{Binding}" />
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+						<Label Content="Время боя:"
+							   Margin="0,6,4,0"/>
+						<StackPanel Orientation="Horizontal"
+									Margin="0,8,0,0">
+							<NumericUpDown x:Name="battleTimeHoursNUD"
+										   Value="0"
+										   Width="120"
+										   Margin="0,0,0,0"
+										   Increment="1"
+										   FormatString="00"
+										   Minimum="0"
+										   Maximum="23"/>
+							<NumericUpDown x:Name="battleTimeMinutesNUD"
+										   Value="0"
+										   Width="120"
+										   Margin="8,0,0,0"
+										   Increment="1"
+										   FormatString="00"
+										   Minimum="0"
+										   Maximum="59"/>
+							<NumericUpDown x:Name="battleTimeSecondsNUD"
+										   Value="30"
+										   Width="120"
+										   Margin="8,0,0,0"
+										   Increment="1"
+										   FormatString="00"
+										   Minimum="0"
+										   Maximum="59"/>
+						</StackPanel>
+						<StackPanel Orientation="Vertical"
+									Margin="0,8,0,0">
+							<Label Content="Скорость боя:"
+								   Margin="0,8,4,8"/>
+							<NumericUpDown x:Name="battleSpeedNUD"
+										   Value="1"
+										   Width="120"
+										   Increment="0.5"
+										   FormatString="0.0"
+										   Minimum="0.5"
+										   Maximum="10"
+										   HorizontalAlignment="Left"/>
+						</StackPanel>
+						<Button x:Name="startStopBattleButton"
+								Grid.Row="3"
+								Grid.Column="2"
+								Classes="MainButton"
+								Margin="0,8,0,8"/>
+					</StackPanel>
+				</StackPanel>
+			</TabItem>
+		</TabControl>
+		
+		<StackPanel Orientation="Horizontal">
+			<Label Content="Лог боя"/>
+			<Label Content="До конца боя:"
+				   Margin="20,0,0,0"/>
+			<Label x:Name="battleTimeLabel"
+				   Width="120"
+				   Margin="2,0,0,0"/>
+			<Label Content="Скорость боя:"
+				   Margin="20,0,0,0"/>
+			<Label x:Name="battleSpeedLabel"
+				   Margin="2,0,0,0"/>
+		</StackPanel>
+		<ListBox x:Name="battleMessages"
+				 Margin="5,5,5,5"
+				 Width="1354"
+				 Height="460"
+				 ScrollViewer.VerticalScrollBarVisibility="Auto"
+				 HorizontalAlignment="Left">
+			<ListBox.ItemsPanel>
+				<ItemsPanelTemplate>
+					<StackPanel/>
+				</ItemsPanelTemplate>
+			</ListBox.ItemsPanel>
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Text="{Binding Time}" Margin="2,-2,0,-2"/>
+						<TextBlock Text="{Binding TextMessage}" Margin="12,-2,0,-2"/>
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+		<StackPanel Orientation="Horizontal">
+			<StackPanel Orientation="Vertical"
+						Margin="0,0,5,5">
+			<Label Content="Отрицательные эффекты юнита"/>
+			<ListBox x:Name="unitNegativeEffects"
+					 Width="260"
+					 Height="112"
+					 HorizontalAlignment="Left"
+					 Margin="2,0,0,0">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="{Binding EffectDisplayName}"
+									   Margin="-2,-2,0,-2"
+									   Foreground="RosyBrown"/>
+						</StackPanel>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</StackPanel>
+			<StackPanel Orientation="Vertical"
+						Margin="14,0,5,5">
+			<Label Content="Положительные эффекты юнита"/>
+			<ListBox x:Name="unitPositiveEffects"
+					 Width="260"
+					 Height="112"					 
+					 HorizontalAlignment="Left"
+					 Margin="2,0,0,0">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="{Binding EffectDisplayName}"
+									   Margin="-2,-2,0,-2"
+									   Foreground="Green"/>
+						</StackPanel>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</StackPanel>
+			<StackPanel Orientation="Horizontal"
+						Margin="12,0,12,0">
+				<StackPanel Orientation="Vertical">
+					<StackPanel Orientation="Horizontal">
+						<Label Content="Всего урона:"/>
+						<Label x:Name="totalDamageLabel"
+							   Margin="2,0,0,0"
+							   Width="100"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<Label Content="Восстановлено:"/>
+						<Label x:Name="totalRecoverLabel"
+							   Margin="2,0,0,0"
+							   Width="100"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<Label Content="Здоровье манекена:"
+							   Margin="0,0,0,0"
+							   x:Name="dummyHealthHeaderLabel"/>
+						<Label x:Name="dummyHealthLabel"
+							   Margin="2,0,0,0"
+							   Width="100"/>
+					</StackPanel>
+					<ProgressBar x:Name="dummyHealthProgressBar"
+								 Margin="0,46,0,0"
+								 Height="20"
+								 Minimum="0"
+								 Foreground="Red"
+								 Background="#a46994"
+								 ShowProgressText="True"
+								 VerticalAlignment="Bottom"
+								 ProgressTextFormat="{}{0}/{3}"/>
+				</StackPanel>
+		
+				<StackPanel Orientation="Vertical"
+							Margin="12,0,5,5">
+					<Label Content="Отрицательные эффекты манекена"/>
+					<ListBox x:Name="dummyNegativeEffects"
+							 Width="260"
+							 Height="112"
+							 HorizontalAlignment="Left">
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<StackPanel Orientation="Horizontal">
+									<TextBlock Text="{Binding EffectDisplayName}" 
+											   Margin="-2,-2,0,-2"
+											   Foreground="RosyBrown"/>
+								</StackPanel>
+							</DataTemplate>
+						</ListBox.ItemTemplate>				
+					</ListBox>
+				</StackPanel>
+				<StackPanel Orientation="Vertical"
+							Margin="14,0,5,5">
+					<Label Content="Положительные эффекты манекена"/>
+					<ListBox x:Name="dummyPositiveEffects"
+							 Width="260"
+							 Height="112">
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<StackPanel Orientation="Horizontal">
+									<TextBlock Text="{Binding EffectDisplayName}"
+											   Margin="-2,-2,0,-2"
+											   Foreground="Green"/>
+								</StackPanel>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+				</StackPanel>
+			</StackPanel>
+		</StackPanel>
+	</StackPanel>
+	
+</rui:ReactiveWindow>
