@@ -21,6 +21,54 @@ namespace NWO_DataBuilder.Core.Tests
             return ragerUnit;
         }
 
+        public static IUnit BuildPreacher()
+        {
+            IUnit preacherUnit = CreatePreacher();
+            return preacherUnit;
+        }
+
+        public static IUnit BuildSowerOfChaos()
+        {
+            IUnit sowerOfChaosUnit = CreateSowerOfChaos();
+            return sowerOfChaosUnit;
+        }
+
+        public static IUnit BuildConqueror()
+        {
+            IUnit conquerorUnit = CreateConqueror();
+            return conquerorUnit;
+        }
+
+        private static IUnit CreateConqueror()
+        {
+            IUnit conquerorUnit;
+            UnitsService unitsService = new();
+            var conquerorLeveragesSources = CreateConquerorLeveragesSources();
+            conquerorUnit = unitsService.CreateNewUnit("Conqueror", "Вершитель", false, Faction.Unruly, AccessLevel.Five, 0, new List<Guid>(), conquerorLeveragesSources, new List<IImmune>(), new List<IDefence>(), 700, 700,
+                new PercentageValues());
+            return conquerorUnit;
+        }
+
+        private static IUnit CreateSowerOfChaos()
+        {
+            IUnit sowerOfChaosUnit;
+            UnitsService unitsService = new();
+            var sowerOfChaosLeveragesSources = CreateSowerOfChaosLeveragesSources();
+            sowerOfChaosUnit = unitsService.CreateNewUnit("SowerOfChaos", "Сеятель хаоса", false, Faction.Knowledge, AccessLevel.Fourth, 0, new List<Guid>(), sowerOfChaosLeveragesSources, new List<IImmune>(), new List<IDefence>(), 450, 450,
+                new PercentageValues());
+            return sowerOfChaosUnit;
+        }
+
+        private static IUnit CreatePreacher()
+        {
+            IUnit preacherUnit;
+            UnitsService unitsService = new();
+            var preacherLeveragesSources = CreatePreacherLeveragesSources();
+            preacherUnit = unitsService.CreateNewUnit("Preacher", "Проповедник", false, Faction.Faith, AccessLevel.Third, 0, new List<Guid>(), preacherLeveragesSources, new List<IImmune>(), new List<IDefence>(), 95, 95,
+                new PercentageValues());
+            return preacherUnit;
+        }
+
         private static IUnit CreateRager()
         {
             IUnit ragerUnit;
@@ -39,6 +87,148 @@ namespace NWO_DataBuilder.Core.Tests
             monkUnit = unitsService.CreateNewUnit("Monk", "Монах", false, Faction.Faith, AccessLevel.Second, 0, new List<Guid>(), monkLeveragesSources, new List<IImmune>(), new List<IDefence>(), 70, 70,
                 new PercentageValues());
             return monkUnit;
+        }
+
+        private static List<IUnitLeveragesSource> CreateConquerorLeveragesSources()
+        {
+            List<IUnitLeveragesSource> crls = new();
+            ILeveragesSourcesService leveragesSourcesService = new LeverageSourcesService();
+
+            ILeverageService leverageService = new LeverageService();
+            List<ILeverageClass> leverageClasses = CreateLeverageClasses(leverageService);
+            List<ILeverageOption> leverageOptions = CreateLeverageOptions(leverageService);
+
+
+            //Зеркальный щит
+            ILeverage mirrorShieldMain = leverageService.CreateLeverage(
+                leverageClasses[1],
+                LeverageTargetType.Enemies,
+                LeverageHitPoint.FrontLine,
+                LeverageRangeType.Melee,
+                LeverageTargeting.Many,
+                new List<ILeverageOption>() { leverageOptions[1] });
+            ILeveragesSource mirrorShield = leveragesSourcesService.CreateLeveragesSource(mirrorShieldMain, null, "Mirror Shield", "Зеркальный щит", "Зеркальный щит наносит физический урон", "зеркальным щитом");
+            IUnitLeveragesSource conquerorMirrorShield = leveragesSourcesService.CreateUnitLeverageSource(mirrorShield, LeveragesPriority.HighPriority, new LeverageHit(10, 20, 5, LeverageType.Damage));
+            crls.Add(conquerorMirrorShield);
+
+            //Зеркальный доспех
+            ILeverage mirrorArmorMain = leverageService.CreateLeverage(
+                leverageClasses[0],
+                LeverageTargetType.Enemies,
+                LeverageHitPoint.FrontLine,
+                LeverageRangeType.Melee,
+                LeverageTargeting.Many,
+                new List<ILeverageOption>() { leverageOptions[1] });
+            ILeverage mirrorArmorAdditional = leverageService.CreateLeverage(
+                leverageClasses[14],
+                LeverageTargetType.Enemies,
+                LeverageHitPoint.FrontLine,
+                LeverageRangeType.Melee,
+                LeverageTargeting.Many,
+                new List<ILeverageOption>() { leverageOptions[1] });
+            ILeveragesSource mirrorArmor = leveragesSourcesService.CreateLeveragesSource(mirrorArmorMain, mirrorArmorAdditional, "Mirror Armor", "Зеркальный доспех", "Зеркальный доспех давит другую цель", "зеркальным доспехом");
+            IUnitLeveragesSource conquerorMirrorArmor = leveragesSourcesService.CreateUnitLeverageSource(mirrorArmor, LeveragesPriority.AdvancedPriority, new LeverageHit(10, 20, 7, LeverageType.Damage), new LeverageHit(5, 10, 7, LeverageType.Damage));
+            crls.Add(conquerorMirrorArmor);
+
+            //Клеймор света
+            ILeverage claymoreOfLightMain = leverageService.CreateLeverage(
+                leverageClasses[15],
+                LeverageTargetType.Enemies,
+                LeverageHitPoint.Vision,
+                LeverageRangeType.Range,
+                LeverageTargeting.Single,
+                new List<ILeverageOption>() { leverageOptions[2] });
+            ILeverage claymoreOfLightAdditional = leverageService.CreateLeverage(
+                leverageClasses[16],
+                LeverageTargetType.Enemies,
+                LeverageHitPoint.Vision,
+                LeverageRangeType.Range,
+                LeverageTargeting.Single,
+                new List<ILeverageOption>() { leverageOptions[2] });
+            ILeveragesSource claymoreOfLight = leveragesSourcesService.CreateLeveragesSource(claymoreOfLightMain, claymoreOfLightAdditional, "Claymore of Light", "Клеймор света", "Клеймор света наносит энергетический урон", "клеймором света");
+            IUnitLeveragesSource conquerorClaymoreOfLight = leveragesSourcesService.CreateUnitLeverageSource(claymoreOfLight, LeveragesPriority.PrimalPriority, new LeverageHit(20, 40, 8, LeverageType.Damage), new LeverageHit(7, 12, 8, LeverageType.Damage));
+            crls.Add(conquerorClaymoreOfLight);
+
+            return crls;
+        }
+
+        private static List<IUnitLeveragesSource> CreateSowerOfChaosLeveragesSources()
+        {
+            List<IUnitLeveragesSource> crls = new();
+            ILeveragesSourcesService leveragesSourcesService = new LeverageSourcesService();
+
+            ILeverageService leverageService = new LeverageService();
+            List<ILeverageClass> leverageClasses = CreateLeverageClasses(leverageService);
+            List<ILeverageOption> leverageOptions = CreateLeverageOptions(leverageService);
+
+            //Барьер
+            ILeverage barrierMain = leverageService.CreateLeverage(
+                leverageClasses[13],
+                LeverageTargetType.Neutral,
+                LeverageHitPoint.SpaceAroundTheHit,
+                LeverageRangeType.Range,
+                LeverageTargeting.Place,
+                new List<ILeverageOption> { leverageOptions[7] });
+            ILeveragesSource barrier = leveragesSourcesService.CreateLeveragesSource(barrierMain, null, "barrier", "Барьер", "Создаёт", "барьером");
+            IUnitLeveragesSource sowerOfChaosBarrier = leveragesSourcesService.CreateUnitLeverageSource(barrier, LeveragesPriority.HighPriority, new LeverageCreation(10, LeverageType.Creation));
+            crls.Add(sowerOfChaosBarrier);
+
+            //Вязкая сфера
+            ILeverage viscousSphereMain = leverageService.CreateLeverage(
+                leverageClasses[7],
+                LeverageTargetType.Alias,
+                LeverageHitPoint.Vision,
+                LeverageRangeType.Range,
+                LeverageTargeting.Single,
+                new List<ILeverageOption> { leverageOptions[2] });
+            ILeveragesSource viscousSphere = leveragesSourcesService.CreateLeveragesSource(viscousSphereMain, null, "viscousSphere", "Вязкая сфера", "Накладывает позитивный эффект", "вязкой сферой");
+            IUnitLeveragesSource sowerOfChaosViscousSphere = leveragesSourcesService.CreateUnitLeverageSource(viscousSphere, LeveragesPriority.AdvancedPriority, new LeverageEffectsApplying(9, LeverageType.PositiveEffectApplying));
+            crls.Add(sowerOfChaosViscousSphere);
+
+            //Помешательство
+            ILeverage insanityMain = leverageService.CreateLeverage(
+                leverageClasses[11],
+                LeverageTargetType.Enemies,
+                LeverageHitPoint.SpaceAroundUnit,
+                LeverageRangeType.Range,
+                LeverageTargeting.Place,
+                new List<ILeverageOption> { leverageOptions[1] });
+            ILeveragesSource insanity = leveragesSourcesService.CreateLeveragesSource(insanityMain, null, "Insanity", "Помешательство", "Накладывает негативный эффект", "помешательством");
+            IUnitLeveragesSource sowerOfChaosInsanity = leveragesSourcesService.CreateUnitLeverageSource(insanity, LeveragesPriority.SupportPriority, new LeverageEffectsApplying(11, LeverageType.NegativeEffectApplying));
+            crls.Add(sowerOfChaosInsanity);
+
+            //Касание
+            ILeverage touchMain = leverageService.CreateLeverage(
+                leverageClasses[12],
+                LeverageTargetType.Enemies,
+                LeverageHitPoint.Vision,
+                LeverageRangeType.Melee,
+                LeverageTargeting.Single,
+                new List<ILeverageOption> { leverageOptions[1] });
+            ILeverage touchAdditional = leverageService.CreateLeverage(
+                leverageClasses[4],
+                LeverageTargetType.Alias,
+                LeverageHitPoint.Vision,
+                LeverageRangeType.Range,
+                LeverageTargeting.Single,
+                new List<ILeverageOption> { leverageOptions[2] });
+            ILeveragesSource touch = leveragesSourcesService.CreateLeveragesSource(touchMain, touchAdditional, "Touch", "Касание", "Наносит урон в ближнем бою", "касанием");
+            IUnitLeveragesSource sowerOfChaosTouch = leveragesSourcesService.CreateUnitLeverageSource(touch, LeveragesPriority.PrimalPriority, new LeverageHit(10, 20, 8, LeverageType.Damage), new LeverageHit(10, 20, 8, LeverageType.Recovery));
+            crls.Add(sowerOfChaosTouch);
+
+            //Очищение
+            ILeverage purifyingRitualMain = leverageService.CreateLeverage(
+                leverageClasses[5],
+                LeverageTargetType.Alias,
+                LeverageHitPoint.SpaceAroundTheHit,
+                LeverageRangeType.Range,
+                LeverageTargeting.Single,
+                new List<ILeverageOption> { leverageOptions[6], leverageOptions[7] });
+            ILeveragesSource purifyingRitual = leveragesSourcesService.CreateLeveragesSource(purifyingRitualMain, null, "Purifying ritual", "Ритуал очищения", "Снимает негативные эффекты с юнитов в области", "ритуалом очищения");
+            IUnitLeveragesSource sowerOfChaosPurifyuingRitual = leveragesSourcesService.CreateUnitLeverageSource(purifyingRitual, LeveragesPriority.BasePriority, new LeverageEffectsRemoval(12, LeverageType.NegativeEffectRemoval));
+            crls.Add(sowerOfChaosPurifyuingRitual);
+
+            return crls;
         }
 
         private static List<IUnitLeveragesSource> CreateMonkLeveragesSources()
@@ -107,6 +297,30 @@ namespace NWO_DataBuilder.Core.Tests
             return crls;
         }
 
+        private static List<IUnitLeveragesSource> CreatePreacherLeveragesSources()
+        {
+            List<IUnitLeveragesSource> crls = new();
+            ILeveragesSourcesService leveragesSourcesService = new LeverageSourcesService();
+
+            ILeverageService leverageService = new LeverageService();
+            List<ILeverageClass> leverageClasses = CreateLeverageClasses(leverageService);
+            List<ILeverageOption> leverageOptions = CreateLeverageOptions(leverageService);
+
+            // слово проповедника
+            ILeverage wordOfPreacherMain = leverageService.CreateLeverage(
+                leverageClasses[11],
+                LeverageTargetType.Enemies,
+                LeverageHitPoint.SpaceAroundUnit,
+                LeverageRangeType.Range,
+                LeverageTargeting.Place,
+                new List<ILeverageOption>() { leverageOptions[5] });
+            ILeveragesSource wordOfPreacher = leveragesSourcesService.CreateLeveragesSource(wordOfPreacherMain, null, "Word of Preacher", "Слово проповедника", "Слово проповедника накладывает негативный эффект", "словом проповедника");
+            IUnitLeveragesSource preacherArmouredBody = leveragesSourcesService.CreateUnitLeverageSource(wordOfPreacher, LeveragesPriority.PrimalPriority, new LeverageEffectsApplying(10, LeverageType.NegativeEffectApplying));
+            crls.Add(preacherArmouredBody);
+
+            return crls;
+        }
+
         private static List<IUnitLeveragesSource> CreateRagerLeveragesSources()
         {
             List<IUnitLeveragesSource> crls = new();
@@ -118,10 +332,10 @@ namespace NWO_DataBuilder.Core.Tests
 
             // тело в доспехах
             ILeverage armouredBodyMain = leverageService.CreateLeverage(
-                leverageClasses[0], 
-                LeverageTargetType.Enemies, 
-                LeverageHitPoint.Route, 
-                LeverageRangeType.Melee, 
+                leverageClasses[0],
+                LeverageTargetType.Enemies,
+                LeverageHitPoint.Route,
+                LeverageRangeType.Melee,
                 LeverageTargeting.Place,
                 new List<ILeverageOption>() { leverageOptions[1] });
             ILeveragesSource armouredBody = leveragesSourcesService.CreateLeveragesSource(armouredBodyMain, null, "Armoured body", "Тело в доспехах", "Тело в доспехах давит другую цель", "телом в доспехах");
@@ -251,7 +465,13 @@ namespace NWO_DataBuilder.Core.Tests
                 leverageService.CreateLeverageClass("Защита", "Defence", "565656", "уменьшения урона", LeverageType.PositiveEffectApplying, LeverageClassRestrictions.NoRestrictions),
                 leverageService.CreateLeverageClass("Пролом", "Break", "232323", "пролома", LeverageType.NegativeEffectApplying, LeverageClassRestrictions.NoRestrictions),
                 leverageService.CreateLeverageClass("Усиление", "Gain", "ffddaa", "усиления", LeverageType.PositiveEffectApplying, LeverageClassRestrictions.NoRestrictions),
-                leverageService.CreateLeverageClass("Слабость", "Weakness", "334221", "слабости", LeverageType.NegativeEffectApplying, LeverageClassRestrictions.NoRestrictions)
+                leverageService.CreateLeverageClass("Слабость", "Weakness", "334221", "слабости", LeverageType.NegativeEffectApplying, LeverageClassRestrictions.NoRestrictions),
+                leverageService.CreateLeverageClass("Воля", "Will", "#ffc0cb", "воли", LeverageType.NegativeEffectApplying, LeverageClassRestrictions.NoRestrictions),
+                leverageService.CreateLeverageClass("Иссушение", "DryingOut", "#ffdbac", "иссушения", LeverageType.Damage, LeverageClassRestrictions.OrganicAndAlive),
+                leverageService.CreateLeverageClass("Размещение", "Accommodation", "#800080", "размещения", LeverageType.Creation, LeverageClassRestrictions.NoRestrictions),
+                leverageService.CreateLeverageClass("Разрушение", "Destruction", "#fffdd0", "разрушения", LeverageType.Damage, LeverageClassRestrictions.NoRestrictions),
+                leverageService.CreateLeverageClass("Энергия", "Energy", "#0000ff", "энергии", LeverageType.Damage, LeverageClassRestrictions.NoRestrictions),
+                leverageService.CreateLeverageClass("Расщепление", "Split", "#ff0000", "расщепления", LeverageType.Damage, LeverageClassRestrictions.NoRestrictions)
             };
             return leverageTypes;
         }
