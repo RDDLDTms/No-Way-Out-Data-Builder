@@ -1,4 +1,7 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
+using DataBuilder.Effects;
+using DataBuilder.Effects.DecreaseEffects.EffectsOnTarget;
+using DataBuilder.Effects.IncreaseEffects.EffectsOnActor;
 using DataBuilder.Effects.IncreaseEffects.EffectsOnTarget;
 using DataBuilder.Effects.PeriodicEffects.EffectsOnTarget;
 using DataBuilder.Leverages;
@@ -37,6 +40,22 @@ namespace NWO_DataBuilder.Core.Tests
         {
             IUnit conquerorUnit = CreateConqueror();
             return conquerorUnit;
+        }
+
+        public static IUnit BuildCaller()
+        {
+            IUnit callerUnit = CreateCaller();
+            return callerUnit;
+        }
+
+        private static IUnit CreateCaller()
+        {
+            IUnit callerUnit;
+            UnitsService unitsService = new();
+            var callerLeveragesSources = CreateCallerLeveragesSources();
+            callerUnit = unitsService.CreateNewUnit("Caller", "Взывающий", false, Faction.Faith, AccessLevel.Fourth, 0, new List<Guid>(), callerLeveragesSources, new List<IImmune>(), new List<IDefence>(), 250, 250,
+                new PercentageValues());
+            return callerUnit;
         }
 
         private static IUnit CreateConqueror()
@@ -87,6 +106,84 @@ namespace NWO_DataBuilder.Core.Tests
             monkUnit = unitsService.CreateNewUnit("Monk", "Монах", false, Faction.Faith, AccessLevel.Second, 0, new List<Guid>(), monkLeveragesSources, new List<IImmune>(), new List<IDefence>(), 70, 70,
                 new PercentageValues());
             return monkUnit;
+        }
+
+        private static List<IUnitLeveragesSource> CreateCallerLeveragesSources()
+        {
+            List<IUnitLeveragesSource> crls = new();
+            ILeveragesSourcesService leveragesSourcesService = new LeverageSourcesService();
+
+            ILeverageService leverageService = new LeverageService();
+            List<ILeverageClass> leverageClasses = CreateLeverageClasses(leverageService);
+            List<ILeverageOption> leverageOptions = CreateLeverageOptions(leverageService);
+
+            //Слово лекаря
+            ILeverage wordOfHealerMain = leverageService.CreateLeverage(
+                leverageClasses[4],
+                LeverageTargetType.Alias,
+                LeverageHitPoint.Vision,
+                LeverageRangeType.Range,
+                LeverageTargeting.Single, new List<ILeverageOption>() { leverageOptions[5] });
+            ILeveragesSource wordOfHealer = leveragesSourcesService.CreateLeveragesSource(wordOfHealerMain, null, "Word of healer", "Слово лекаря", "Слово лекаря исцеляет цель", "словом лекаря");
+            IUnitLeveragesSource callerWordOfHealer = leveragesSourcesService.CreateUnitLeverageSource(wordOfHealer, LeveragesPriority.AdvancedPriority, new LeverageHit(20, 27, 6, LeverageType.Recovery));
+            crls.Add(callerWordOfHealer);
+
+            //Глас лекаря (Разовый хил + Периодический хил)
+            //(Main       Опции: Заклинание, Дальний бой;   Класс - Лечение; Тип - Восстановление; Цель - Одиночная цель; Место попадания - В пределах видимости)
+            //(Additional Опции: При попадании;             Класс - Лечение; Тип - Восстановление; Цель - Одиночная цель; Место попадания - Пространство вокруг юнита)
+            ILeverage voiceOfHealerMain = leverageService.CreateLeverage(
+                leverageClasses[4],
+                LeverageTargetType.Alias,
+                LeverageHitPoint.Vision,
+                LeverageRangeType.Range,
+                LeverageTargeting.Single, new List<ILeverageOption>() { leverageOptions[2], leverageOptions[6] });
+            ILeverage voiceOfHealerAdditional = leverageService.CreateLeverage(
+                leverageClasses[6],
+                LeverageTargetType.Alias,
+                LeverageHitPoint.Vision,
+                LeverageRangeType.Range,
+                LeverageTargeting.Single, new List<ILeverageOption>() { leverageOptions[4] });
+            ILeveragesSource voiceOfHealer = leveragesSourcesService.CreateLeveragesSource(voiceOfHealerMain, voiceOfHealerAdditional, "Voice of healer", "Глас лекаря", "Глас лекаря исцеляет цель и добавляет периодическое восстановление", "гласом лекаря");
+            IUnitLeveragesSource callerVoiceOfHealer = leveragesSourcesService.CreateUnitLeverageSource(voiceOfHealer, LeveragesPriority.PrimalPriority, new LeverageHit(25, 38, 3, LeverageType.Recovery), new TargetPeriodicRecoveryEffect(6, voiceOfHealerMain.Class, 12, "Благо", 5, 9));
+            crls.Add(callerVoiceOfHealer);
+
+            //Воззвание лекаря (AoE хил)
+            //(Опции: Заклинание, Дальний бой; Класс - Лечение; Тип - Восстановление; Цель - Место; Место попадания - Пространство вокруг юнита)
+            ILeverage appealOfHealerMain = leverageService.CreateLeverage(
+                leverageClasses[4],
+                LeverageTargetType.Alias,
+                LeverageHitPoint.SpaceAroundUnit,
+                LeverageRangeType.Range,
+                LeverageTargeting.Place, new List<ILeverageOption>() { leverageOptions[2], leverageOptions[6] });
+            ILeveragesSource appealOfHealer = leveragesSourcesService.CreateLeveragesSource(appealOfHealerMain, null, "Appeal of healer", "Воззвание лекаря", "Воззвание лекаря исцеляет все цели вокруг", "воззванием лекаря");
+            IUnitLeveragesSource callerAppealOfHealer = leveragesSourcesService.CreateUnitLeverageSource(appealOfHealer, LeveragesPriority.HighPriority, new LeverageHit(15, 20, 5, LeverageType.Recovery));
+            crls.Add(callerAppealOfHealer);
+
+            //Ритуал очищения
+            ILeverage purifyingRitualMain = leverageService.CreateLeverage(
+                leverageClasses[5],
+                LeverageTargetType.Alias,
+                LeverageHitPoint.SpaceAroundTheHit,
+                LeverageRangeType.Range,
+                LeverageTargeting.Place,
+                new List<ILeverageOption> { leverageOptions[6], leverageOptions[7] });
+            ILeveragesSource purifyingRitual = leveragesSourcesService.CreateLeveragesSource(purifyingRitualMain, null, "Purifying ritual", "Ритуал очищения", "Снимает негативные эффекты с юнитов в области", "ритуалом очищения");
+            IUnitLeveragesSource callerPurifyuingRitual = leveragesSourcesService.CreateUnitLeverageSource(purifyingRitual, LeveragesPriority.BasePriority, new LeverageEffectsRemoval(8, LeverageType.NegativeEffectRemoval));
+            crls.Add(callerPurifyuingRitual);
+
+            //Тело в доспехах
+            ILeverage armouredBodyMain = leverageService.CreateLeverage(
+                leverageClasses[0],
+                LeverageTargetType.Enemies,
+                LeverageHitPoint.FrontLine,
+                LeverageRangeType.Melee,
+                LeverageTargeting.Many,
+                new List<ILeverageOption>() { leverageOptions[1] });
+            ILeveragesSource armouredBody = leveragesSourcesService.CreateLeveragesSource(armouredBodyMain, null, "Armoured body", "Тело в доспехах", "Тело в доспехах давит другую цель", "телом в доспехах");
+            IUnitLeveragesSource callerArmouredBody = leveragesSourcesService.CreateUnitLeverageSource(armouredBody, LeveragesPriority.SupportPriority, new LeverageHit(10, 20, 7, LeverageType.Damage));
+            crls.Add(callerArmouredBody);
+
+            return crls;
         }
 
         private static List<IUnitLeveragesSource> CreateConquerorLeveragesSources()
@@ -168,9 +265,9 @@ namespace NWO_DataBuilder.Core.Tests
                 LeverageHitPoint.SpaceAroundTheHit,
                 LeverageRangeType.Range,
                 LeverageTargeting.Place,
-                new List<ILeverageOption> { leverageOptions[7] });
+                new List<ILeverageOption> { leverageOptions[6], leverageOptions[7] });
             ILeveragesSource barrier = leveragesSourcesService.CreateLeveragesSource(barrierMain, null, "barrier", "Барьер", "Создаёт", "барьером");
-            IUnitLeveragesSource sowerOfChaosBarrier = leveragesSourcesService.CreateUnitLeverageSource(barrier, LeveragesPriority.HighPriority, new LeverageCreation(10, LeverageType.Creation));
+            IUnitLeveragesSource sowerOfChaosBarrier = leveragesSourcesService.CreateUnitLeverageSource(barrier, LeveragesPriority.HighPriority, new EffectBase(5, barrierMain.Class, 8, "Размещение барьера"));
             crls.Add(sowerOfChaosBarrier);
 
             //Вязкая сфера
@@ -182,7 +279,7 @@ namespace NWO_DataBuilder.Core.Tests
                 LeverageTargeting.Single,
                 new List<ILeverageOption> { leverageOptions[2] });
             ILeveragesSource viscousSphere = leveragesSourcesService.CreateLeveragesSource(viscousSphereMain, null, "viscousSphere", "Вязкая сфера", "Накладывает позитивный эффект", "вязкой сферой");
-            IUnitLeveragesSource sowerOfChaosViscousSphere = leveragesSourcesService.CreateUnitLeverageSource(viscousSphere, LeveragesPriority.AdvancedPriority, new LeverageEffectsApplying(9, LeverageType.PositiveEffectApplying));
+            IUnitLeveragesSource sowerOfChaosViscousSphere = leveragesSourcesService.CreateUnitLeverageSource(viscousSphere, LeveragesPriority.AdvancedPriority, new TargetDefenceIncreaseEffect(6, viscousSphereMain.Class, 10, "Создание вязкой сферы", 5));
             crls.Add(sowerOfChaosViscousSphere);
 
             //Помешательство
@@ -192,9 +289,9 @@ namespace NWO_DataBuilder.Core.Tests
                 LeverageHitPoint.SpaceAroundUnit,
                 LeverageRangeType.Range,
                 LeverageTargeting.Place,
-                new List<ILeverageOption> { leverageOptions[1] });
+                new List<ILeverageOption> { leverageOptions[6] });
             ILeveragesSource insanity = leveragesSourcesService.CreateLeveragesSource(insanityMain, null, "Insanity", "Помешательство", "Накладывает негативный эффект", "помешательством");
-            IUnitLeveragesSource sowerOfChaosInsanity = leveragesSourcesService.CreateUnitLeverageSource(insanity, LeveragesPriority.SupportPriority, new LeverageEffectsApplying(11, LeverageType.NegativeEffectApplying));
+            IUnitLeveragesSource sowerOfChaosInsanity = leveragesSourcesService.CreateUnitLeverageSource(insanity, LeveragesPriority.SupportPriority, new TargetControlEffect(5, insanityMain.Class, 11, "Вокруг юнита создана область помешательства"));
             crls.Add(sowerOfChaosInsanity);
 
             //Касание
@@ -213,20 +310,20 @@ namespace NWO_DataBuilder.Core.Tests
                 LeverageTargeting.Single,
                 new List<ILeverageOption> { leverageOptions[2] });
             ILeveragesSource touch = leveragesSourcesService.CreateLeveragesSource(touchMain, touchAdditional, "Touch", "Касание", "Наносит урон в ближнем бою", "касанием");
-            IUnitLeveragesSource sowerOfChaosTouch = leveragesSourcesService.CreateUnitLeverageSource(touch, LeveragesPriority.PrimalPriority, new LeverageHit(10, 20, 8, LeverageType.Damage), new LeverageHit(10, 20, 8, LeverageType.Recovery));
+            IUnitLeveragesSource sowerOfChaosTouch = leveragesSourcesService.CreateUnitLeverageSource(touch, LeveragesPriority.PrimalPriority, new LeverageHit(15, 30, 5, LeverageType.Damage), new LeverageHit(5, 9, 5, LeverageType.Recovery)); //Здесь некорректно хилит, т.к. должно хилить актора, а хилит противника (пока класса для актора нет?)
             crls.Add(sowerOfChaosTouch);
 
             //Очищение
-            ILeverage purifyingRitualMain = leverageService.CreateLeverage(
+            ILeverage purifyingMain = leverageService.CreateLeverage(
                 leverageClasses[5],
                 LeverageTargetType.Alias,
                 LeverageHitPoint.SpaceAroundTheHit,
                 LeverageRangeType.Range,
                 LeverageTargeting.Single,
                 new List<ILeverageOption> { leverageOptions[6], leverageOptions[7] });
-            ILeveragesSource purifyingRitual = leveragesSourcesService.CreateLeveragesSource(purifyingRitualMain, null, "Purifying ritual", "Ритуал очищения", "Снимает негативные эффекты с юнитов в области", "ритуалом очищения");
-            IUnitLeveragesSource sowerOfChaosPurifyuingRitual = leveragesSourcesService.CreateUnitLeverageSource(purifyingRitual, LeveragesPriority.BasePriority, new LeverageEffectsRemoval(12, LeverageType.NegativeEffectRemoval));
-            crls.Add(sowerOfChaosPurifyuingRitual);
+            ILeveragesSource purifying = leveragesSourcesService.CreateLeveragesSource(purifyingMain, null, "Purifying", "Очищения", "Накладывает позитивный эффект в пределах видимости", "очищением");
+            IUnitLeveragesSource sowerOfChaosPurifyuing = leveragesSourcesService.CreateUnitLeverageSource(purifying, LeveragesPriority.BasePriority, new ActorRecoveringIncreaseEffect(6, purifyingMain.Class, 10, "", 5));
+            crls.Add(sowerOfChaosPurifyuing);
 
             return crls;
         }
@@ -313,9 +410,9 @@ namespace NWO_DataBuilder.Core.Tests
                 LeverageHitPoint.SpaceAroundUnit,
                 LeverageRangeType.Range,
                 LeverageTargeting.Place,
-                new List<ILeverageOption>() { leverageOptions[5] });
+                new List<ILeverageOption>() { leverageOptions[5], leverageOptions[6] });
             ILeveragesSource wordOfPreacher = leveragesSourcesService.CreateLeveragesSource(wordOfPreacherMain, null, "Word of Preacher", "Слово проповедника", "Слово проповедника накладывает негативный эффект", "словом проповедника");
-            IUnitLeveragesSource preacherArmouredBody = leveragesSourcesService.CreateUnitLeverageSource(wordOfPreacher, LeveragesPriority.PrimalPriority, new LeverageEffectsApplying(10, LeverageType.NegativeEffectApplying));
+            IUnitLeveragesSource preacherArmouredBody = leveragesSourcesService.CreateUnitLeverageSource(wordOfPreacher, LeveragesPriority.PrimalPriority, new TargetControlEffect(3, wordOfPreacherMain.Class, 6, "Переманивание"));
             crls.Add(preacherArmouredBody);
 
             return crls;
@@ -460,7 +557,7 @@ namespace NWO_DataBuilder.Core.Tests
                 leverageService.CreateLeverageClass("Огонь", "Fire", "#ea9999", "огненного урона", LeverageType.NegativeEffectApplying, LeverageClassRestrictions.NoRestrictions),
                 leverageService.CreateLeverageClass("Взрыв", "Explosion", "#f6b26b", "взрывного урона", LeverageType.Damage, LeverageClassRestrictions.NoRestrictions),
                 leverageService.CreateLeverageClass("Лечение", "Healing", "#a4c2f4", "исцеления", LeverageType.Recovery, LeverageClassRestrictions.OrganicAndAlive),
-                leverageService.CreateLeverageClass("Нетрализация", "Neutralization", "#efefef", "нейтрализации", LeverageType.NegativeEffectRemoval, LeverageClassRestrictions.NoRestrictions),
+                leverageService.CreateLeverageClass("Нейтрализация", "Neutralization", "#efefef", "нейтрализации", LeverageType.NegativeEffectRemoval, LeverageClassRestrictions.NoRestrictions),
                 leverageService.CreateLeverageClass("Благо","Bless", "#efefef", "единиц здоровья", LeverageType.PositiveEffectApplying, LeverageClassRestrictions.OrganicAndAlive),
                 leverageService.CreateLeverageClass("Защита", "Defence", "565656", "уменьшения урона", LeverageType.PositiveEffectApplying, LeverageClassRestrictions.NoRestrictions),
                 leverageService.CreateLeverageClass("Пролом", "Break", "232323", "пролома", LeverageType.NegativeEffectApplying, LeverageClassRestrictions.NoRestrictions),

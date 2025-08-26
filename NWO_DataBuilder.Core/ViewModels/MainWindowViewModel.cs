@@ -25,11 +25,13 @@ namespace NWO_DataBuilder.Core.ViewModels
             IUnit preacher = FakeBuilder.BuildPreacher();
             IUnit sowerOfChaos = FakeBuilder.BuildSowerOfChaos();
             IUnit conquerorUnit = FakeBuilder.BuildConqueror();
+            IUnit callerUnit = FakeBuilder.BuildCaller();
             _allUnits.Add(rager);
             _allUnits.Add(monk);
             _allUnits.Add(preacher);
             _allUnits.Add(sowerOfChaos);
             _allUnits.Add(conquerorUnit);
+            _allUnits.Add(callerUnit);
         }
 
         private async Task ShowBattleUnitVsDummy()
