@@ -3,14 +3,13 @@ using DataBuilder.Leverages;
 using DataBuilder.Units;
 using NWO_Abstractions;
 using NWO_Battles;
+using NWO_DataBuilder.Core.Models;
 using NWO_Support;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
-using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using System.Runtime.InteropServices;
 
 namespace NWO_DataBuilder.Core.ViewModels
 {
@@ -80,10 +79,10 @@ namespace NWO_DataBuilder.Core.ViewModels
 
         public DummyProperties DummyProperties;
 
-        public BattleUnitVsDummyViewModel(List<IUnit> unitForBattle)
+        public BattleUnitVsDummyViewModel()
         {
             DummyProperties = new();
-            _allUnits = new(new ObservableCollection<IUnit>(unitForBattle));
+            _allUnits = new(new ObservableCollection<IUnit>(DictionaryStorage.GetInstance().AllUnits.Values));
 
             BattleSpeedText = $"{BattleSpeed}x";
 

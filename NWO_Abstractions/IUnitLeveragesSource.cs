@@ -23,6 +23,6 @@
         /// <summary>
         /// Приоритет использования воздействия
         /// </summary>
-        public LeveragesPriority LeveragesPriority { get; }
+        public SkillPriority LeveragesPriority { get; }
     }
 }

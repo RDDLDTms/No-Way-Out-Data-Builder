@@ -23,8 +23,10 @@ namespace DataBuilder.Leverages
 
         public LeverageTargeting Targeting { get; }
 
-        public Leverage(ILeverageClass leverageClass, LeverageTargetType leverageTargetType, LeverageHitPoint leverageHitPoint, LeverageRangeType rangeType, LeverageTargeting targeting, List<ILeverageOption> leverageOptions)
+        public Leverage(string universalName, string russianDisplayName, ILeverageClass leverageClass, LeverageTargetType leverageTargetType, LeverageHitPoint leverageHitPoint, LeverageRangeType rangeType, LeverageTargeting targeting, List<ILeverageOption> leverageOptions)
         {
+            RussianDisplayName = russianDisplayName;
+            UniversalName = universalName;
             Class = leverageClass;
             TargetType = leverageTargetType;
             HitPoint = leverageHitPoint;

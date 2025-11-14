@@ -6,13 +6,13 @@ namespace DataBuilder.Units
     {
         public ILeveragesSource LeveragesSource { get; private set; }
 
-        public LeveragesPriority LeveragesPriority { get; private set; }
+        public SkillPriority LeveragesPriority { get; private set; }
 
         public ILeverageData MainData { get; } 
 
         public ILeverageData? AdditionalData { get; }
 
-        public UnitLeveragesSource(ILeveragesSource leveragesSource, LeveragesPriority leveragePriority, ILeverageData mainData, ILeverageData? additionalData) 
+        public UnitLeveragesSource(ILeveragesSource leveragesSource, SkillPriority leveragePriority, ILeverageData mainData, ILeverageData? additionalData = null) 
         { 
             LeveragesSource = leveragesSource;
             MainData = mainData;

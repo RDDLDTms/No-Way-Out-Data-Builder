@@ -1,11 +1,10 @@
-﻿using NWO_Abstractions;
-using ReactiveUI;
+﻿using ReactiveUI;
 
 namespace NWO_DataBuilder.Core.ViewModels
 {
     public class BattleUnitVsUnitViewModel : ViewModelBase, IActivatableViewModel
     {
-        public BattleUnitVsUnitViewModel(List<IUnit> units) 
+        public BattleUnitVsUnitViewModel() 
         { 
         }
 

@@ -22,6 +22,6 @@ namespace NWO_DataBuilder.Core.Services
         /// <param name="mainValues">Значения основного воздействия</param>
         /// <param name="additionalValues">Значения дополнительного воздействия</param>
         /// <returns>Источник воздействий для юнита</returns>
-        public IUnitLeveragesSource CreateUnitLeverageSource(ILeveragesSource source, LeveragesPriority priority, ILeverageData mainData, ILeverageData? additionalData = null);
+        public IUnitLeveragesSource CreateUnitLeverageSource(ILeveragesSource source, SkillPriority priority, ILeverageData mainData, ILeverageData? additionalData = null);
     }
 }

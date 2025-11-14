@@ -10,9 +10,9 @@ namespace DataBuilder.Units
 
         private ILeverageData _mainData;
         private ILeverageData? _additionalData;
-        private LeveragesPriority _priority;
+        private SkillPriority _priority;
 
-        public LeveragesPriority Priority => _priority;
+        public SkillPriority Priority => _priority;
 
         public bool CanUseSkill { get; private set; } = true;
 

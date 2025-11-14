@@ -4,22 +4,22 @@ namespace DataBuilder.Units
 {
     public class SkillResult : ISkillResult
     {
-        public SkillResult(ISkillResultPart mainPart, ISkillResultPart additionalPart, LeveragesPriority leveragesPriority) : this(mainPart, leveragesPriority)
+        public SkillResult(ISkillResultPart mainPart, ISkillResultPart additionalPart, SkillPriority leveragesPriority) : this(mainPart, leveragesPriority)
         {
             AdditionalPart = additionalPart;
         }
 
-        public SkillResult(ISkillResultPart mainPart, LeveragesPriority leveragesPriority) : this(leveragesPriority)
+        public SkillResult(ISkillResultPart mainPart, SkillPriority leveragesPriority) : this(leveragesPriority)
         {
             MainPart = mainPart;
         }
 
-        private SkillResult(LeveragesPriority leveragesPriority)
+        private SkillResult(SkillPriority leveragesPriority)
         {
             Priority = leveragesPriority;
         }
 
-        public LeveragesPriority Priority { get; }
+        public SkillPriority Priority { get; }
 
         public ISkillResultPart? MainPart { get; }
 

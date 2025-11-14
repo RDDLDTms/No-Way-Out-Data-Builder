@@ -28,7 +28,7 @@ public enum AccessLevel
     /// <summary>
     /// Доступен на пятом уровне
     /// </summary>
-    Five = 5,
+    Fifth = 5,
     /// <summary>
     /// Доступен на шестом уровне
     /// </summary>

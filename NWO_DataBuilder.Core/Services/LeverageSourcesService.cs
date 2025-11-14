@@ -11,7 +11,7 @@ namespace NWO_DataBuilder.Core.Services
             return new FakeLeveragesSource(mainLeverage, additionalLeverage, universalName, russianName, russianDescription, instrumentalCase);
         }
 
-        public IUnitLeveragesSource CreateUnitLeverageSource(ILeveragesSource source, LeveragesPriority priority, ILeverageData mainData, ILeverageData? additionalData = null)
+        public IUnitLeveragesSource CreateUnitLeverageSource(ILeveragesSource source, SkillPriority priority, ILeverageData mainData, ILeverageData? additionalData = null)
         {
             return new UnitLeveragesSource(source, priority, mainData, additionalData);
         }

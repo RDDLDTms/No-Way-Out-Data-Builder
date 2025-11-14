@@ -4,17 +4,17 @@ using DataBuilder.BuilderObjects.Primal;
 namespace NWO_Abstractions
 {
     /// <summary>
-    /// Тип воздействия
+    /// Класс воздействия
     /// </summary>
     public interface ILeverageClass : IBaseBuilderObject
     {
         /// <summary>
-        /// Глобальный тип воздействия
+        /// Тип воздействия
         /// </summary>
         public LeverageType Type { get; }
         
         /// <summary>
-        /// Цветовое выделение типа воздействия
+        /// Цветовое выделение класса воздейтвия
         /// </summary>
         public string Color { get; }
 

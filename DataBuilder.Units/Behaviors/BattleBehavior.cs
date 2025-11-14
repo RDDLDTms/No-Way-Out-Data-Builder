@@ -1,8 +1,6 @@
-﻿using DataBuilder.Effects;
-using DataBuilder.Effects.DecreaseEffects.EffectsOnActor;
+﻿using DataBuilder.Effects.DecreaseEffects.EffectsOnActor;
 using DataBuilder.Effects.IncreaseEffects.EffectsOnActor;
 using DataBuilder.Effects.PeriodicEffects.EffectsOnTarget;
-using DataBuilder.Leverages;
 using DataBuilder.TargetSystem;
 using NWO_Abstractions;
 
@@ -82,7 +80,7 @@ namespace DataBuilder.Units.Behaviors
 
         private ISkillResult? TryUseSkill(double battleSpeed)
         {
-            for (int i = (int)LeveragesPriority.PrimalPriority; i > -1; i--)
+            for (int i = (int)SkillPriority.PrimalPriority; i > -1; i--)
             {
                 var skill = _unitInBattle.Skills.FirstOrDefault(x => (int)x.Priority == i && x.CanUseSkill);
                 if (skill is null || CanUseSkillOnTargets(skill) is false)

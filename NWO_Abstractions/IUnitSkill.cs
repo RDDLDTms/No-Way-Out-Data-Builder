@@ -8,7 +8,7 @@
         /// <summary>
         /// Приоритет использования умения
         /// </summary>
-        public LeveragesPriority Priority { get; }
+        public SkillPriority Priority { get; }
 
         /// <summary>
         /// Основное воздействие

@@ -40,7 +40,7 @@ namespace DataBuilder.Units
 
         public Faction Faction { get; private set; }
 
-        public List<Guid> ItemsFormula { get; private set; }
+        public List<Guid> Formula { get; private set; }
 
         public List<IUnitSkill> Skills { get; private set; }
 
@@ -50,7 +50,7 @@ namespace DataBuilder.Units
 
         public List<IBehavior> Behaviors { get; private set; }
 
-        public Unit(string universalName, string russianDisplayName, bool isBase, Faction faction, AccessLevel accessLevel, byte improvmentLevel, List<Guid> itemsFormula, 
+        public Unit(string universalName, string russianDisplayName, bool isBase, Faction faction, AccessLevel accessLevel, byte improvmentLevel, List<Guid> formula, 
             List<IUnitLeveragesSource> leverageSources, List<IImmune> immunes, List<IDefence> defences, int startHealth, int maxHealth, IPercentageValues incomingPercentageValues) : 
             base(immunes, defences, startHealth, maxHealth, incomingPercentageValues)
         {
@@ -60,11 +60,26 @@ namespace DataBuilder.Units
             Faction = faction;
             AccessLevel = accessLevel;
             ImprovmentLevel = improvmentLevel;
-            ItemsFormula = itemsFormula;
+            Formula = formula;
             LeveragesSources = leverageSources;
             CreateSkills();
             CreateBehaviors();
         }
+
+        public Unit(UnitBase unitBase) : base(unitBase.Immunes, unitBase.Defences, unitBase.MaxHealth)
+        {
+            RussianDisplayName = unitBase.RussianDisplayName;
+            UniversalName = unitBase.UniversalName;
+            IsBase = unitBase.IsBase;
+            Faction = unitBase.Faction;
+            AccessLevel = unitBase.AccessLevel;
+            ImprovmentLevel = unitBase.ImprovmentLevel;
+            Formula = unitBase.Formula;
+            LeveragesSources = unitBase.LeveragesSources;
+            CreateSkills();
+            CreateBehaviors();
+        }
+
 
         public override void JoinBattle(IBattleModelling battle, int teamNumber, int globalCooldown, List<IEffect>? negativeStartEffects, List<IEffect>? positiveStartEffects)
         {

@@ -1,7 +1,7 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
 using NWO_Abstractions;
+using NWO_DataBuilder.Core.Models;
 using NWO_DataBuilder.Core.Support;
-using NWO_DataBuilder.Core.Tests;
 using ReactiveUI;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -9,47 +9,25 @@ using System.Reactive.Linq;
 namespace NWO_DataBuilder.Core.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase, IActivatableViewModel
-    {   
-        private List<IUnit> _allUnits = new();
-        
+    {          
         public MainWindowViewModel()
         {
             _collections = new();
+            DictionaryStorage.GetInstance().LoadDictionaries();
             OpenLeverageTypesWindowCommand = ReactiveCommand.CreateFromTask(EditLeverageTypes, null, RxApp.MainThreadScheduler);
-
             ShowBattleUnitVsUnitReactiveCommand = ReactiveCommand.CreateFromTask(ShowBattleUnitVsUnit, null, RxApp.MainThreadScheduler);
             ShowBattleUnitVsDummyReactiveCommand = ReactiveCommand.CreateFromTask(ShowBattleUnitVsDummy, null, RxApp.MainThreadScheduler);
-
-            IUnit rager = FakeBuilder.BuildRager();
-            IUnit monk = FakeBuilder.BuildMonk();
-            IUnit preacher = FakeBuilder.BuildPreacher();
-            IUnit sowerOfChaos = FakeBuilder.BuildSowerOfChaos();
-            IUnit conquerorUnit = FakeBuilder.BuildConqueror();
-            IUnit callerUnit = FakeBuilder.BuildCaller();
-            _allUnits.Add(rager);
-            _allUnits.Add(monk);
-            _allUnits.Add(preacher);
-            _allUnits.Add(sowerOfChaos);
-            _allUnits.Add(conquerorUnit);
-            _allUnits.Add(callerUnit);
         }
 
-        private async Task ShowBattleUnitVsDummy()
-        {
-            await ShowBattleUnitVsDummyInteraction.Handle(_allUnits);
-        }
+        private async Task ShowBattleUnitVsDummy() => await ShowBattleUnitVsDummyInteraction.Handle(Unit.Default);
 
-        private async Task ShowBattleUnitVsUnit()
-        {
-            await ShowBattleUnitVsUnitInteraction.Handle(_allUnits);
-        }
+        private async Task ShowBattleUnitVsUnit() => await ShowBattleUnitVsUnitInteraction.Handle(Unit.Default);
 
         public async Task EditLeverageTypes()
         {
             if (_collections is not null && _collections.LeverageTypes is not null)
             {
-                _collections.LeverageTypes = await EditLeverageTypesInteraction!.Handle(_collections.LeverageTypes);
-                
+                _collections.LeverageTypes = await EditLeverageTypesInteraction!.Handle(_collections.LeverageTypes);           
             }
         }
 
@@ -81,9 +59,9 @@ namespace NWO_DataBuilder.Core.ViewModels
 
         public Interaction<Dictionary<Guid, Faction>, Dictionary<Guid, Faction>>? EditFactionsInteraction = new();
 
-        public Interaction<List<IUnit>, Unit> ShowBattleUnitVsDummyInteraction = new();
+        public Interaction<Unit, Unit> ShowBattleUnitVsDummyInteraction = new();
 
-        public Interaction<List<IUnit>, Unit> ShowBattleUnitVsUnitInteraction = new();
+        public Interaction<Unit, Unit> ShowBattleUnitVsUnitInteraction = new();
 
         public ViewModelActivator Activator { get; } = new();
 

@@ -39,7 +39,7 @@ namespace NWO_Abstractions
         /// <summary>
         /// Формула из айтемов для создания
         /// </summary>
-        public List<Guid> ItemsFormula { get; }
+        public List<Guid> Formula { get; }
         
         /// <summary>
         /// Список возможных поведений юнита

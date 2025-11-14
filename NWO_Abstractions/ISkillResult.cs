@@ -6,6 +6,6 @@
 
         public ISkillResultPart? AdditionalPart { get; }
 
-        public LeveragesPriority Priority { get; }
+        public SkillPriority Priority { get; }
     }
 }

@@ -104,11 +104,11 @@ namespace NWO_DataBuilder.DesktopUI.Views
             return;
         }
 
-        public async Task ShowBattleUnitVsDummy(IInteractionContext<List<IUnit>, Unit> context)
+        public async Task ShowBattleUnitVsDummy(IInteractionContext<Unit, Unit> context)
         {
             BattleUnitVsDummyView view = new()
             {
-                ViewModel = new BattleUnitVsDummyViewModel(context.Input),
+                ViewModel = new BattleUnitVsDummyViewModel(),
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             };
             await view.ShowDialog(this);
@@ -116,11 +116,11 @@ namespace NWO_DataBuilder.DesktopUI.Views
             return;
         }
 
-        public async Task ShowBattleUnitVsUnit(IInteractionContext<List<IUnit>, Unit> context)
+        public async Task ShowBattleUnitVsUnit(IInteractionContext<Unit, Unit> context)
         {
             BattleUnitVsUnitView view = new()
             {
-                ViewModel = new BattleUnitVsUnitViewModel(context.Input),
+                ViewModel = new BattleUnitVsUnitViewModel(),
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             };
             await view.ShowDialog(this);

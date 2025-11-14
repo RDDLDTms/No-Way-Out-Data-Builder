@@ -4,17 +4,16 @@ using NWO_Abstractions;
 
 namespace NWO_DataBuilder.Core.Services
 {
-    public class UnitsService
+    public class UnitsService : IUnitsService
     {
-        public UnitsService() { }
-
         public IUnit CreateNewUnit(string internationalName, string russianDisplayName, bool isBase, Faction faction, AccessLevel acceessLevel, 
             byte improvementLevel, List<Guid> formula, List<IUnitLeveragesSource> leverageSources, List<IImmune> immunes, List<IDefence> defences, int startHealth, int maxHealth, IPercentageValues incomingPercentageValues)
         {
             formula = new();
-            IUnit unit = new Unit(internationalName, russianDisplayName, isBase, faction, acceessLevel, improvementLevel, formula, leverageSources, immunes, defences, startHealth, maxHealth, incomingPercentageValues);
-            return unit;
+            return new Unit(internationalName, russianDisplayName, isBase, faction, acceessLevel, improvementLevel, formula, leverageSources, immunes, defences, startHealth, maxHealth, incomingPercentageValues);
         }
+
+        public IUnit CreateNewUnit(UnitBase unitDTO) => new Unit(unitDTO);
 
         public IUnit AddUnitDefences(List<IDefence> defencesToAdd, IUnit unit)
         {

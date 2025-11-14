@@ -58,6 +58,14 @@ namespace DataBuilder.TargetSystem
             Id = Guid.NewGuid();
         }
 
+        public TargetBase(List<IImmune> immunes, List<IDefence> defences, int maxHealth)
+        {
+            Immunes = immunes;
+            Defences = defences;
+            MaxHealth = maxHealth;
+            Health = MaxHealth;
+        }
+
         public virtual void JoinBattle(IBattleModelling battle, int teamNumber, int globalCooldown, List<IEffect>? negativeEffects, List<IEffect>? positiveEffects)
         {
             _battle = battle;

@@ -10,6 +10,7 @@
     <ProjectReference Include="..\DataBuilder.Effects\DataBuilder.Effects.csproj" />
     <ProjectReference Include="..\DataBuilder.Items\DataBuilder.Items.csproj" />
     <ProjectReference Include="..\DataBuilder.TargetSystem\DataBuilder.TargetSystem.csproj" />
+    <ProjectReference Include="..\NWO_Support\NWO_Support.csproj" />
   </ItemGroup>
 
 </Project>
