@@ -23,8 +23,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NWO_DataBuilder.Core", "NWO
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NWO_DataBuilder.DesktopUI", "NWO_DataBuilder.DesktopUI\NWO_DataBuilder.DesktopUI.csproj", "{42F19E3F-2FC7-47AC-9C7B-05A8420C59AF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NWO_DataBuilder.DesktopUI.Desktop", "NWO_DataBuilder.DesktopUI.Desktop\NWO_DataBuilder.DesktopUI.Desktop.csproj", "{9DB774C2-DFB2-4D71-AF88-217C9BB76BF2}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NWO_Abstractions", "NWO_Abstractions\NWO_Abstractions.csproj", "{DE5240AC-6B10-4322-A982-099A81D14796}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NWO_Battles", "NWO_Battles\NWO_Battles.csproj", "{7864E293-7BA2-4462-852E-F79CCC0D0506}"
@@ -33,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NWO_Support", "NWO_Support\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataBuilder.Effects", "DataBuilder.Effects\DataBuilder.Effects.csproj", "{6DFFA359-8E5F-460D-8A36-337C872AC5F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBuilder.TargetSystem", "DataBuilder.TargetSystem\DataBuilder.TargetSystem.csproj", "{9ECDD7AA-1FA0-4673-A57E-18FC58E44910}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataBuilder.TargetSystem", "DataBuilder.TargetSystem\DataBuilder.TargetSystem.csproj", "{9ECDD7AA-1FA0-4673-A57E-18FC58E44910}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,10 +79,6 @@ Global
 		{42F19E3F-2FC7-47AC-9C7B-05A8420C59AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42F19E3F-2FC7-47AC-9C7B-05A8420C59AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42F19E3F-2FC7-47AC-9C7B-05A8420C59AF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9DB774C2-DFB2-4D71-AF88-217C9BB76BF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9DB774C2-DFB2-4D71-AF88-217C9BB76BF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9DB774C2-DFB2-4D71-AF88-217C9BB76BF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9DB774C2-DFB2-4D71-AF88-217C9BB76BF2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DE5240AC-6B10-4322-A982-099A81D14796}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DE5240AC-6B10-4322-A982-099A81D14796}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE5240AC-6B10-4322-A982-099A81D14796}.Release|Any CPU.ActiveCfg = Release|Any CPU
