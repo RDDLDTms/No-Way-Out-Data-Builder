@@ -15,7 +15,7 @@ namespace DataBuilder.TargetSystem
 
         public IEnumerable<ITarget>? FindTargets(IUnitSkill skill, bool mainLeverage, int unitTeamNumber)
         {
-            ILeverage leverage = mainLeverage ? skill.MainLeverage : skill.MainLeverage;
+            ILeverage leverage = mainLeverage ? skill.MainLeverage : skill.AdditionalLeverage!;
             switch (leverage.Type)
             {
                 case LeverageType.Damage:

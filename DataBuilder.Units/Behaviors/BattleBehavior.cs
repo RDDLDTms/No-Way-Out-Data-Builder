@@ -99,12 +99,8 @@ namespace DataBuilder.Units.Behaviors
                 }
 
                 if (skillResult.AdditionalPart is not null)
-                {
-                    IEnumerable<ITarget>? additionaltargets = targets;
-                    if (skill.MainLeverage.Type != skill.AdditionalLeverage.Type)
-                    {
-                        additionaltargets = _targetSystem.FindTargets(skill, false, _unit.TeamNumber);
-                    }
+                { 
+                    var additionaltargets = skill.MainLeverage.Type == skill.AdditionalLeverage!.Type ? targets : _targetSystem.FindTargets(skill, false, _unit.TeamNumber);
 
                     if (additionaltargets is not null && additionaltargets.Count() > 0)
                     {

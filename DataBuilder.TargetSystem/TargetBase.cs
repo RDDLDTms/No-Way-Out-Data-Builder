@@ -141,24 +141,24 @@ namespace DataBuilder.TargetSystem
 
         public void RemovePositiveEffect(IEffect effect)
         {
-            if (effect is TargetPeriodicRecoveryEffect leverageEffect)
+            if (effect is EffectBase effectBase)
             {
-                leverageEffect.OnEffectTick -= LeverageEffect_OnEffectTick;
-                leverageEffect.OnEffectEnd -= Effect_OnEffectEnd;
-                Effects.NegativeEffects.Remove(effect);
+                effectBase.OnEffectTick -= LeverageEffect_OnEffectTick;
+                effectBase.OnEffectEnd -= Effect_OnEffectEnd;
+                Effects.PositiveEffects.Remove(effect);
+                OnPositiveEffectRemoved?.Invoke(effect);
             }
-            OnPositiveEffectRemoved?.Invoke(effect);
         }
 
         public void RemoveNegativeEffect(IEffect effect)
         {
-            if (effect is TargetPeriodicDamageEffect leverageEffect)
+            if (effect is EffectBase leverageEffect)
             {
                 leverageEffect.OnEffectTick -= LeverageEffect_OnEffectTick;
                 leverageEffect.OnEffectEnd -= Effect_OnEffectEnd;
                 Effects.NegativeEffects.Remove(effect);
+                OnNegativeEffectRemoved?.Invoke(effect);
             }
-            OnNegativeEffectRemoved?.Invoke(effect);
         }
 
         private void LeverageEffect_OnEffectTick(IEffect sender, int newTime, string logMessage)

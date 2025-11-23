@@ -258,7 +258,7 @@ namespace NWO_DataBuilder.Core.ViewModels
 
         private void Battle_OnPositiveEffectEnds(IEffect effect, ITarget target)
         {
-            if (_dummyPositiveEffects.Count == 0)
+            if (_dummyPositiveEffects.Count == 0 && _unitPositiveEffects.Count == 0)
                 return;
 
             RxApp.MainThreadScheduler.Schedule(() =>
@@ -271,7 +271,7 @@ namespace NWO_DataBuilder.Core.ViewModels
                     }
                     else
                     {
-                        _unitPositiveEffects.Remove(_dummyPositiveEffects.First(x => x.Id == effect.Id));
+                        _unitPositiveEffects.Remove(_unitPositiveEffects.First(x => x.Id == effect.Id));
                     }
                 }
                 catch (Exception ex) 
@@ -282,7 +282,7 @@ namespace NWO_DataBuilder.Core.ViewModels
 
         private void Battle_OnNegativeEffectEnds(IEffect effect, ITarget target)
         {
-            if (_dummyNegativeEffects.Count == 0)
+            if (_dummyNegativeEffects.Count == 0 && _unitNegativeEffects.Count == 0)
                 return;
 
             RxApp.MainThreadScheduler.Schedule(() =>
@@ -295,7 +295,7 @@ namespace NWO_DataBuilder.Core.ViewModels
                     }
                     else
                     {
-                        _unitNegativeEffects.Remove(_dummyNegativeEffects.First(x => x.Id == effect.Id));
+                        _unitNegativeEffects.Remove(_unitNegativeEffects.First(x => x.Id == effect.Id));
                     }
                 }
                 catch (Exception ex) 
