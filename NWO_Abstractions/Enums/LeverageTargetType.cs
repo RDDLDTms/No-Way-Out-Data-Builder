@@ -6,20 +6,24 @@
     public enum LeverageTargetType
     {
         /// <summary>
+        /// Никакие (по умолчанию)
+        /// </summary>
+        None = 0,
+        /// <summary>
         /// Дружественные
         /// </summary>
-        Alias = 0,
+        Alias = 1,
         /// <summary>
         /// Вражеские
         /// </summary>
-        Enemies = 1,
+        Enemies = 2,
         /// <summary>
         /// Нейтральные
         /// </summary>
-        Neutral = 2,
+        Neutral = 3,
         /// <summary>
         /// Все
         /// </summary>
-        All = 3
+        All = 4
     }
 }

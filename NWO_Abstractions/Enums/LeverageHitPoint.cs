@@ -6,6 +6,10 @@
     public enum LeverageHitPoint
     {
         /// <summary>
+        /// Нет места (по умолчанию)
+        /// </summary>
+        None = 0,
+        /// <summary>
         /// В пределах видимости
         /// </summary>
         Vision,

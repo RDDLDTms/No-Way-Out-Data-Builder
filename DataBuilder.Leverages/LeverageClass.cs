@@ -1,5 +1,4 @@
-﻿using DataBuilder.BuilderObjects;
-using DataBuilder.BuilderObjects.Primal;
+﻿using DataBuilder.BuilderObjects.Primal;
 using NWO_Abstractions;
 
 namespace DataBuilder.Leverages
@@ -20,7 +19,7 @@ namespace DataBuilder.Leverages
 
         public string Genitive { get; }
 
-        public IDescription Description => throw new NotImplementedException();
+        public Description Description => throw new NotImplementedException();
 
         public LeverageClassRestrictions Restrictions { get; }
 

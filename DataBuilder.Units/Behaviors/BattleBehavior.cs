@@ -1,8 +1,7 @@
-﻿using DataBuilder.Effects.DecreaseEffects.EffectsOnActor;
-using DataBuilder.Effects.IncreaseEffects.EffectsOnActor;
-using DataBuilder.Effects.PeriodicEffects.EffectsOnTarget;
+﻿using DataBuilder.Effects;
 using DataBuilder.TargetSystem;
 using NWO_Abstractions;
+using NWO_Abstractions.Battles;
 
 namespace DataBuilder.Units.Behaviors
 {
@@ -12,25 +11,25 @@ namespace DataBuilder.Units.Behaviors
         private const int MAX_WAITING_SECONDS = 7;
         private int waitingSeconds = 0;
         private Timer? _timer = null;
-        private IUnit _unitInBattle;
+        private Unit _unit;
         private IBattleModelling _battle;
         private CommonTargetSystem _targetSystem;
         private bool SkillsCooldownWaiting = false;
 
-        public bool CanUseAnySkill => _unitInBattle.Skills.Any(x => x.CanUseSkill);
+        public bool CanUseAnySkill => _unit.Skills.Any(x => x.CanUseSkill);
         
-        public BattleBehavior(IUnit unit, IBattleModelling battle)
+        public BattleBehavior(IBattleModelling battle, Unit unit)
         {
-            _unitInBattle = unit;
             _battle = battle;
-            _targetSystem = new CommonTargetSystem(battle, unit);
+            _unit = unit;
+            _targetSystem = new CommonTargetSystem(battle);
         }
 
         public async Task Enable(double battleSpeed, int globalCooldown)
         {
             waitingSeconds = 0;
             _timer = new Timer(TimerCallback, null, (int)(1000 / battleSpeed), (int)(1000 / battleSpeed));
-            while (_unitInBattle.InBattle)
+            while (_unit.InBattle)
             {
                 if (CanIDoSmth() is false)
                 {
@@ -62,7 +61,7 @@ namespace DataBuilder.Units.Behaviors
             if (waitingSeconds >= MAX_WAITING_SECONDS)
             {
                 _timer!.Dispose();
-                _unitInBattle.LeaveBattle();
+                (_unit as ITarget).LeaveBattle();
                 return;
             }
             waitingSeconds++;
@@ -73,7 +72,7 @@ namespace DataBuilder.Units.Behaviors
             if (SkillsCooldownWaiting is false)
             {
                 SkillsCooldownWaiting = true;
-                _unitInBattle.CallUnitWaitingEvent();
+                _unit.CallUnitWaitingEvent();
             }
             await Task.Delay((int)(WAITING_COOLDOWN / battleSpeed));
         }
@@ -82,11 +81,11 @@ namespace DataBuilder.Units.Behaviors
         {
             for (int i = (int)SkillPriority.PrimalPriority; i > -1; i--)
             {
-                var skill = _unitInBattle.Skills.FirstOrDefault(x => (int)x.Priority == i && x.CanUseSkill);
+                var skill = _unit.Skills.FirstOrDefault(x => (int)x.Priority == i && x.CanUseSkill);
                 if (skill is null || CanUseSkillOnTargets(skill) is false)
                     continue;
 
-                var targets = _targetSystem.FindTargets(skill, true);
+                var targets = _targetSystem.FindTargets(skill, true, _unit.TeamNumber);
                 if (targets is null || targets.Any() is false)
                     continue;
 
@@ -94,7 +93,7 @@ namespace DataBuilder.Units.Behaviors
 
                 skillResult = ApplyEffectsToSkillResult(skillResult);
 
-                if (DoActionToTargets(skill.MainLeverage.Class.Type, targets, skillResult.MainPart!) is false)
+                if (DoActionToTargets(skill.MainLeverage.Type, targets, skillResult.MainPart!) is false)
                 {
                     return skillResult;
                 }
@@ -102,17 +101,17 @@ namespace DataBuilder.Units.Behaviors
                 if (skillResult.AdditionalPart is not null)
                 {
                     IEnumerable<ITarget>? additionaltargets = targets;
-                    if (skill.MainLeverage.Class.Type != skill.AdditionalLeverage.Class.Type)
+                    if (skill.MainLeverage.Type != skill.AdditionalLeverage.Type)
                     {
-                        additionaltargets = _targetSystem.FindTargets(skill, false);
+                        additionaltargets = _targetSystem.FindTargets(skill, false, _unit.TeamNumber);
                     }
 
                     if (additionaltargets is not null && additionaltargets.Count() > 0)
                     {
-                        DoActionToTargets(skill.AdditionalLeverage.Class.Type, additionaltargets, skillResult.AdditionalPart);
+                        DoActionToTargets(skill.AdditionalLeverage.Type, additionaltargets, skillResult.AdditionalPart);
                     }
                 }
-                _unitInBattle.CallUnitActionEvent(skillResult);
+                _unit.CallUnitActionEvent(skillResult);
                 return skillResult;
             }
             return null;
@@ -123,11 +122,11 @@ namespace DataBuilder.Units.Behaviors
             if (skillResultPart.LeverageType is LeverageType.Damage)
             {
                 int percentage = 0;
-                foreach (var postivieActorDamageEffect in _unitInBattle.PositiveEffects.Where(x => x is ActorDamageIncreaseEffect).Cast<ActorDamageIncreaseEffect>())
+                foreach (var postivieActorDamageEffect in _unit.Effects.PositiveEffects.Where(x => x is ActorDamageIncreaseEffect).Cast<ActorDamageIncreaseEffect>())
                 {
                     percentage += postivieActorDamageEffect.Percentage;
                 }
-                foreach (var negativeActorDamageEffect in _unitInBattle.NegativeEffects.Where(x => x is ActorDamageDecreaseEffect).Cast<ActorDamageDecreaseEffect>())
+                foreach (var negativeActorDamageEffect in _unit.Effects.NegativeEffects.Where(x => x is ActorDamageDecreaseEffect).Cast<ActorDamageDecreaseEffect>())
                 {
                     percentage -= negativeActorDamageEffect.Percentage;
                 }
@@ -138,11 +137,11 @@ namespace DataBuilder.Units.Behaviors
             if (skillResultPart.LeverageType is LeverageType.Recovery)
             {
                 int percentage = 0;
-                foreach (var positiveActorRecoveryEffect in _unitInBattle.PositiveEffects.Where(x => x is ActorRecoveringIncreaseEffect).Cast<ActorRecoveringIncreaseEffect>())
+                foreach (var positiveActorRecoveryEffect in _unit.Effects.PositiveEffects.Where(x => x is ActorRecoveringIncreaseEffect).Cast<ActorRecoveringIncreaseEffect>())
                 {
                     percentage += positiveActorRecoveryEffect.Percentage;
                 }
-                foreach (var negativeActorRecoveryPowerEffect in _unitInBattle.NegativeEffects.Where(x => x is ActorRecoveringDecreaseEffect).Cast<ActorRecoveringDecreaseEffect>())
+                foreach (var negativeActorRecoveryPowerEffect in _unit.Effects.NegativeEffects.Where(x => x is ActorRecoveringDecreaseEffect).Cast<ActorRecoveringDecreaseEffect>())
                 {
                     percentage -= negativeActorRecoveryPowerEffect.Percentage;
                 }
@@ -301,27 +300,31 @@ namespace DataBuilder.Units.Behaviors
 
         private bool CanUseSkill(LeverageType leverageType)
         {
-            return _unitInBattle.Skills.Any(x => x.MainLeverage.Class.Type == leverageType);
+            return _unit.Skills.Any(x => x.MainLeverage.Type == leverageType);
         }
 
         private bool CanUseSkillOnTargets(IUnitSkill skill)
         {
-            var _myEnemyTargets = _battle.GetEnemies(_unitInBattle.TeamNumber);
-            var _myAlliesTargets = _battle.GetAllies(_unitInBattle.TeamNumber);
-            var mainType = skill.MainLeverage.Class.Type;
+            var _myEnemyTargets = _battle.GetEnemies(_unit.TeamNumber);
+            var _myAlliesTargets = _battle.GetAllies(_unit.TeamNumber);
+            var mainType = skill.MainLeverage.Type;
+
             if (mainType is LeverageType.Damage && _myEnemyTargets.Count > 0)
                 return true;
 
             if (mainType is LeverageType.Recovery && _myAlliesTargets.Count(x => x.Health < x.MaxHealth) > 0)
                 return true;
 
-            if (mainType is LeverageType.NegativeEffectRemoval && _myAlliesTargets.Count(x => x.NegativeEffects.Count > 0) > 0)
+            if (mainType is LeverageType.NegativeEffectRemoval && _myAlliesTargets.Any(x => x.Effects.NegativeEffects.Count > 0))
                 return true;
 
             if (mainType is LeverageType.NegativeEffectApplying && _myEnemyTargets.Count > 0)
                 return true;
 
-            if (mainType is LeverageType.PositiveEffectApplying && _myAlliesTargets.Where(x => x.Health < x.MaxHealth).Count() > 0)
+            if (mainType is LeverageType.PositiveEffectApplying && _myAlliesTargets.Count > 0)
+                return true;
+
+            if (mainType is LeverageType.PositiveEffectRemoval && _myEnemyTargets.Any(x => x.Effects.PositiveEffects.Count > 0))
                 return true;
 
             return false;
@@ -330,12 +333,12 @@ namespace DataBuilder.Units.Behaviors
         private int GetActorDamagePercentage()
         {
             int summaryPercentage = 0;
-            foreach (ActorDamageIncreaseEffect damInc in _unitInBattle.PositiveEffects.Where(x => x is ActorDamageIncreaseEffect).Cast<ActorDamageIncreaseEffect>())
+            foreach (ActorDamageIncreaseEffect damInc in (_unit as ITarget).Effects.PositiveEffects.Where(x => x is ActorDamageIncreaseEffect).Cast<ActorDamageIncreaseEffect>())
             {
                 summaryPercentage += damInc.Percentage;
             }
 
-            foreach (ActorDamageDecreaseEffect damDec in _unitInBattle.NegativeEffects.Where(x => x is ActorDamageDecreaseEffect).Cast<ActorDamageDecreaseEffect>())
+            foreach (ActorDamageDecreaseEffect damDec in _unit.Data.StartEffects.NegativeEffects.Where(x => x is ActorDamageDecreaseEffect).Cast<ActorDamageDecreaseEffect>())
             {
                 summaryPercentage -= damDec.Percentage;
             }
@@ -345,12 +348,12 @@ namespace DataBuilder.Units.Behaviors
         private int GetActorRecoveryPercentage()
         {
             int summaryPercentage = 0;
-            foreach (ActorRecoveringIncreaseEffect recInc in _unitInBattle.PositiveEffects.Where(x => x is ActorRecoveringIncreaseEffect).Cast<ActorRecoveringIncreaseEffect>())
+            foreach (ActorRecoveringIncreaseEffect recInc in _unit.Data.StartEffects.PositiveEffects.Where(x => x is ActorRecoveringIncreaseEffect).Cast<ActorRecoveringIncreaseEffect>())
             {
                 summaryPercentage += recInc.Percentage;
             }
 
-            foreach (ActorRecoveringDecreaseEffect recDec in _unitInBattle.NegativeEffects.Where(x => x is ActorRecoveringDecreaseEffect).Cast<ActorRecoveringDecreaseEffect>())
+            foreach (ActorRecoveringDecreaseEffect recDec in _unit.Data.StartEffects.NegativeEffects.Where(x => x is ActorRecoveringDecreaseEffect).Cast<ActorRecoveringDecreaseEffect>())
             {
                 summaryPercentage -= recDec.Percentage;
             }

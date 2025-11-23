@@ -1,5 +1,6 @@
 ﻿using BataBuilder.Items;
 using NWO_Abstractions;
+using NWO_Abstractions.Battles;
 using System.Text;
 
 namespace NWO_Battles;
@@ -29,7 +30,7 @@ public abstract class BattleBase : IBattleModelling
 
     public int TotalRecover { get; set; }
 
-    public IPurpose BattlePurpose { get; private set; }
+    public IBattlePurpose BattlePurpose { get; private set; }
 
     public BattleFinishingReason BattleFinishingReason { get; protected set; }
     public List<ITarget> Targets { get; set; } = new List<ITarget>();
@@ -44,7 +45,7 @@ public abstract class BattleBase : IBattleModelling
     public event NewMessageHandler? battleFinishMessage;
     public event NewEmptyHandler? OnBattleFinished;
     public event NewIntValue? battleTimeLeftChanged;
-    public event NewIntValue? newTargetHealth;
+    public event NewDoubleValue? newTargetHealth;
     public event NewIntValue? totalDamage;
     public event NewIntValue? totalRecover;
     public event EffectHandler? OnNewNegativeEffect;
@@ -54,11 +55,11 @@ public abstract class BattleBase : IBattleModelling
 
     protected Task? timerTask;
 
-    public BattleBase(double battleSpeed, int battleTime, IPurpose purpose, string russianDisplayName, string universalDisplayName)
+    public BattleBase(IBattleSettings settings, string russianDisplayName, string universalDisplayName)
     {
-        BattleSpeed = battleSpeed;
-        BattleTime = battleTime;
-        BattlePurpose = purpose;
+        BattleSpeed = settings.BattleSpeed;
+        BattleTime = settings.BattleTime;
+        BattlePurpose = settings.BattlePurpose;
         RussianDisplayName = russianDisplayName;
         UniversalDisplayName = universalDisplayName;
     }
@@ -122,9 +123,9 @@ public abstract class BattleBase : IBattleModelling
         StringBuilder stringBuilder = new();
 
         // основная часть сообщения
-        string actionSentence = GetSentenseByType(leveragesSource.LeveragesSource.MainLeverage.Class.Type, mainPart.Value);
+        string actionSentence = GetSentenseByType(leveragesSource.LeveragesSource.MainLeverage.Type, mainPart.Value);
         stringBuilder.Append($"{unitRussianName} {actionSentence} ");
-        if (leveragesSource.LeveragesSource.MainLeverage.Class.Type is LeverageType.NegativeEffectApplying or LeverageType.PositiveEffectApplying)
+        if (leveragesSource.LeveragesSource.MainLeverage.Type is LeverageType.NegativeEffectApplying or LeverageType.PositiveEffectApplying)
         {
             var effect = ((ILeverageEffect)leveragesSource.MainData);
             stringBuilder.Append($"\"{effect.EffectName}\" на {effect.Duration} сек.");
@@ -137,9 +138,9 @@ public abstract class BattleBase : IBattleModelling
         // дополнительная часть сообщения
         if (additionalPart is not null)
         {
-            string additionalSentense = GetSentenseByType(leveragesSource.LeveragesSource.AdditionalLeverage.Class.Type, additionalPart.Value);
+            string additionalSentense = GetSentenseByType(leveragesSource.LeveragesSource.AdditionalLeverage.Type, additionalPart.Value);
             stringBuilder.Append($" и дополнительно {additionalSentense} ");
-            if (leveragesSource.LeveragesSource.AdditionalLeverage.Class.Type is LeverageType.NegativeEffectApplying or LeverageType.PositiveEffectApplying)
+            if (leveragesSource.LeveragesSource.AdditionalLeverage.Type is LeverageType.NegativeEffectApplying or LeverageType.PositiveEffectApplying)
             {
                 var effect = ((ILeverageEffect)leveragesSource.AdditionalData);
                 stringBuilder.Append($"\"{effect.EffectName}\" на {effect.Duration} сек.");
@@ -169,7 +170,7 @@ public abstract class BattleBase : IBattleModelling
         OnNewNegativeEffect?.Invoke(negativeEffect, target);
     }
 
-    protected virtual void OnNewTargetHealth(int newHealth, ITarget target)
+    protected virtual void OnNewTargetHealth(double newHealth, ITarget target)
     {   
         newTargetHealth?.Invoke(newHealth);
         if (BattlePurpose is DestroyOneTargetPurpose && newHealth <= 0)
@@ -260,7 +261,7 @@ public abstract class BattleBase : IBattleModelling
         }
 
         // Осталась одна команда, но цель убить
-        if (BattlePurpose is DestroyOneTargetPurpose && Targets.DistinctBy(x => x.TeamNumber).ToList().Count <= 1)
+        if (BattlePurpose is DestroyOneTargetPurpose && Targets.DistinctBy(x => x.TeamNumber).Count() <= 1)
         {
             FinishBattle(BattleFinishingReason.NoMoreTargetsFound);
         }

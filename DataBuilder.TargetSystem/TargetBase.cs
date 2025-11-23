@@ -1,9 +1,6 @@
-﻿using DataBuilder.BuilderObjects;
-using DataBuilder.Effects;
-using DataBuilder.Effects.DecreaseEffects.EffectsOnTarget;
-using DataBuilder.Effects.IncreaseEffects.EffectsOnTarget;
-using DataBuilder.Effects.PeriodicEffects.EffectsOnTarget;
+﻿using DataBuilder.Effects;
 using NWO_Abstractions;
+using NWO_Abstractions.Battles;
 
 namespace DataBuilder.TargetSystem
 {
@@ -11,69 +8,60 @@ namespace DataBuilder.TargetSystem
     {
         private IBattleModelling? _battle;
 
-        public event NewIntValue OnTargetDamaged;
-        public event NewIntValue OnTargetRecovered;
-        public event NewIntValue OnHealthChanged;
-        public event EffectDelegate OnPositiveEffectApplied;
-        public event EffectDelegate OnNegativeEffectApplied;
-        public event EffectDelegate OnPositiveEffectRemoved;
-        public event EffectDelegate OnNegativeEffectRemoved;
-        public event NewUnitLogMessage OnEffectTickMessage;
-        public event NewUnitLogMessage OnEffectEndMessage;
+        public event NewIntValue? OnTargetDamaged;
+        public event NewIntValue? OnTargetRecovered;
+        public event NewDoubleValue? OnHealthChanged;
+        public event EffectDelegate? OnPositiveEffectApplied;
+        public event EffectDelegate? OnNegativeEffectApplied;
+        public event EffectDelegate? OnPositiveEffectRemoved;
+        public event EffectDelegate? OnNegativeEffectRemoved;
+        public event NewUnitLogMessage? OnEffectTickMessage;
+        public event NewUnitLogMessage? OnEffectEndMessage;
 
-        public IPercentageValues IncomingPercentageValues { get; set; }
+        public IPercentageValues StartPercentageValues { get; set; }
 
-        public string UniversalName { get; protected set; }
+        public IEffectsLists Effects { get; }
 
-        public string RussianDisplayName { get; protected set; }
+        public IEffectsLists StartEffects { get; }
 
-        public IDescription Description => throw new NotImplementedException();
+        public List<IDefence> Defences { get; }
 
-        public Guid Id { get; }
+        public List<IImmune> Immunes { get; }
 
-        public int TeamNumber { get; set; }
+        public double Health { get; set; }
 
-        public int Health { get; private set; }
+        public double MaxHealth { get; }
 
-        public int MaxHealth { get; private set; }
+        public bool IsAlive { get; }
 
-        public List<IImmune> Immunes { get; private set; }
+        public bool IsOrganic { get; }
 
-        public List<IDefence> Defences { get; private set; }
+        public bool IsMech { get; }
 
-        public List<IEffect> PositiveEffects { get; private set; } = new List<IEffect>();
+        public int TeamNumber { get; set; } = 0;
 
-        public List<IEffect> NegativeEffects { get; private set; } = new List<IEffect>();
-        public bool IsOrganic { get; set; } = true;
-        public bool IsAlive { get; set; } = true;
-        public bool IsMech { get; set; } = false;
-
-        public TargetBase(List<IImmune> immunes, List<IDefence> defences, int startHealth, int maxHealth, IPercentageValues incomingPercentageValues)
+        public TargetBase(IPercentageValues startPercentageValues, double maxHealth, IEffectsLists startEffects, List<IDefence> defences, List<IImmune> immunes, 
+            bool isAlive, bool isOrganic, bool isMech)
         {
-            Immunes = immunes;
-            Defences = defences;
-            Health = startHealth;
+            StartPercentageValues = startPercentageValues;
             MaxHealth = maxHealth;
-            IncomingPercentageValues = incomingPercentageValues;
-            Id = Guid.NewGuid();
+            Effects = EffectsLists.Default();
+            Effects.PositiveEffects = new();
+            Effects.NegativeEffects = new();
+            StartEffects = startEffects;
+            Defences = new(defences);
+            Immunes = new(immunes);
+            IsAlive = isAlive;
+            IsOrganic = isOrganic;
+            IsMech = isMech;
         }
 
-        public TargetBase(List<IImmune> immunes, List<IDefence> defences, int maxHealth)
-        {
-            Immunes = immunes;
-            Defences = defences;
-            MaxHealth = maxHealth;
-            Health = MaxHealth;
-        }
-
-        public virtual void JoinBattle(IBattleModelling battle, int teamNumber, int globalCooldown, List<IEffect>? negativeEffects, List<IEffect>? positiveEffects)
+        public virtual void JoinBattle(IBattleModelling battle, int teamNumber, int globalCooldown)
         {
             _battle = battle;
+            StartEffects.NegativeEffects?.ForEach(x => ApplyNegativeEffect(x, percentage: 0));
+            StartEffects.PositiveEffects?.ForEach(x => ApplyPositiveEffect(x, percentage: 0));
             TeamNumber = teamNumber;
-
-            negativeEffects?.ForEach(x => ApplyNegativeEffect(x, percentage : 0));
-            positiveEffects?.ForEach(x => ApplyPositiveEffect(x, percentage : 0));
-
             battle.Targets.Add(this);
         }
 
@@ -83,6 +71,7 @@ namespace DataBuilder.TargetSystem
             {
                 _battle.Targets.Remove(this);
                 _battle = null;
+                TeamNumber = 0;
             }
         }
 
@@ -113,14 +102,14 @@ namespace DataBuilder.TargetSystem
 
         public void ApplyPositiveEffect(IEffect effect, int percentage = 0)
         {
-            PositiveEffects.Add(effect);
+            Effects.PositiveEffects.Add(effect);
             StartEffect(effect, percentage);
             OnPositiveEffectApplied?.Invoke(effect);
         }
 
         public void ApplyNegativeEffect(IEffect effect, int percentage = 0)
         {
-            NegativeEffects.Add(effect);
+            Effects.NegativeEffects.Add(effect);
             StartEffect(effect, percentage);
             OnNegativeEffectApplied?.Invoke(effect);
         }
@@ -142,9 +131,9 @@ namespace DataBuilder.TargetSystem
 
         private void Effect_OnEffectEnd(IEffect sender, string logMessage)
         {
-            if (NegativeEffects.Contains(sender))
+            if (Effects.NegativeEffects.Contains(sender))
                 RemoveNegativeEffect(sender);
-            else if (PositiveEffects.Contains(sender))
+            else if (Effects.PositiveEffects.Contains(sender))
                 RemovePositiveEffect(sender);
             if (string.IsNullOrWhiteSpace(logMessage) is false)
                 OnEffectEndMessage?.Invoke(logMessage);
@@ -156,7 +145,7 @@ namespace DataBuilder.TargetSystem
             {
                 leverageEffect.OnEffectTick -= LeverageEffect_OnEffectTick;
                 leverageEffect.OnEffectEnd -= Effect_OnEffectEnd;
-                NegativeEffects.Remove(effect);
+                Effects.NegativeEffects.Remove(effect);
             }
             OnPositiveEffectRemoved?.Invoke(effect);
         }
@@ -167,7 +156,7 @@ namespace DataBuilder.TargetSystem
             {
                 leverageEffect.OnEffectTick -= LeverageEffect_OnEffectTick;
                 leverageEffect.OnEffectEnd -= Effect_OnEffectEnd;
-                NegativeEffects.Remove(effect);
+                Effects.NegativeEffects.Remove(effect);
             }
             OnNegativeEffectRemoved?.Invoke(effect);
         }
@@ -181,12 +170,12 @@ namespace DataBuilder.TargetSystem
         private int GetTargetDamagePercentage()
         {
             int summaryPercentage = 0;
-            foreach (TargetDefenceIncreaseEffect defInc in PositiveEffects.Where(x => x is TargetDefenceIncreaseEffect).Cast<TargetDefenceIncreaseEffect>())
+            foreach (TargetDefenceIncreaseEffect defInc in Effects.PositiveEffects.Where(x => x is TargetDefenceIncreaseEffect).Cast<TargetDefenceIncreaseEffect>())
             {
                 summaryPercentage += defInc.Percentage;
             }
 
-            foreach (TargetDefenceDecreaseEffect defDec in NegativeEffects.Where(x => x is TargetDefenceDecreaseEffect).Cast<TargetDefenceDecreaseEffect>())
+            foreach (TargetDefenceDecreaseEffect defDec in Effects.NegativeEffects.Where(x => x is TargetDefenceDecreaseEffect).Cast<TargetDefenceDecreaseEffect>())
             {
                 summaryPercentage -= defDec.Percentage;
             }
@@ -196,12 +185,12 @@ namespace DataBuilder.TargetSystem
         private int GetTargetRecoveryPercentage()
         {
             int summaryPercentage = 0;
-            foreach (TargetRecoveryPowerIncreaseEffect recPowInc in PositiveEffects.Where(x => x is TargetRecoveryPowerIncreaseEffect).Cast<TargetRecoveryPowerIncreaseEffect>())
+            foreach (TargetRecoveryPowerIncreaseEffect recPowInc in Effects.PositiveEffects.Where(x => x is TargetRecoveryPowerIncreaseEffect).Cast<TargetRecoveryPowerIncreaseEffect>())
             {
                 summaryPercentage += recPowInc.Percentage;
             }
 
-            foreach (TargetRecoveryPowerDecreaseEffect recPowDec in NegativeEffects.Where(x => x is TargetRecoveryPowerDecreaseEffect).Cast<TargetRecoveryPowerDecreaseEffect>())
+            foreach (TargetRecoveryPowerDecreaseEffect recPowDec in Effects.NegativeEffects.Where(x => x is TargetRecoveryPowerDecreaseEffect).Cast<TargetRecoveryPowerDecreaseEffect>())
             {
                 summaryPercentage -= recPowDec.Percentage;
             }

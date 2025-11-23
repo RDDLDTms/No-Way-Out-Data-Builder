@@ -1,7 +1,14 @@
-﻿namespace NWO_Abstractions
+﻿using NWO_Abstractions.Enums;
+
+namespace NWO_Abstractions
 {
     public interface IPercentageValues
     {
+        /// <summary>
+        /// Тип процентных значений
+        /// </summary>
+        public PercentageValuesType Type { get; }
+
         /// <summary>
         /// Процент увеличения всех воздействий
         /// </summary>
@@ -35,22 +42,22 @@
         /// <summary>
         /// Полный процент увеличения восстановления
         /// </summary>
-        public int TotalRecoveryIncrease => RecoveryIncrease + AllLeveragesIncrease;
+        public int TotalRecoveryIncrease => RecoveryIncrease + AllLeveragesIncrease - RecoveryDecrease - AllLeveragesDecrease;
 
         /// <summary>
         /// Полный процент увеличения урона
         /// </summary>
-        public int TotalDamageIncrease => DamageIncrease + AllLeveragesIncrease;
+        public int TotalDamageIncrease => DamageIncrease + AllLeveragesIncrease - DamageDecrease - AllLeveragesDecrease;
 
         /// <summary>
         /// Полный процент уменьшения восстановления
         /// </summary>
-        public int TotalRecoveryDecrease => RecoveryDecrease + AllLeveragesDecrease;
+        public int TotalRecoveryDecrease => RecoveryDecrease + AllLeveragesDecrease - RecoveryIncrease - AllLeveragesIncrease;
 
         /// <summary>
         /// Полный процент уменьшения урона
         /// </summary>
-        public int TotalDamageDecrease => DamageDecrease + AllLeveragesDecrease;
+        public int TotalDamageDecrease => DamageDecrease + AllLeveragesDecrease - DamageIncrease - AllLeveragesIncrease;
 
     }
 }

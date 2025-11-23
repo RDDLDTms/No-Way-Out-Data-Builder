@@ -1,4 +1,4 @@
-﻿using DataBuilder.BuilderObjects;
+﻿using DataBuilder.BuilderObjects.Primal;
 using NWO_Abstractions;
 
 namespace DataBuilder.Leverages
@@ -19,7 +19,7 @@ namespace DataBuilder.Leverages
 
         public Guid Id { get; private set; }
 
-        public IDescription Description => throw new NotImplementedException();
+        public Description Description => throw new NotImplementedException();
 
         public FakeLeveragesSource(ILeverage mainLeverage, ILeverage? additionalLeverage, string universalName, string russianDisplayName, string russianDescription, string instrumentalCase)
         {

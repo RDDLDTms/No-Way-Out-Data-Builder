@@ -6,7 +6,7 @@ namespace NWO_DataBuilder.Core.ViewModels
 {
     public class UnitViewModel : ViewModelBase, IActivatableViewModel
     {
-        public UnitViewModel(IUnit unitToShow) 
+        public UnitViewModel(IUnitData unitToShow) 
         { 
         
         }

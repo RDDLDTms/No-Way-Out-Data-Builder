@@ -6,13 +6,8 @@
     public interface IProducibleObject
     {
         /// <summary>
-        /// Извелкаемые объекты, требуемые для производства
+        /// Формула из айтемов для создания
         /// </summary>
-        List<IExtractive> Extractives { get; }
-
-        /// <summary>
-        /// Создавамые объекты для производства
-        /// </summary>
-        List<IProducibleObject> ProducibleObjects { get; }
+        public List<Guid> Formula { get; }
     }
 }

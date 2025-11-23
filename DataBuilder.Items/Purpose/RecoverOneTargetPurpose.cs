@@ -1,8 +1,8 @@
-﻿using NWO_Abstractions;
+﻿using NWO_Abstractions.Battles;
 
 namespace BataBuilder.Items
 {
-    public class RecoverOneTargetPurpose : IPurpose
+    public class RecoverOneTargetPurpose : IBattlePurpose
     {
         public string RussianDisplayName => "Восстановить одну цель";
 

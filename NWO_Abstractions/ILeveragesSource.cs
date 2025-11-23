@@ -10,12 +10,12 @@ public interface ILeveragesSource : IBaseBuilderObject
     /// <summary>
     /// Основное воздействие;
     /// </summary>
-    public ILeverage MainLeverage { get; set; }
+    public ILeverage MainLeverage { get; }
 
     /// <summary>
     /// Дополнительное воздействие
     /// </summary>
-    public ILeverage? AdditionalLeverage { get; set; }
+    public ILeverage? AdditionalLeverage { get; }
 
     /// <summary>
     /// Творительный падеж для сообщений (кем/чем)

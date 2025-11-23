@@ -6,6 +6,10 @@
     public enum LeverageTargeting
     {
         /// <summary>
+        /// Нет целей (по умолчанию)
+        /// </summary>
+        None = 0,
+        /// <summary>
         /// Одиночная цель
         /// </summary>
         Single,

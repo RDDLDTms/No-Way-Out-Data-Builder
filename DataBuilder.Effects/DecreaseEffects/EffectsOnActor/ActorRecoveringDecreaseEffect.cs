@@ -1,14 +1,14 @@
 ﻿using NWO_Abstractions;
 
-namespace DataBuilder.Effects.DecreaseEffects.EffectsOnActor
-{
+namespace DataBuilder.Effects
+{ 
     public class ActorRecoveringDecreaseEffect : DecreaseEffectBase
     {
         public override LeverageType Type => LeverageType.NegativeEffectApplying;
         public override EffectCarrier Carrier => EffectCarrier.Actor;
 
-        public ActorRecoveringDecreaseEffect(int duration, ILeverageClass effectClass, double cooldown, string effectName, int percentage) :
-            base(duration, effectClass, cooldown, effectName, percentage)
+        public ActorRecoveringDecreaseEffect(int duration, ILeverage leverage, double cooldown, int percentage) :
+            base(duration, leverage, cooldown, percentage)
         {
 
         }

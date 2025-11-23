@@ -1,16 +1,16 @@
 ﻿using NWO_Abstractions;
 
-namespace DataBuilder.Effects.DecreaseEffects
+namespace DataBuilder.Effects
 {
     public class DecreaseEffectBase : EffectBase, IPercentage
     {
         public int Percentage { get; }
 
-        public DecreaseEffectBase(int duration, ILeverageClass effectClass, double cooldown, string effectName, int percentage) : 
-            base(duration, effectClass, cooldown, effectName)
+        public DecreaseEffectBase(int duration, ILeverage leverage, double cooldown, int percentage) : 
+            base(duration, leverage, cooldown)
         {
             Percentage = percentage;
-            EffectDisplayName = $"{effectName} -{Percentage}%";
+            EffectDisplayName = $"{leverage.RussianDisplayName} -{Percentage}%";
         }
 
         protected override void TimerCallback(object? state)

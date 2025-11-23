@@ -14,6 +14,7 @@ namespace NWO_DataBuilder.Core.ViewModels
         {
             _collections = new();
             DictionaryStorage.GetInstance().LoadDictionaries();
+            DictionaryStorage.GetInstance().CreateUnitsFromData();
             OpenLeverageTypesWindowCommand = ReactiveCommand.CreateFromTask(EditLeverageTypes, null, RxApp.MainThreadScheduler);
             ShowBattleUnitVsUnitReactiveCommand = ReactiveCommand.CreateFromTask(ShowBattleUnitVsUnit, null, RxApp.MainThreadScheduler);
             ShowBattleUnitVsDummyReactiveCommand = ReactiveCommand.CreateFromTask(ShowBattleUnitVsDummy, null, RxApp.MainThreadScheduler);
@@ -42,7 +43,7 @@ namespace NWO_DataBuilder.Core.ViewModels
         public string ResourcesButtonText => "Добываемые ресурсы";
         public string UnitsButtonText => "Юниты";
         public string ShowFakeRager => "Покажи муляж яростня!";
-        public string BattleUnitVsDummy => "Юнит против манекена";
+        public string BattleUnitVsDummy => "Один юнит, один манекен";
         public string BattleUnitVsUnit => "Юнит против юнита";
 
         #endregion

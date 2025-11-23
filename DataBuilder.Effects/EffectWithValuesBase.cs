@@ -1,8 +1,4 @@
-﻿using DataBuilder.Effects.DecreaseEffects;
-using DataBuilder.Effects.DecreaseEffects.EffectsOnTarget;
-using DataBuilder.Effects.IncreaseEffects;
-using DataBuilder.Effects.IncreaseEffects.EffectsOnTarget;
-using NWO_Abstractions;
+﻿using NWO_Abstractions;
 
 namespace DataBuilder.Effects
 {
@@ -14,12 +10,11 @@ namespace DataBuilder.Effects
 
         public int SourcePercentage { get; private set; }
 
-        public EffectWithValuesBase(int duration, ILeverageClass effectClass, double cooldown, string effectName, int minValue, int maxValue) 
-            : base(duration, effectClass, cooldown, effectName)
+        public EffectWithValuesBase(int duration, ILeverage leverage, double cooldown, int minValue, int maxValue) 
+            : base(duration, leverage, cooldown)
         {
             MinValue = minValue;
             MaxValue = maxValue;
-            EffectDisplayName = effectName;
         }
 
         public void Start(ITarget target, double battleSpeed, int sourcePercentage, int effectDelay)
@@ -28,32 +23,34 @@ namespace DataBuilder.Effects
             Start(target, battleSpeed, effectDelay);
         }
 
-        public int GetValue()
-        {
-            // получаем случайное значение в границах
-            int value = Random.Shared.Next(MinValue, MaxValue + 1);
+        public virtual int GetValue() => 0;
 
-            // добавляется доп проценты или убираем доп проценты в зависимости от момента создания эффекта
-            value += value * SourcePercentage / 100;
-            
-            // добавляем доп проценты или убираем доп проценты в зависимости от эффектов на цели
-            value += value * GetTargetPercentage() / 100;
-            return value < 0 ? 0 : value;
+        protected int GetTargetDamagePercentage() => GetDamageBasicPercentage() + GetClassPercentage();
+
+        protected int GetTargetRecoveryPercentage() => GetRecoveringBasicPercentage() + GetClassPercentage();
+
+        private int GetRecoveringBasicPercentage()
+        {
+            int recoveringIncreasePercent = 0;
+            foreach (var nextRecoveringIncreaseEffect in TargetForEffect!.Effects.PositiveEffects.Where(x => x is TargetRecoveryPowerIncreaseEffect).Cast<IncreaseEffectBase>())
+            {
+                recoveringIncreasePercent += nextRecoveringIncreaseEffect.Percentage;
+            }
+            foreach (var nextRecoveringDecreaseEffect in TargetForEffect!.Effects.NegativeEffects.Where(x => x is TargetRecoveryPowerDecreaseEffect).Cast<DecreaseEffectBase>())
+            {
+                recoveringIncreasePercent -= nextRecoveringDecreaseEffect.Percentage;
+            }
+            return recoveringIncreasePercent;
         }
 
-        protected int GetTargetPercentage()
-        {
-            return GetBasicPercentage() + GetClassPercentage();
-        }
-
-        private int GetBasicPercentage()
+        private int GetDamageBasicPercentage()
         {
             int damageIncreasePercent = 0;
-            foreach (var nextDamageDecreaseEffect in TargetForEffect!.PositiveEffects.Where(x => x is TargetDefenceIncreaseEffect).Cast<TargetDefenceIncreaseEffect>())
+            foreach (var nextDamageDecreaseEffect in TargetForEffect!.Effects.PositiveEffects.Where(x => x is TargetDefenceIncreaseEffect).Cast<TargetDefenceIncreaseEffect>())
             {
                 damageIncreasePercent -= nextDamageDecreaseEffect.Percentage;
             }
-            foreach (var nextDamageIncreaseEffect in TargetForEffect!.NegativeEffects.Where(x => x is TargetDefenceDecreaseEffect).Cast<TargetDefenceDecreaseEffect>())
+            foreach (var nextDamageIncreaseEffect in TargetForEffect!.Effects.NegativeEffects.Where(x => x is TargetDefenceDecreaseEffect).Cast<TargetDefenceDecreaseEffect>())
             {
                 damageIncreasePercent += nextDamageIncreaseEffect.Percentage;
             }

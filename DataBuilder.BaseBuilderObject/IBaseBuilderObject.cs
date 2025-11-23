@@ -1,7 +1,9 @@
-﻿namespace DataBuilder.BuilderObjects
+﻿using DataBuilder.BuilderObjects.Primal;
+
+namespace DataBuilder.BuilderObjects
 {
     /// <summary>
-    /// Стандратный объект для билдера
+    /// Стандартный объект для билдера
     /// </summary>
     public interface IBaseBuilderObject
     {       
@@ -18,7 +20,7 @@
         /// <summary>
         /// Описание объекта
         /// </summary>
-        public IDescription Description { get; }
+        public Description Description { get; }
 
         /// <summary>
         /// Идентификатор объекта

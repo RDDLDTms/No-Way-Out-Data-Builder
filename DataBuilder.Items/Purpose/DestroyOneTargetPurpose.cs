@@ -1,8 +1,8 @@
-﻿using NWO_Abstractions;
+﻿using NWO_Abstractions.Battles;
 
 namespace BataBuilder.Items
 {
-    public class DestroyOneTargetPurpose : IPurpose
+    public class DestroyOneTargetPurpose : IBattlePurpose
     {
         public string RussianDisplayName => "Уничтожить одну цель";
 

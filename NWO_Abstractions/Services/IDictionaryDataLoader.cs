@@ -2,7 +2,7 @@
 {
     public interface IDictionaryDataLoader
     {
-        public Dictionary<string, IUnit> LoadUnits();
+        public Dictionary<string, IUnitData> LoadUnitsData();
 
         public Dictionary<string, ILeverageClass> LoadLeverageClasses();
 

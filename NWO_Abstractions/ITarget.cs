@@ -1,13 +1,16 @@
-﻿namespace NWO_Abstractions
+﻿using NWO_Abstractions.Battles;
+
+namespace NWO_Abstractions
 {
     public delegate void NewIntValue(int newValue);
+    public delegate void NewDoubleValue(double newValue);
     public delegate void NewUnitLogMessage(string logMessage);
     public delegate void EffectDelegate(IEffect Effect);
 
     /// <summary>
     /// Цель
     /// </summary>
-    public interface ITarget : IMapObject
+    public interface ITarget : IHealthChangingObject, IUniversalObject, ITeamMember
     {
         /// <summary>
         /// Цель получила новый урон
@@ -20,7 +23,7 @@
         /// <summary>
         /// Изменилось здоровье цели
         /// </summary>
-        public event NewIntValue OnHealthChanged;
+        public event NewDoubleValue OnHealthChanged;
 
         /// <summary>
         /// На цель был наложен новый положительный эффект
@@ -39,7 +42,19 @@
         /// </summary>
         public event EffectDelegate OnNegativeEffectRemoved;
 
-        public IPercentageValues IncomingPercentageValues { get; set; }
+        /// <summary>
+        /// Начальные проценты увеличения/уменьшения воздейтвий
+        /// </summary>
+        public IPercentageValues StartPercentageValues { get; }
+
+        /// <summary>
+        /// Эффекты на цели
+        /// </summary>
+        public IEffectsLists Effects { get; }
+
+        public List<IDefence> Defences { get; }
+
+        public List<IImmune> Immunes { get; }
 
         /// <summary>
         /// Нанести урон цели
@@ -82,7 +97,7 @@
         /// <summary>
         /// Присоединиться к битве
         /// </summary>
-        public void JoinBattle(IBattleModelling battle, int teamNumber, int globalCooldown, List<IEffect>? negativeEffects, List<IEffect>? positiveEffects);
+        public void JoinBattle(IBattleModelling battle, int teamNumber, int globalCooldown);
 
         /// <summary>
         /// Покинуть битву

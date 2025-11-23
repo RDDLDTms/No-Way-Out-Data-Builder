@@ -1,6 +1,8 @@
-﻿namespace NWO_Abstractions
+﻿using DataBuilder.BuilderObjects;
+
+namespace NWO_Abstractions
 {
-    public interface ILeverageOption
+    public interface ILeverageOption : IBaseBuilderObject
     {
     }
 }

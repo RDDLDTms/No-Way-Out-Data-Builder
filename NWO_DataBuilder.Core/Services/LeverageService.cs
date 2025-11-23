@@ -6,11 +6,10 @@ namespace NWO_DataBuilder.Core.Services
 {
     public class LeverageService : ILeverageService
     {
-
-        public ILeverage CreateLeverage(string universalName, string russianDisplayName, ILeverageClass leverageType, LeverageTargetType leverageTargetType, 
-            LeverageHitPoint leverageHitPoint, LeverageRangeType leverageRangeType, LeverageTargeting leverageTargeting, List<ILeverageOption> leverageOptions)
+        public ILeverage CreateLeverage(Guid id, Description description, string universalName, string russianDisplayName, ILeverageClass leverageType, LeverageTargetType leverageTargetType, 
+            LeverageHitPoint leverageHitPoint, LeverageRangeType leverageRangeType, LeverageTargeting leverageTargeting, params ILeverageOption[] leverageOptions)
         {
-            return new Leverage(universalName, russianDisplayName, leverageType, leverageTargetType, leverageHitPoint, leverageRangeType, leverageTargeting, leverageOptions);
+            return new Leverage(id, description, universalName, russianDisplayName, leverageType, leverageTargetType, leverageHitPoint, leverageRangeType, leverageTargeting, leverageOptions);
         }
 
         public ILeverageOption CreateLeverageOption(string russianDisplayName, string universalName, string russianDescription)

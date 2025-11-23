@@ -1,7 +1,10 @@
 ﻿using BataBuilder.Items;
+using DataBuilder.Effects;
 using DataBuilder.Leverages;
 using DataBuilder.Units;
 using NWO_Abstractions;
+using NWO_Abstractions.Battles;
+using NWO_Abstractions.Enums;
 using NWO_Battles;
 using NWO_DataBuilder.Core.Models;
 using NWO_Support;
@@ -27,7 +30,7 @@ namespace NWO_DataBuilder.Core.ViewModels
 
         public ReadOnlyObservableCollection<IUnit> AllUnits => _allUnits;
 
-        public ReadOnlyObservableCollection<IPurpose> AllPurposes => _allPurposes;
+        public ReadOnlyObservableCollection<IBattlePurpose> AllPurposes => _allPurposes;
 
         public ViewModelActivator Activator { get; } = new();
 
@@ -39,8 +42,8 @@ namespace NWO_DataBuilder.Core.ViewModels
         [Reactive] public string TotalRecoverText { get; set; } = "0";
         [Reactive] public string BattleSpeedText { get; set; }
         [Reactive] public bool BattleStarted { get; set; } = false;
-        [Reactive] public IUnit SelectedUnit { get; set; }
-        [Reactive] public IPurpose SelectedPurpose { get; set; }
+        [Reactive] public Unit SelectedUnit { get; set; }
+        [Reactive] public IBattlePurpose SelectedPurpose { get; set; }
         [Reactive] public int MaxHealth { get; set; } = 1000;
         [Reactive] public int StartHealth { get; set; } = 1000;
         [Reactive] public int Health { get; set; }
@@ -76,12 +79,8 @@ namespace NWO_DataBuilder.Core.ViewModels
 
         [Reactive] public bool IsImmortal { get; set; } = false;
 
-
-        public DummyProperties DummyProperties;
-
         public BattleUnitVsDummyViewModel()
         {
-            DummyProperties = new();
             _allUnits = new(new ObservableCollection<IUnit>(DictionaryStorage.GetInstance().AllUnits.Values));
 
             BattleSpeedText = $"{BattleSpeed}x";
@@ -101,13 +100,13 @@ namespace NWO_DataBuilder.Core.ViewModels
             _unitPositiveEffects = new ObservableCollection<IEffect>();
             _unitPositiveEffectsList = new ReadOnlyObservableCollection<IEffect>(_unitPositiveEffects);
 
-            _purposes = new ObservableCollection<IPurpose>
+            _purposes = new ObservableCollection<IBattlePurpose>
             {
                 new DestroyOneTargetPurpose(),
                 new RecoverOneTargetPurpose()
             };
 
-            _allPurposes = new ReadOnlyObservableCollection<IPurpose>(_purposes);
+            _allPurposes = new ReadOnlyObservableCollection<IBattlePurpose>(_purposes);
 
             StartStopRagerBattleReactiveCommand = ReactiveCommand.CreateFromTask(StartStopBattle, null, RxApp.MainThreadScheduler);
         }
@@ -136,7 +135,7 @@ namespace NWO_DataBuilder.Core.ViewModels
             });
         }
 
-        private void OnTargetHealthChanged(int targetHealth)
+        private void OnTargetHealthChanged(double targetHealth)
         {
             _newHealthValue = targetHealth;
             Task.Run(ChangeHealth);
@@ -182,12 +181,12 @@ namespace NWO_DataBuilder.Core.ViewModels
 
         private void StartBattle()
         {
-            _unitForBattle = SelectedUnit;
+            _unitInBattle = SelectedUnit;
             double battleSpeed = BattleSpeed;
             int battleTime = TimeTextConverter.ConvertToSeconds(BattleTimeHours, BattleTimeMinutes, BattleTimeSeconds);
             int startHealth = MaxHealth < StartHealth ? MaxHealth : StartHealth;
 
-            IPercentageValues unitOutgoingPercentageValues = new PercentageValues()
+            IPercentageValues unitOutcomingStartPercentageValues = new PercentageValues(PercentageValuesType.Outcoming)
             {
                 AllLeveragesDecrease = UnitLeveragesDecreasePercent,
                 AllLeveragesIncrease = UnitLeveragesIncreasePercent,
@@ -197,7 +196,7 @@ namespace NWO_DataBuilder.Core.ViewModels
                 RecoveryIncrease = UnitRecoveryIncreasePercent,
             };
 
-            IPercentageValues dummyIncomingPercentageValues = new PercentageValues()
+            IPercentageValues dummyIncomingStartPercentageValues = new PercentageValues(PercentageValuesType.Incoming)
             {
                 AllLeveragesIncrease = AllLeveragesForDummyIncrease,
                 AllLeveragesDecrease = AllLeveragesForDummyDecrease,
@@ -215,10 +214,22 @@ namespace NWO_DataBuilder.Core.ViewModels
                 BattleStarted = true;
             });
 
+            var dummySettings = new DummySettings(IsImmortal, dummyIncomingStartPercentageValues, MaxHealth, StartHealth, EffectsLists.Default(), isOrganic: true, isAlive: true, isMech: false);
+            _unitInBattle.StartPercentageValues = unitOutcomingStartPercentageValues;
+
+            OneDummyBattleSettings settings = new()
+            {
+                Dummy = new Dummy(dummySettings),
+                BattleSpeed = BattleSpeed,
+                BattleTime = battleTime,
+                BattlePurpose = SelectedPurpose,
+                Unit = _unitInBattle,
+                
+            };
+            
             if (IsImmortal)
             {
-                battle = new UnitVsImmortalDummyBattle(_unitForBattle, battleSpeed, battleTime, startHealth, MaxHealth, 
-                    SelectedPurpose, dummyIncomingPercentageValues, unitOutgoingPercentageValues);
+                battle = new UnitVsImmortalDummyBattle(settings);
             }
             else
             {
@@ -227,9 +238,9 @@ namespace NWO_DataBuilder.Core.ViewModels
                     Health = startHealth;
                     _newHealthValue = startHealth;
                 });
-                battle = new UnitVsMortalDummyBattle(_unitForBattle, battleSpeed, battleTime, startHealth, MaxHealth, 
-                    SelectedPurpose, dummyIncomingPercentageValues, unitOutgoingPercentageValues);
+                battle = new UnitVsMortalDummyBattle(settings);
             }
+
             battle.battleStartMessage += ShowBattleMessage;
             battle.battleFinishMessage += ShowBattleMessage;
             battle.newActionMessage += ShowBattleMessage;
@@ -381,9 +392,9 @@ namespace NWO_DataBuilder.Core.ViewModels
             });
         }
 
-        private IUnit _unitForBattle;
+        private Unit _unitInBattle;
         private IBattleModelling? battle;
-        private int _newHealthValue;
+        private double _newHealthValue;
 
         private ObservableCollection<IEffect> _dummyNegativeEffects;
         private ObservableCollection<IEffect> _dummyPositiveEffects;
@@ -391,11 +402,11 @@ namespace NWO_DataBuilder.Core.ViewModels
         private ObservableCollection<IEffect> _unitPositiveEffects;
 
         private ObservableCollection<BattleTestMessage> _battleMessages;
-        private ObservableCollection<IPurpose> _purposes;
+        private ObservableCollection<IBattlePurpose> _purposes;
 
         private ReadOnlyObservableCollection<BattleTestMessage> _messagesList;
         private ReadOnlyObservableCollection<IUnit> _allUnits;
-        private ReadOnlyObservableCollection<IPurpose> _allPurposes;
+        private ReadOnlyObservableCollection<IBattlePurpose> _allPurposes;
 
         private ReadOnlyObservableCollection<IEffect> _dummyPositiveEffectsList;
         private ReadOnlyObservableCollection<IEffect> _dummyNegativeEffectsList;

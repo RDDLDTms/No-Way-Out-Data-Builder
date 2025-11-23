@@ -6,6 +6,11 @@
     public enum LeverageType
     {
         /// <summary>
+        /// Без воздействий, значение по умолчанию
+        /// </summary>
+        None,
+
+        /// <summary>
         /// Урон
         /// </summary>
         Damage,

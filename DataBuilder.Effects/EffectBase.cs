@@ -31,12 +31,14 @@ namespace DataBuilder.Effects
 
         protected bool TargetIsNull => TargetForEffect is null;
 
-        public EffectBase(int duration, ILeverageClass effectClass, double cooldown, string effectName)
+        public EffectBase(int duration, ILeverage leverage, double cooldown)
         {
             Duration = duration;
-            EffectClass = effectClass;
+            EffectClass = leverage.Class;
             Cooldown = cooldown;
-            EffectName = effectName;
+            EffectName = leverage.UniversalName;
+            if (string.IsNullOrWhiteSpace(EffectDisplayName))
+                EffectDisplayName = leverage.RussianDisplayName;
             Id = Guid.NewGuid();
         }
 

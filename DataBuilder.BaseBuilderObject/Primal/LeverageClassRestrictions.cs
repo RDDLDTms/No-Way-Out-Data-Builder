@@ -22,7 +22,7 @@
         /// </summary>
         AliveOnly,
         /// <summary>
-        /// Работает на живых и органику
+        /// Работает только на живых и органику
         /// </summary>
         OrganicAndAlive
     }

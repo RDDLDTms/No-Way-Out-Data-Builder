@@ -7,10 +7,10 @@ namespace DataBuilder.Effects
         public override LeverageType Type => LeverageType.NegativeEffectApplying;
         public override EffectCarrier Carrier => EffectCarrier.Target;
 
-        public TargetControlEffect(int duration, ILeverageClass effectClass, double cooldown, string effectName) 
-            : base(duration, effectClass, cooldown, effectName)
+        public TargetControlEffect(int duration, ILeverage leverage, double cooldown) 
+            : base(duration, leverage, cooldown)
         {
-            EffectDisplayName = effectName;
+
         }
 
         protected override void TimerCallback(object? state)

@@ -9,11 +9,6 @@ namespace NWO_Abstractions
     public interface ILeverageClass : IBaseBuilderObject
     {
         /// <summary>
-        /// Тип воздействия
-        /// </summary>
-        public LeverageType Type { get; }
-        
-        /// <summary>
         /// Цветовое выделение класса воздейтвия
         /// </summary>
         public string Color { get; }

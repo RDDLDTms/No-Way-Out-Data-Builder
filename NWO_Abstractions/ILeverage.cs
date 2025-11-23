@@ -13,6 +13,11 @@ namespace NWO_Abstractions
         /// <summary>
         /// Тип воздействия
         /// </summary>
+        public LeverageType Type { get; }
+
+        /// <summary>
+        /// Тип воздействия
+        /// </summary>
         public ILeverageClass Class { get; }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using DataBuilder.BuilderObjects;
+using DataBuilder.BuilderObjects.Primal;
 using NWO_Abstractions;
 
 namespace DataBuilder.Leverages
@@ -13,7 +14,7 @@ namespace DataBuilder.Leverages
 
         public Guid Id { get; private set; }
 
-        public IDescription Description => throw new NotImplementedException();
+        public Description Description => new();
 
         public LeverageOption(string russianDisplayName, string universalName, string russianDescription)
         {

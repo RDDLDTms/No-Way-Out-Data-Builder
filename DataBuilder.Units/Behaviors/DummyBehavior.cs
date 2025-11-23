@@ -1,4 +1,5 @@
 ﻿using NWO_Abstractions;
+using NWO_Abstractions.Battles;
 
 namespace DataBuilder.Units.Behaviors
 {
