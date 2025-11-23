@@ -1,7 +1,6 @@
 ﻿using BataBuilder.Items;
 using DataBuilder.Effects;
 using DataBuilder.Units;
-using DataBuilder.Units.Behaviors;
 using NWO_Abstractions;
 using NWO_Abstractions.Services;
 using Splat;
@@ -63,45 +62,21 @@ namespace NWO_Battles
             Actor.JoinBattle(this, 1, 400);
         }
 
-        private void Actor_OnNegativeEffectRemoved(IEffect effect)
-        {
-            base.OnTargetNegativeEffectEnds(effect, Actor);
-        }
+        private void Actor_OnNegativeEffectRemoved(IEffect effect) => base.OnTargetNegativeEffectEnds(effect, Actor);
 
-        private void Actor_OnPositiveEffectRemoved(IEffect effect)
-        {
-            base.OnTargetPositiveEffectEnds(effect, Actor);
-        }
+        private void Actor_OnPositiveEffectRemoved(IEffect effect) => base.OnTargetPositiveEffectEnds(effect, Actor);
 
-        private void Actor_OnNegativeEffectApplied(IEffect effect)
-        {
-            base.OnNewTargetNeagetiveEffect(effect, Actor);
-        }
+        private void Actor_OnNegativeEffectApplied(IEffect effect) => base.OnNewTargetNeagetiveEffect(effect, Actor);
 
-        private void Actor_OnPositiveEffectApplied(IEffect effect)
-        {
-            base.OnNewTargetPositiveEffect(effect, Actor);
-        }
+        private void Actor_OnPositiveEffectApplied(IEffect effect) => base.OnNewTargetPositiveEffect(effect, Actor);
 
-        private void BattleDummy_OnNegativeEffectRemoved(IEffect effect)
-        {
-            base.OnTargetNegativeEffectEnds(effect, Dummy);
-        }
+        private void BattleDummy_OnNegativeEffectRemoved(IEffect effect) => base.OnTargetNegativeEffectEnds(effect, Dummy);
 
-        private void BattleDummy_OnPositiveEffectRemoved(IEffect effect)
-        {
-            base.OnTargetPositiveEffectEnds(effect, Dummy);
-        }
+        private void BattleDummy_OnPositiveEffectRemoved(IEffect effect) => base.OnTargetPositiveEffectEnds(effect, Dummy);
 
-        private void BattleDummy_OnNegativeEffectApplied(IEffect effect)
-        {
-            base.OnNewTargetNeagetiveEffect(effect, Dummy);
-        }
+        private void BattleDummy_OnNegativeEffectApplied(IEffect effect) => base.OnNewTargetNeagetiveEffect(effect, Dummy);
 
-        private void BattleDummy_OnPositiveEffectApplied(IEffect effect)
-        {
-            base.OnNewTargetPositiveEffect(effect, Dummy);
-        }
+        private void BattleDummy_OnPositiveEffectApplied(IEffect effect) => base.OnNewTargetPositiveEffect(effect, Dummy);
 
         public override void Dispose()
         {
@@ -129,55 +104,24 @@ namespace NWO_Battles
             Dummy.Effects.NegativeEffects.Clear();
         }
 
-        private void Actor_OnUnitBehaviorChanged(string russianUnitName, IBehavior newBehavior)
-        {
-            switch (newBehavior)
-            {
-                case BattleBehavior:
-                    OnAction($"{russianUnitName} вступает в битву!");
-                    break;
-                case PeacefulStandingBehavior:
-                    OnAction($"{russianUnitName} мирно останавливается");
-                    break;
-                case PeacefulWalkingBehavior:
-                    OnAction($"{russianUnitName} мирно перемещается");
-                    break;
-                default:
-                    OnAction($"{russianUnitName} вышел из под контроля! (неизвестный тип поведения)");
-                    break;
-            }
-        }
+        private void Actor_OnUnitBehaviorChanged(string russianUnitName, IBehavior newBehavior) =>
+            OnAction(BattleLogService.GetUnitBehavourChangeMessage(russianUnitName, newBehavior));
 
-        private void BattleDummy_OnEffectTickMessage(string logMessage)
-        {
+        private void BattleDummy_OnEffectTickMessage(string logMessage) =>
             OnAction(logMessage);
-        }
 
-        private void BattleDummy_OnEffectEndMessage(string logMessage)
-        {
+        private void BattleDummy_OnEffectEndMessage(string logMessage) =>
             OnAction(logMessage);
-        }
 
-        private void Actor_OnUnitWaiting(string russianUnitName)
-        {
-            OnAction($"{russianUnitName} ожидает откатов умений");
-        }
+        private void Actor_OnUnitWaiting(string russianUnitName) =>
+            OnAction(BattleLogService.GetUnitWaitingSkillCooldownsMessage(russianUnitName));
 
-        private void Actor_OnUnitAction(string russianUnitName, IUnitLeveragesSource leveragesSource, ISkillResultPart mainPart, ISkillResultPart? additionalPart)
-        {
-            var message = BuildActionMessage(russianUnitName, leveragesSource, mainPart, additionalPart);
-            OnAction(message);
-        }
+        private void Actor_OnUnitAction(string russianUnitName, IUnitLeveragesSource leveragesSource, ISkillResultPart mainPart, ISkillResultPart? additionalPart) =>
+            OnAction(BattleLogService.BuildCompleteRussianLeverageActionTextMessage(russianUnitName, leveragesSource, mainPart, additionalPart));
 
-        private void Dummy_OnTargetRecovered(int newValue)
-        {
-            base.OnNewRecover(newValue);
-        }
+        private void Dummy_OnTargetRecovered(int newValue) => base.OnNewRecover(newValue);
 
-        private void Dummy_OnTargetDamaged(int newValue)
-        {
-            base.OnNewDamage(newValue);
-        }
+        private void Dummy_OnTargetDamaged(int newValue) => base.OnNewDamage(newValue);
 
         private void Dummy_OnHealthChanged(double newValue)
         {

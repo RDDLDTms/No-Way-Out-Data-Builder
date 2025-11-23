@@ -37,13 +37,13 @@ namespace DataBuilder.Effects
             string logMessage;
 
             // получаем начальное значение восстановления
-            int recover = GetValue();
+            int recovering = GetValue();
 
             // пробрасываем урон в цель и на выходе получаем изменённое значение восстановления в зависимости от эффектов и защит
-            recover = TargetForEffect!.RecoverTarget(recover);
+            recovering = TargetForEffect!.RecoverTarget(recovering);
 
             DecreaseCounterByOne();
-            logMessage = $"\"{EffectName}\" восстанавливает {recover} {EffectClass.Genitive}";
+            logMessage = BattleLogService.GetPeriodicRecoveringTextMessage(EffectDisplayName, recovering, EffectClass.Genitive, TargetForEffect.IsMech);
             OnTimerTick(logMessage);
         }
     }

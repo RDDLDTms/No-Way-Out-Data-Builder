@@ -1,18 +1,14 @@
 ﻿using BataBuilder.Items;
 using NWO_Abstractions;
 using NWO_Abstractions.Battles;
-using System.Text;
+using NWO_Abstractions.Services;
+using Splat;
 
 namespace NWO_Battles;
 
 public abstract class BattleBase : IBattleModelling
 {
     private Timer? _battleTimer;
-
-    public const string BattleBeginningText = "Начало боя";
-    public const string StartBattleText = "Начать бой!";
-    public const string StopBattleText = "Остановить бой";
-    public const string BattleStoppedByUserText = "Бой остановлен пользователем";
 
     public bool BattleStoppedByReason { get; protected set; }
     
@@ -36,6 +32,8 @@ public abstract class BattleBase : IBattleModelling
     public List<ITarget> Targets { get; set; } = new List<ITarget>();
 
     public bool Started { get; private set; } = false;
+
+    protected IBattleLogService BattleLogService { get; }
 
     private int totalBattleDamage = 0;
     private int totalBattleRecover = 0;
@@ -62,6 +60,7 @@ public abstract class BattleBase : IBattleModelling
         BattlePurpose = settings.BattlePurpose;
         RussianDisplayName = russianDisplayName;
         UniversalDisplayName = universalDisplayName;
+        BattleLogService = Locator.Current.GetService<IBattleLogService>()!;
     }
 
     public virtual void StartBattle()
@@ -69,7 +68,7 @@ public abstract class BattleBase : IBattleModelling
         BattleStoppedByReason = false;
         BattleTimeLeft = BattleTime;
         OnTimeLeftChanged(BattleTimeLeft);
-        battleStartMessage?.Invoke(BattleBeginningText);
+        battleStartMessage?.Invoke(IBattleLogService.BattleBeginningText);
         totalBattleDamage = 0;
         totalBattleRecover = 0;
         totalDamage?.Invoke(totalBattleDamage);
@@ -85,70 +84,15 @@ public abstract class BattleBase : IBattleModelling
         while (Targets.Count > 0)
         {
             Targets.Last().LeaveBattle();
-        }      
-
-        string message;
-        switch (reason)
-        {
-            case BattleFinishingReason.TimedOut:
-                message = "Бой завершён, время подошло к концу";
-                break;
-            case BattleFinishingReason.TargetRecovered:
-                message = "Бой завершён, цель восстановлена";
-                break;
-            case BattleFinishingReason.TargetDied:
-                message = "Бой завершён, цель уничтожена!";
-                break;
-            case BattleFinishingReason.AllTargetsDied:
-                message = "Бой завершён, все цели уничтожены!";
-                break;
-            case BattleFinishingReason.NoMoreTargetsFound:
-                message = "Бой завершён, актуальных целей для воздействий нет";
-                break;
-            case BattleFinishingReason.UserStop:
-                message = "Бой остановлен пользователем";
-                OnTimeLeftChanged(BattleTimeLeft);
-                break;
-            default:
-                message = "Бой завершён по неизвестной причине";
-                break;
         }
+
+        string message = BattleLogService.GetBattleFinishTextMessage(reason);
+        if (reason is BattleFinishingReason.UserStop)
+            OnTimeLeftChanged(BattleTimeLeft);
         battleFinishMessage?.Invoke(message);
         OnBattleFinished?.Invoke();
         Started = false;
     }
-
-    public string BuildActionMessage(string unitRussianName, IUnitLeveragesSource leveragesSource, ISkillResultPart mainPart, ISkillResultPart? additionalPart)
-    {
-        StringBuilder stringBuilder = new();
-
-        // основная часть сообщения
-        string actionSentence = GetSentenseByType(leveragesSource.LeveragesSource.MainLeverage.Type, mainPart.Value);
-        stringBuilder.Append($"{unitRussianName} {actionSentence} ");
-        if (leveragesSource.LeveragesSource.MainLeverage.Type is LeverageType.NegativeEffectApplying or LeverageType.PositiveEffectApplying)
-        {
-            var effect = ((ILeverageEffect)leveragesSource.MainData);
-            stringBuilder.Append($"\"{effect.EffectName}\" на {effect.Duration} сек.");
-        }
-        else
-        {
-            stringBuilder.Append($"{leveragesSource.LeveragesSource.MainLeverage.Class.Genitive} {leveragesSource.LeveragesSource.InstrumentalCase}");
-        }
-
-        // дополнительная часть сообщения
-        if (additionalPart is not null)
-        {
-            string additionalSentense = GetSentenseByType(leveragesSource.LeveragesSource.AdditionalLeverage.Type, additionalPart.Value);
-            stringBuilder.Append($" и дополнительно {additionalSentense} ");
-            if (leveragesSource.LeveragesSource.AdditionalLeverage.Type is LeverageType.NegativeEffectApplying or LeverageType.PositiveEffectApplying)
-            {
-                var effect = ((ILeverageEffect)leveragesSource.AdditionalData);
-                stringBuilder.Append($"\"{effect.EffectName}\" на {effect.Duration} сек.");
-            }
-        }
-        return stringBuilder.ToString();
-    }
-
 
     protected virtual void OnTargetNegativeEffectEnds(IEffect positiveEffect, ITarget target)
     {
@@ -265,21 +209,6 @@ public abstract class BattleBase : IBattleModelling
         {
             FinishBattle(BattleFinishingReason.NoMoreTargetsFound);
         }
-    }
-
-    private string GetSentenseByType(LeverageType type, double? leverageValue) 
-    {
-        return type switch
-        {
-            LeverageType.Damage => $"наносит {leverageValue}",
-            LeverageType.Recovery => $"восстанавливает {leverageValue} здоровья с помощью",
-            LeverageType.PositiveEffectApplying => "накладывает положительный эффект",
-            LeverageType.NegativeEffectApplying => "накладывает отрицательный эффект",
-            LeverageType.PositiveEffectRemoval => "снимает положительный эффект",
-            LeverageType.NegativeEffectRemoval => "снимает отрицательный эффект",
-            LeverageType.Creation => "создаёт",
-            _ => $"делает неизвестно что на {leverageValue} единиц",
-        };
     }
 
     public abstract void Dispose();

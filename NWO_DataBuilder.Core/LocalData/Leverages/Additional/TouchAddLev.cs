@@ -8,9 +8,9 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
     {
         public override LeverageType Type => LeverageType.Recovery;
         public override LeverageTargetType TargetType => LeverageTargetType.Alias;
-        public override LeverageHitPoint HitPoint => LeverageHitPoint.SpaceAroundUnit;
+        public override LeverageHitPoint HitPoint => LeverageHitPoint.Vision;
         public override LeverageRangeType RangeType => LeverageRangeType.Range;
-        public override LeverageTargeting Targeting => LeverageTargeting.Place;
+        public override LeverageTargeting Targeting => LeverageTargeting.Single;
         public override string UniversalName => "Touch";
         public override string RussianDisplayName => "Касание";
 

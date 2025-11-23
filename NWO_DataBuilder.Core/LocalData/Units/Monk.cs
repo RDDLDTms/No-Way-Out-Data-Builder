@@ -5,7 +5,7 @@ using DataBuilder.Units;
 using NWO_Abstractions;
 using NWO_DataBuilder.Core.Models;
 using NWO_DataBuilder.Core.Tests.LeverageClasses;
-using NWO_DataBuilder.Core.LocalData.Leveragesources;
+using  NWO_DataBuilder.Core.LocalData.LeverageSources;
 
 namespace NWO_DataBuilder.Core.Tests
 {

@@ -5,6 +5,7 @@ using DataBuilder.Units;
 using NWO_Abstractions;
 using NWO_Abstractions.Battles;
 using NWO_Abstractions.Enums;
+using NWO_Abstractions.Services;
 using NWO_Battles;
 using NWO_DataBuilder.Core.Models;
 using NWO_Support;
@@ -26,7 +27,7 @@ namespace NWO_DataBuilder.Core.ViewModels
 
         public ReadOnlyObservableCollection<IEffect> UnitNegativeEffects => _unitNegativeEffectsList;
 
-        public ReadOnlyObservableCollection<BattleTestMessage> MessagesList => _messagesList;
+        public ReadOnlyObservableCollection<BattleTextMessage> MessagesList => _messagesList;
 
         public ReadOnlyObservableCollection<IUnit> AllUnits => _allUnits;
 
@@ -36,7 +37,7 @@ namespace NWO_DataBuilder.Core.ViewModels
 
         public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit>? StartStopRagerBattleReactiveCommand { get; set; }
 
-        [Reactive] public string StartStopButtonText { get; set; } = BattleBase.StartBattleText;
+        [Reactive] public string StartStopButtonText { get; set; } = IBattleLogService.StartBattleText;
         [Reactive] public string BattleTimeText { get; set; } = "00:00:00";
         [Reactive] public string TotalDamageText { get; set; } = "0";
         [Reactive] public string TotalRecoverText { get; set; } = "0";
@@ -85,8 +86,8 @@ namespace NWO_DataBuilder.Core.ViewModels
 
             BattleSpeedText = $"{BattleSpeed}x";
 
-            _battleMessages = new ObservableCollection<BattleTestMessage>();
-            _messagesList = new ReadOnlyObservableCollection<BattleTestMessage>(_battleMessages);
+            _battleMessages = new ObservableCollection<BattleTextMessage>();
+            _messagesList = new ReadOnlyObservableCollection<BattleTextMessage>(_battleMessages);
 
             _dummyNegativeEffects = new ObservableCollection<IEffect>();
             _dummyNegativeEffectsList = new ReadOnlyObservableCollection<IEffect>(_dummyNegativeEffects);
@@ -208,7 +209,7 @@ namespace NWO_DataBuilder.Core.ViewModels
 
             RxApp.MainThreadScheduler.Schedule(() =>
             {
-                StartStopButtonText = BattleBase.StopBattleText;
+                StartStopButtonText = IBattleLogService.StopBattleText;
                 BattleSpeedText = $"{BattleSpeed}x";
                 TotalDamageText = "0";
                 BattleStarted = true;
@@ -379,7 +380,7 @@ namespace NWO_DataBuilder.Core.ViewModels
             }
             RxApp.MainThreadScheduler.Schedule(() =>
             {
-                StartStopButtonText = BattleBase.StartBattleText;
+                StartStopButtonText = IBattleLogService.StartBattleText;
                 BattleStarted = false;
             });
         }
@@ -388,7 +389,7 @@ namespace NWO_DataBuilder.Core.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(() =>
             {
-                _battleMessages.Add(new BattleTestMessage(newMessage));
+                _battleMessages.Add(new BattleTextMessage(newMessage));
             });
         }
 
@@ -401,10 +402,10 @@ namespace NWO_DataBuilder.Core.ViewModels
         private ObservableCollection<IEffect> _unitNegativeEffects;
         private ObservableCollection<IEffect> _unitPositiveEffects;
 
-        private ObservableCollection<BattleTestMessage> _battleMessages;
+        private ObservableCollection<BattleTextMessage> _battleMessages;
         private ObservableCollection<IBattlePurpose> _purposes;
 
-        private ReadOnlyObservableCollection<BattleTestMessage> _messagesList;
+        private ReadOnlyObservableCollection<BattleTextMessage> _messagesList;
         private ReadOnlyObservableCollection<IUnit> _allUnits;
         private ReadOnlyObservableCollection<IBattlePurpose> _allPurposes;
 

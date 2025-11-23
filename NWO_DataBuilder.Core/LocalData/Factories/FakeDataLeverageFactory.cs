@@ -36,6 +36,7 @@ namespace NWO_DataBuilder.Core.Tests
                 { nameof(MirrorShieldLev), new MirrorShieldLev(lClasses[nameof(PhysicsLevCl)])},
                 { nameof(PurifyingLev), new PurifyingLev(lClasses[nameof(NeutralizationLevCl)] )},
                 { nameof(PurifyingRitualLev), new PurifyingRitualLev(lClasses[nameof(NeutralizationLevCl)], lOptions[nameof(LongSpellLevOpt)] )},
+                { nameof(SeizureLev), new SeizureLev(lClasses[nameof(DryingOutLevCl)] )},
                 { nameof(ShaftStrikeLev), new ShaftStrikeLev(lClasses[nameof(PhysicsLevCl)]) },
                 { nameof(ShieldStrikeLev), new ShieldStrikeLev(lClasses[nameof(PhysicsLevCl)]) },
                 { nameof(ShineLev), new ShineLev(lClasses[nameof(ShineLevCl)]) },

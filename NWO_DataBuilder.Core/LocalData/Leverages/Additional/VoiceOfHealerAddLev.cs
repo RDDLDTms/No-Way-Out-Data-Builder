@@ -11,8 +11,8 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageHitPoint HitPoint => LeverageHitPoint.SpaceAroundUnit;
         public override LeverageRangeType RangeType => LeverageRangeType.Range;
         public override LeverageTargeting Targeting => LeverageTargeting.Place;
-        public override string UniversalName => "Voice of healer";
-        public override string RussianDisplayName => "Глас лекаря";
+        public override string UniversalName => "Voice of healer echo";
+        public override string RussianDisplayName => "Эхо гласа лекаря";
 
         public VoiceOfHealerAddLev(ILeverageClass lClass, ILeverageOption lOption) : base(lClass, lOption) { }
     }

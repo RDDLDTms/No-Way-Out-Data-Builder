@@ -3,7 +3,7 @@ using DataBuilder.BuilderObjects.Primal;
 using DataBuilder.Leverages.Base;
 using NWO_Abstractions;
 
-namespace NWO_DataBuilder.Core.LocalData.Leveragesources
+namespace  NWO_DataBuilder.Core.LocalData.LeverageSources
 {
     public class TouchLS : LeverageSourceBase
     {

@@ -2,13 +2,13 @@
 
 namespace NWO_Battles
 {
-    public class BattleTestMessage
+    public class BattleTextMessage
     {
         public string TextMessage { get; private set; }
 
         public string Time { get; private set; }
 
-        public BattleTestMessage(string textMessage)
+        public BattleTextMessage(string textMessage)
         {
             TextMessage = textMessage;
             Time = $"{TimeTextConverter.GetTimeString(DateTime.Now.TimeOfDay.Hours)}:{TimeTextConverter.GetTimeString(DateTime.Now.TimeOfDay.Minutes)}:{TimeTextConverter.GetTimeString(DateTime.Now.TimeOfDay.Seconds)}";

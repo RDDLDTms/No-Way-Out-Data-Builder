@@ -4,7 +4,7 @@ using DataBuilder.Leverages;
 using DataBuilder.Units;
 using NWO_Abstractions;
 using NWO_DataBuilder.Core.Models;
-using NWO_DataBuilder.Core.LocalData.Leveragesources;
+using  NWO_DataBuilder.Core.LocalData.LeverageSources;
 
 namespace NWO_DataBuilder.Core.Tests.Units
 {
@@ -27,17 +27,20 @@ namespace NWO_DataBuilder.Core.Tests.Units
                     new LeverageHit(minValue: 15, maxValue: 30, cooldown: 5, LeverageType.Damage),
                     new LeverageHit(minValue: 5, maxValue: 9, cooldown: 5, LeverageType.Recovery)),
 
-                new UnitLeveragesSource(allLSources[nameof(BarrirerLS)], SkillPriority.HighPriority,
+                new UnitLeveragesSource(allLSources[nameof(BarrirerLS)], SkillPriority.SecondaryPriority,
                     new EffectBase(5, allLSources[nameof(BarrirerLS)].MainLeverage, cooldown: 8)),
 
-                new UnitLeveragesSource(allLSources[nameof(ViscousSphereLS)], SkillPriority.AdvancedPriority,
-                    new TargetDefenceIncreaseEffect(duration: 6, allLSources[nameof(ViscousSphereLS)].MainLeverage, cooldown: 10, percentage: 5)),
+                new UnitLeveragesSource(allLSources[nameof(ViscousSphereLS)], SkillPriority.HighPriority,
+                    new TargetDefenceIncreaseEffect(duration: 7, allLSources[nameof(ViscousSphereLS)].MainLeverage, cooldown: 3, percentage: 50)),
 
-                new UnitLeveragesSource(allLSources[nameof(InsanityLS)], SkillPriority.SpecialSupportPriority,
+                new UnitLeveragesSource(allLSources[nameof(InsanityLS)], SkillPriority.AdvancedPriority,
                     new TargetControlEffect(duration: 5, allLSources[nameof(InsanityLS)].MainLeverage, cooldown: 11)),
 
-                new UnitLeveragesSource(allLSources[nameof(PurifyingLS)], SkillPriority.BasePriority,
-                    new LeverageEffectsRemoval(cooldown: 6, LeverageType.NegativeEffectRemoval))
+                new UnitLeveragesSource(allLSources[nameof(PurifyingLS)], SkillPriority.SpecialSupportPriority,
+                    new LeverageEffectsRemoval(cooldown: 6, LeverageType.NegativeEffectRemoval)),
+
+                new UnitLeveragesSource(allLSources[nameof(SeizureLS)], SkillPriority.BasePriority,
+                    new LeverageHit(minValue: 3, maxValue: 5, cooldown: 2, LeverageType.Damage))
             };
         }
     }

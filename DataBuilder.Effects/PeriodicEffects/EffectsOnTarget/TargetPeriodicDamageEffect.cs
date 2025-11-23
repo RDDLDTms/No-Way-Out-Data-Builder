@@ -37,13 +37,13 @@ namespace DataBuilder.Effects
             string logMessage;
 
             // получаем начальное значение урона
-            int damage = GetValue();
+            int damage = GetValue(); 
 
             // пробрасываем урон в цель и на выходе получаем изменённое значение урона в зависимости от эффектов и защит
             damage = TargetForEffect!.DamageTarget(damage);
 
             DecreaseCounterByOne();
-            logMessage = $"\"{EffectName}\" наносит {damage} {EffectClass.Genitive}";
+            logMessage = BattleLogService.GetPeriodicDamageTextMessage(EffectDisplayName, damage, EffectClass.Genitive);
             OnTimerTick(logMessage);
         }
     }

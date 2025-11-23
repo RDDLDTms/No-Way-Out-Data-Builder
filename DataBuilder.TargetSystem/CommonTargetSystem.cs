@@ -80,6 +80,7 @@ namespace DataBuilder.TargetSystem
 
         private IEnumerable<ITarget> GetNonImmunedTargets(ILeverage leverage, int teamNumber, bool alliasTargets)
         {
+            //TODO 23.11.2025 сделать обновление старых эффектов с перекрытием
             return alliasTargets ? _battle.GetAllies(teamNumber) : _battle.GetEnemies(teamNumber)
                 .Where(x => x.Immunes.
                    Any(x => x.ImmuneClass == leverage.Class) is false);

@@ -82,7 +82,7 @@ namespace DataBuilder.Units.Behaviors
             for (int i = (int)SkillPriority.PrimalPriority; i > -1; i--)
             {
                 var skill = _unit.Skills.FirstOrDefault(x => (int)x.Priority == i && x.CanUseSkill);
-                if (skill is null || CanUseSkillOnTargets(skill) is false)
+                if (skill is null || CanUseSkillOnTargets(skill.MainLeverage.Type) is false)
                     continue;
 
                 var targets = _targetSystem.FindTargets(skill, true, _unit.TeamNumber);
@@ -299,28 +299,27 @@ namespace DataBuilder.Units.Behaviors
             return _unit.Skills.Any(x => x.MainLeverage.Type == leverageType);
         }
 
-        private bool CanUseSkillOnTargets(IUnitSkill skill)
+        private bool CanUseSkillOnTargets(LeverageType type)
         {
             var _myEnemyTargets = _battle.GetEnemies(_unit.TeamNumber);
             var _myAlliesTargets = _battle.GetAllies(_unit.TeamNumber);
-            var mainType = skill.MainLeverage.Type;
 
-            if (mainType is LeverageType.Damage && _myEnemyTargets.Count > 0)
+            if (type is LeverageType.Damage && _myEnemyTargets.Count > 0)
                 return true;
 
-            if (mainType is LeverageType.Recovery && _myAlliesTargets.Count(x => x.Health < x.MaxHealth) > 0)
+            if (type is LeverageType.Recovery && _myAlliesTargets.Count(x => x.Health < x.MaxHealth) > 0)
                 return true;
 
-            if (mainType is LeverageType.NegativeEffectRemoval && _myAlliesTargets.Any(x => x.Effects.NegativeEffects.Count > 0))
+            if (type is LeverageType.NegativeEffectRemoval && _myAlliesTargets.Any(x => x.Effects.NegativeEffects.Count > 0))
                 return true;
 
-            if (mainType is LeverageType.NegativeEffectApplying && _myEnemyTargets.Count > 0)
+            if (type is LeverageType.NegativeEffectApplying && _myEnemyTargets.Count > 0)
                 return true;
 
-            if (mainType is LeverageType.PositiveEffectApplying && _myAlliesTargets.Count > 0)
+            if (type is LeverageType.PositiveEffectApplying && _myAlliesTargets.Count > 0)
                 return true;
 
-            if (mainType is LeverageType.PositiveEffectRemoval && _myEnemyTargets.Any(x => x.Effects.PositiveEffects.Count > 0))
+            if (type is LeverageType.PositiveEffectRemoval && _myEnemyTargets.Any(x => x.Effects.PositiveEffects.Count > 0))
                 return true;
 
             return false;

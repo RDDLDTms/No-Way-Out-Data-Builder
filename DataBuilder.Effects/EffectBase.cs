@@ -1,4 +1,6 @@
 ﻿using NWO_Abstractions;
+using NWO_Abstractions.Services;
+using Splat;
 
 namespace DataBuilder.Effects
 {
@@ -31,6 +33,8 @@ namespace DataBuilder.Effects
 
         protected bool TargetIsNull => TargetForEffect is null;
 
+        protected IBattleLogService BattleLogService { get; }
+
         public EffectBase(int duration, ILeverage leverage, double cooldown)
         {
             Duration = duration;
@@ -40,6 +44,7 @@ namespace DataBuilder.Effects
             if (string.IsNullOrWhiteSpace(EffectDisplayName))
                 EffectDisplayName = leverage.RussianDisplayName;
             Id = Guid.NewGuid();
+            BattleLogService = Locator.Current.GetService<IBattleLogService>()!;
         }
 
         public virtual void Start(ITarget target, double battleSpeed, int effectDelay = 0)
@@ -71,7 +76,7 @@ namespace DataBuilder.Effects
             if (TargetForEffect!.Immunes.Any(x => x.ImmuneClass == EffectClass))
             {
                 EffectCounter = 0;
-                logMessage = $"\"Эффект {EffectName}\" снят иммунитетом к классу {EffectClass.RussianDisplayName}";
+                logMessage = BattleLogService.GetEffectImmuneFoundMessage(EffectDisplayName, EffectClass.RussianDisplayName);
                 OnTimerTick(logMessage);
                 return true;
             }

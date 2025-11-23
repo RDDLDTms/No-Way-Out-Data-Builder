@@ -1,7 +1,7 @@
 ﻿using NWO_Abstractions;
 using NWO_DataBuilder.Core.Models;
 using NWO_DataBuilder.Core.LocalData.Leverages;
-using NWO_DataBuilder.Core.LocalData.Leveragesources;
+using  NWO_DataBuilder.Core.LocalData.LeverageSources;
 
 namespace NWO_DataBuilder.Core.Tests
 {
@@ -26,6 +26,7 @@ namespace NWO_DataBuilder.Core.Tests
                 { nameof(MirrorShieldLS), new MirrorShieldLS(leverages[nameof(MirrorShieldLev)], leverages[nameof(MirrorShieldAddLev)]) },
                 { nameof(PurifyingLS), new PurifyingLS(leverages[nameof(PurifyingLev)]) },
                 { nameof(PurifyingRitualLS), new PurifyingRitualLS(leverages[nameof(PurifyingRitualLev)]) },
+                { nameof(SeizureLS), new SeizureLS(leverages[nameof(SeizureLev)]) },
                 { nameof(ShaftStrikeLS), new ShaftStrikeLS(leverages[nameof(ShaftStrikeLev)]) },
                 { nameof(ShieldStrikeLS), new ShieldStrikeLS(leverages[nameof(ShieldStrikeLev)]) },
                 { nameof(StrikeWithFireLS), new StrikeWithFireLS(leverages[nameof(StrikeWithFireLev)], leverages[nameof(StrikeWithFireAddLev)]) },

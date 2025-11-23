@@ -152,13 +152,5 @@ public interface IBattleModelling : IDisposable
     /// <param name="teamNumber">Номер команды</param>
     /// <returns>Список союзников</returns>
     public List<ITarget> GetAllies(int teamNumber);
-
-    /// <summary>
-    /// Построить сообщение о действии
-    /// </summary>
-    /// <param name="unitRussianName">Русское название юнита</param>
-    /// <param name="unitLeveragesSource">Источник воздействий у юнита</param>
-    /// <returns>Сообщение для отправки в чат</returns>
-    public string BuildActionMessage(string unitRussianName, IUnitLeveragesSource unitLeveragesSource, ISkillResultPart mainPart, ISkillResultPart? additionalPart);
 }
 
