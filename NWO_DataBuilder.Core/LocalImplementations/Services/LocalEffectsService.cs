@@ -3,7 +3,7 @@ using NWO_Abstractions;
 using NWO_Abstractions.Enums;
 using NWO_Abstractions.Services;
 using NWO_DataBuilder.Core.Models;
-using NWO_DataBuilder.Core.Tests.Leverages;
+using NWO_DataBuilder.Core.LocalData.Leverages;
 
 namespace NWO_DataBuilder.Core.LocalImplementations.Services
 {

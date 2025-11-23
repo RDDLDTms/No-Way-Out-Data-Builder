@@ -17,8 +17,8 @@ public static class DiExtensions
         services.AddSingleton<MainWindowViewModel>();
         services.AddSingleton<DictionaryStorage>();
         Locator.CurrentMutable.RegisterLazySingleton(() => new FakeDataDictionaries(), typeof(IDictionaryDataLoader));
-        Locator.CurrentMutable.RegisterLazySingleton(() => new LeverageService(), typeof(ILeverageService));
-        Locator.CurrentMutable.RegisterLazySingleton(() => new LeverageSourcesService(), typeof(ILeveragesSourcesService));
+        Locator.CurrentMutable.RegisterLazySingleton(() => new LocalLeverageService(), typeof(ILeverageService));
+        Locator.CurrentMutable.RegisterLazySingleton(() => new LocalLeverageSourcesService(), typeof(ILeveragesSourcesService));
         Locator.CurrentMutable.RegisterLazySingleton(() => new LocalEffectsService(), typeof(IEffectsService));
         Locator.CurrentMutable.RegisterLazySingleton(() => new LocalUnitsService(), typeof(IUnitsService));
     }
