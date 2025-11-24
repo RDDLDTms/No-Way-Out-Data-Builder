@@ -1,4 +1,6 @@
-﻿namespace DataBuilder.BuilderObjects.Primal;
+﻿using System.ComponentModel;
+
+namespace DataBuilder.BuilderObjects.Primal;
 
 /// <summary>
 /// Фракция
@@ -8,41 +10,51 @@ public enum Faction
     /// <summary>
     /// Военные
     /// </summary>
+    [Description("Военные люди")]
     Military,
     /// <summary>
     /// Верующие
     /// </summary>
+    [Description("Верующие люди")]
     Faith,
     /// <summary>
     /// Знающие
     /// </summary>
+    [Description("Знающие люди")]
     Knowledge,
     /// <summary>
     /// Замещённые
     /// </summary>
+    [Description("Замещённые люди")]
     Replaced,
     /// <summary>
     /// Изменённые
     /// </summary>
+    [Description("Изменённые люди")]
     Changed,
     /// <summary>
-    /// Непослушные
+    /// Непокорные
     /// </summary>
+    [Description("Непокорные люди")]
     Unruly,
     /// <summary>
-    /// Остальные
+    /// Прочие
     /// </summary>
+    [Description("Прочие")]
     Other,
     /// <summary>
-    /// Без фракции
+    /// Отсутствует
     /// </summary>
+    [Description("Отсутствует")]
     None,
     /// <summary>
-    /// Неизвестно
+    /// Неизвестная
     /// </summary>
+    [Description("Неизвестная")]
     Unknown,
     /// <summary>
     /// Неримкнувшие
     /// </summary>
+    [Description("Непримкнувшие")]
     NonAligned
 }

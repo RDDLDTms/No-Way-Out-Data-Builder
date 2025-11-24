@@ -7,7 +7,6 @@ namespace DataBuilder.Leverages.Base
     {
         public List<ILeverageOption> Options { get; } = new();
 
-        //TODO - закрыть дефолтом (дать кому-нить задачку на старт, 21.11.2025)
         public ILeverageClass Class { get; } 
 
         public virtual LeverageType Type { get; private set; } = LeverageType.None;

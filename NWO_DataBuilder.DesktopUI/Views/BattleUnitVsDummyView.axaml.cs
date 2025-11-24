@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.ReactiveUI;
 using NWO_DataBuilder.Core.ViewModels;
+using NWO_Support;
 using ReactiveUI;
 using System;
 using System.Reactive.Disposables;
@@ -101,6 +102,8 @@ namespace NWO_DataBuilder.DesktopUI.Views
                 this.Bind(ViewModel, vm => vm.BattleTimeSeconds, v => v.battleTimeSecondsNUD.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
                     .DisposeWith(d);
 
+                #endregion
+
                 #region Dummy Settings
 
                 this.Bind(ViewModel, vm => vm.DamageForDummyDecrease, v => v.damageForDummyDecreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
@@ -123,6 +126,8 @@ namespace NWO_DataBuilder.DesktopUI.Views
 
                 #endregion
 
+                #region UnitSettings
+
                 this.Bind(ViewModel, vm => vm.UnitLeveragesIncreasePercent, v => v.unitLeveragesIncreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
                     .DisposeWith(d);
 
@@ -139,6 +144,30 @@ namespace NWO_DataBuilder.DesktopUI.Views
                     .DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.UnitRecoveryDecreasePercent, v => v.unitRecoveryDecreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                    .DisposeWith(d);
+
+                this.OneWayBind(ViewModel, vm => vm.SelectedUnit.MaxHealth, v => v.unitMaxHealth.Content)
+                    .DisposeWith(d);
+
+                this.OneWayBind(ViewModel, vm => vm.SelectedUnit.UniversalName, v => v.unitUniversalName.Content)
+                    .DisposeWith(d);
+
+                this.OneWayBind(ViewModel, vm => vm.SelectedUnit.Faction, v => v.unitFaction.Content, x => EnumHelper.GetDescription(x))
+                    .DisposeWith(d);
+
+                this.OneWayBind(ViewModel, vm => vm.SelectedUnit.AccessLevel, v => v.unitLevel.Content, x => Convert.ToInt32(x))
+                    .DisposeWith(d);   
+                
+                this.OneWayBind(ViewModel, vm => vm.SelectedUnit.IsMech, v => v.unitIsMech.Content, x => x ? "Да" : "Нет")
+                    .DisposeWith(d);
+
+                this.OneWayBind(ViewModel, vm => vm.SelectedUnit.IsOrganic, v => v.unitIsOrganic.Content, x => x ? "Да" : "Нет")
+                    .DisposeWith(d);
+
+                this.OneWayBind(ViewModel, vm => vm.SelectedUnit.IsAlive, v => v.unitIsAlive.Content, x => x ? "Да" : "Нет")
+                    .DisposeWith(d);
+
+                this.OneWayBind(ViewModel, vm => vm.SelectedUnit.IsBase, v => v.unitIsBase.Content, x => x ? "Да" : "Нет")
                     .DisposeWith(d);
 
                 #endregion

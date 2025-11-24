@@ -10,7 +10,10 @@ namespace NWO_DataBuilder.Core.Tests.Units
     internal sealed class Preacher : UnitBase
     {
         public override AccessLevel AccessLevel => AccessLevel.Third;
-        public override bool IsBase => false;           
+        public override bool IsBase => false;
+        public override bool IsMech => false;
+        public override bool IsOrganic => true;
+        public override bool IsAlive => true;
         public override Faction Faction => Faction.Faith;
         public override string RussianDisplayName => "Проповедник";
         public override string UniversalName => "Preacher";

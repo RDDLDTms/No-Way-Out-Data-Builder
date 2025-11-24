@@ -13,6 +13,9 @@ namespace NWO_DataBuilder.Core.Tests
     {
         public override AccessLevel AccessLevel => AccessLevel.Second;
         public override bool IsBase => false;
+        public override bool IsMech => false;
+        public override bool IsOrganic => true;
+        public override bool IsAlive => true;
         public override double MaxHealth => 70;
         public override Faction Faction => Faction.Faith;
         public override string RussianDisplayName => "Монах";

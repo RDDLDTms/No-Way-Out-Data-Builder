@@ -192,16 +192,15 @@
 			<TabItem x:Name="UnitSettings"
 					 Header="Настройки юнита">
 				<StackPanel Orientation="Horizontal">
-					<StackPanel Orientation="Vertical">
+					<StackPanel Orientation="Vertical"
+								Margin="0,8,0,0">
 
 						<!-- Юнит-->
+						<StackPanel Orientation="Horizontal">
 						<TextBlock Text="Юнит"
 								   FontSize="18"
 								   FontWeight="Bold"
 								   Margin="0,4,24,16"/>
-						<StackPanel Orientation="Horizontal">
-							<Label Content="Название юнита:"
-									Margin="0,6,4,0"/>
 							<ComboBox x:Name="unitComboBox"
 										Width="300">
 								<ComboBox.ItemTemplate>
@@ -211,22 +210,84 @@
 								</ComboBox.ItemTemplate>
 							</ComboBox>	
 						</StackPanel>
+						
+						<!--Характеристики юнита-->
+						<StackPanel Orientation="Vertical">
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Максимальное здоровье:"
+									   Margin="0,6,4,0"
+									   Width="190"/>
+								<Label x:Name="unitMaxHealth"
+									   Margin="0,6,4,0"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Универсальное название:"
+									   Margin="0,6,4,0"
+									   Width="190"/>
+								<Label x:Name="unitUniversalName"
+									   Margin="0,6,4,0"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Фракция:"
+									   Margin="0,6,4,0"
+									   Width="190"/>
+								<Label x:Name="unitFaction"
+									   Margin="0,6,4,0"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Уровень:"
+									   Margin="0,6,4,0"
+									   Width="190"/>
+								<Label x:Name="unitLevel"
+									   Margin="0,6,4,0"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Базовый:"
+									   Margin="0,6,4,0"
+									   Width="190"/>
+								<Label x:Name="unitIsBase"
+									   Margin="0,6,4,0"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Механический:"
+									   Margin="0,6,4,0"
+									   Width="190"/>
+								<Label x:Name="unitIsMech"
+									   Margin="0,6,4,0"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Органический:"
+									   Margin="0,6,4,0"
+									   Width="190"/>
+								<Label x:Name="unitIsOrganic"
+									   Margin="0,6,4,0"/>
+							</StackPanel>
+							<StackPanel Orientation="Horizontal">
+								<Label Content="Живой:"
+									   Margin="0,6,4,0"
+									   Width="190"/>
+								<Label x:Name="unitIsAlive"
+									   Margin="0,6,4,0"/>
+							</StackPanel>
+						</StackPanel>
+					</StackPanel>
+					<StackPanel Orientation="Vertical"
+								Margin="40,8,0,0">
 
 						<!--Все воздействия юнита-->
 						<TextBlock Text="Все воздействия юнита"
 								   FontSize="18"
-								   FontWeight="Bold"
-								   Margin="0,24,24,16"/>
-						
-						<!--Увеличение всех воздействий юнита-->				
+								   FontWeight="Bold"/>
+
+						<!--Увеличение всех воздействий юнита-->
 						<StackPanel Orientation="Horizontal">
 							<Label Content="Все воздействия юнита увеличены на (%):"
 								   Margin="0,6,4,0"
-								   Width="300"/>
+								   Width="320"/>
 							<NumericUpDown x:Name="unitLeveragesIncreaseOn"
 											Value="0"
 											Width="150"
-											Margin="8,0,0,0"
+											Margin="40,0,0,0"
 											Increment="10"
 											FormatString="0.0"
 											Minimum="0"
@@ -238,35 +299,27 @@
 									Margin="0,8,0,0">
 							<Label Content="Все воздействия юнита уменьшены на (%):"
 								   Margin="0,6,4,0"
-								   Width="300"/>
+								   Width="320"/>
 							<NumericUpDown x:Name="unitLeveragesDecreaseOn"
 											Value="0"
 											Width="150"
-											Margin="8,0,0,0"
+											Margin="40,0,0,0"
 											Increment="10"
 											FormatString="0.0"
 											Minimum="0"
 											Maximum="1000"/>
 						</StackPanel>
-					</StackPanel>
-					<StackPanel Orientation="Vertical"
-								Margin="40,0,0,0">
-						
-						<!--Урон от юнита-->
-						<TextBlock Text="Урон юнита"
-								   FontSize="18"
-								   FontWeight="Bold"
-								   Margin="0,0,24,8"/>
 
 						<!--Увеличение урона от юнита-->
-						<StackPanel Orientation="Horizontal">
+						<StackPanel Orientation="Horizontal"
+									Margin="0,8,0,0">
 							<Label Content="Урон юнита увеличен на (%):"
 								   Margin="0,6,4,0"
-								   Width="330"/>
+								   Width="320"/>
 							<NumericUpDown x:Name="unitDamageIncreaseOn"
 											Value="0"
 											Width="150"
-											Margin="8,0,0,0"
+											Margin="40,0,0,0"
 											Increment="10"
 											FormatString="0.0"
 											Minimum="0"
@@ -274,35 +327,31 @@
 						</StackPanel>
 
 						<!--Уменьшение рона от юнита-->
-						<StackPanel Orientation="Horizontal">
+						<StackPanel Orientation="Horizontal"
+									Margin="0,8,0,0">
 							<Label Content="Урон юнита уменьшен на (%):"
 								   Margin="0,6,4,0"
-								   Width="330"/>
+								   Width="320"/>
 							<NumericUpDown x:Name="unitDamageDecreaseOn"
 											Value="0"
 											Width="150"
-											Margin="8,8,0,0"
+											Margin="40,0,0,0"
 											Increment="10"
 											FormatString="0.0"
 											Minimum="0"
 											Maximum="1000"/>
 						</StackPanel>
 
-						<!--Восстановление от юнита-->
-						<TextBlock Text="Восстановление юнита"
-								   FontSize="18"
-								   FontWeight="Bold"
-								   Margin="0,0,24,16"/>
-
 						<!--Увеличение восстановления от юнита-->
-						<StackPanel Orientation="Horizontal">
-							<Label Content="Воссталение от юнита увеличено на (%):"
+						<StackPanel Orientation="Horizontal"
+									Margin="0,8,0,0">
+							<Label Content="Восстановление от юнита увеличено на (%):"
 								   Margin="0,6,4,0"
-								   Width="330"/>
+								   Width="320"/>
 							<NumericUpDown x:Name="unitRecoveryIncreaseOn"
 											Value="0"
 											Width="150"
-											Margin="8,0,0,0"
+											Margin="40,0,0,0"
 											Increment="10"
 											FormatString="0.0"
 											Minimum="0"
@@ -310,14 +359,15 @@
 						</StackPanel>
 
 						<!--Уменьшение восстановления от юнита-->
-						<StackPanel Orientation="Horizontal">
+						<StackPanel Orientation="Horizontal"
+									Margin="0,8,0,0">
 							<Label Content="Восстановление от юнита уменьшено на (%):"
 								   Margin="0,8,4,0"
-								   Width="330"/>
+								   Width="320"/>
 							<NumericUpDown x:Name="unitRecoveryDecreaseOn"
 											Value="0"
 											Width="150"
-											Margin="8,8,0,0"
+											Margin="40,0,0,0"
 											Increment="10"
 											FormatString="0.0"
 											Minimum="0"
