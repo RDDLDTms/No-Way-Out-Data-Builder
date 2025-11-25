@@ -43,7 +43,7 @@ public abstract class BattleBase : IBattleModelling
     public event NewMessageHandler? battleFinishMessage;
     public event NewEmptyHandler? OnBattleFinished;
     public event NewIntValue? battleTimeLeftChanged;
-    public event NewDoubleValue? newTargetHealth;
+    public event NewTargetHealthValue? newTargetHealth;
     public event NewIntValue? totalDamage;
     public event NewIntValue? totalRecover;
     public event EffectHandler? OnNewNegativeEffect;
@@ -116,7 +116,7 @@ public abstract class BattleBase : IBattleModelling
 
     protected virtual void OnNewTargetHealth(double newHealth, ITarget target)
     {   
-        newTargetHealth?.Invoke(newHealth);
+        newTargetHealth?.Invoke(newHealth, target);
         if (BattlePurpose is DestroyOneTargetPurpose && newHealth <= 0)
         {
             FinishBattle(BattleFinishingReason.TargetDied);

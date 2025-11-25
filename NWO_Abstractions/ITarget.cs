@@ -13,6 +13,11 @@ namespace NWO_Abstractions
     public interface ITarget : IHealthChangingObject, IUniversalObject, ITeamMember
     {
         /// <summary>
+        /// Идентификатор цели
+        /// </summary>
+        public Guid TargetId { get; }
+
+        /// <summary>
         /// Цель получила новый урон
         /// </summary>
         public event NewIntValue OnTargetDamaged;

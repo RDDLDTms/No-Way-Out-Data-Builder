@@ -18,6 +18,8 @@ namespace DataBuilder.TargetSystem
         public event NewUnitLogMessage? OnEffectTickMessage;
         public event NewUnitLogMessage? OnEffectEndMessage;
 
+        public Guid TargetId { get; }
+
         public IPercentageValues StartPercentageValues { get; set; }
 
         public IEffectsLists Effects { get; }
@@ -54,6 +56,7 @@ namespace DataBuilder.TargetSystem
             IsAlive = isAlive;
             IsOrganic = isOrganic;
             IsMech = isMech;
+            TargetId = Guid.NewGuid();
         }
 
         public virtual void JoinBattle(IBattleModelling battle, int teamNumber, int globalCooldown)

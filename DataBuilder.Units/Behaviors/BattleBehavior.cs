@@ -220,7 +220,7 @@ namespace DataBuilder.Units.Behaviors
 
         private bool DoActionToTargets(LeverageType type, IEnumerable<ITarget>? targets, ISkillResultPart skillResultPart)
         {
-            if (targets is null)
+            if (targets is null || skillResultPart is null)
             {
                 return false;
             }

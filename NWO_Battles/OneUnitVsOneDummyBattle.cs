@@ -40,6 +40,9 @@ namespace NWO_Battles
             Actor.OnNegativeEffectApplied += Actor_OnNegativeEffectApplied;
             Actor.OnPositiveEffectRemoved += Actor_OnPositiveEffectRemoved;
             Actor.OnNegativeEffectRemoved += Actor_OnNegativeEffectRemoved;
+            Actor.OnHealthChanged += Actor_OnHealthChanged;
+            Actor.OnTargetDamaged += Actor_OnTargetDamaged;
+            Actor.OnTargetRecovered += Actor_OnTargetRecovered;
 
             Actor.OnUnitAction += Actor_OnUnitAction;
             Actor.OnUnitWaiting += Actor_OnUnitWaiting;
@@ -61,6 +64,12 @@ namespace NWO_Battles
             Dummy.JoinBattle(this, BattlePurpose is DestroyOneTargetPurpose ? 2 : 1, 400);
             Actor.JoinBattle(this, 1, 400);
         }
+
+        private void Actor_OnTargetRecovered(int newValue) => base.OnNewRecover(newValue);
+
+        private void Actor_OnTargetDamaged(int newValue) => base.OnNewDamage(newValue);
+
+        private void Actor_OnHealthChanged(double newValue) => base.OnNewTargetHealth(newValue, Actor);
 
         private void Actor_OnNegativeEffectRemoved(IEffect effect) => base.OnTargetNegativeEffectEnds(effect, Actor);
 
@@ -94,6 +103,9 @@ namespace NWO_Battles
             Actor.OnNegativeEffectApplied -= Actor_OnNegativeEffectApplied;
             Actor.OnPositiveEffectRemoved -= Actor_OnPositiveEffectRemoved;
             Actor.OnNegativeEffectRemoved -= Actor_OnNegativeEffectRemoved;
+            Actor.OnHealthChanged -= Actor_OnHealthChanged;
+            Actor.OnTargetRecovered -= Actor_OnTargetRecovered;
+            Actor.OnTargetDamaged -= Actor_OnTargetDamaged;
 
             Actor.OnUnitAction -= Actor_OnUnitAction;
             Actor.OnUnitWaiting -= Actor_OnUnitWaiting;

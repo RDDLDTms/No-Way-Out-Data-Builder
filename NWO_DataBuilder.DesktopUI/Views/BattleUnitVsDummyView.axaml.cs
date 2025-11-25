@@ -5,6 +5,7 @@ using NWO_Support;
 using ReactiveUI;
 using System;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
 
 namespace NWO_DataBuilder.DesktopUI.Views
 {
@@ -22,27 +23,6 @@ namespace NWO_DataBuilder.DesktopUI.Views
                 this.OneWayBind(ViewModel, vm => vm.StartStopButtonText, v => v.startStopBattleButton.Content)
                     .DisposeWith(d);
 
-                this.OneWayBind(ViewModel, vm => vm.BattleTimeText, v => v.battleTimeLabel.Content)
-                    .DisposeWith(d);
-
-                this.OneWayBind(ViewModel, vm => vm.BattleSpeedText, v => v.battleSpeedLabel.Content)
-                    .DisposeWith(d);
-
-                this.OneWayBind(ViewModel, vm => vm.TotalDamageText, v => v.totalDamageLabel.Content)
-                    .DisposeWith(d);
-
-                this.OneWayBind(ViewModel, vm => vm.TotalRecoverText, v => v.totalRecoverLabel.Content)
-                    .DisposeWith(d);
-
-                this.OneWayBind(ViewModel, vm => vm.Health, v => v.dummyHealthLabel.Content)
-                    .DisposeWith(d);
-
-                this.OneWayBind(ViewModel, vm => vm.BattleStarted, v => v.immortalDummyCheckBox.IsEnabled, x => !x)
-                    .DisposeWith(d);
-
-                this.OneWayBind(ViewModel, vm => vm.MaxHealth, v => v.dummyHealthProgressBar.Maximum)
-                    .DisposeWith(d);
-
                 this.OneWayBind(ViewModel, vm => vm.AllUnits, v => v.unitComboBox.ItemsSource)
                     .DisposeWith(d);
 
@@ -52,9 +32,27 @@ namespace NWO_DataBuilder.DesktopUI.Views
                 this.BindCommand(ViewModel, vm => vm.StartStopRagerBattleReactiveCommand, v => v.startStopBattleButton)
                     .DisposeWith(d);
 
-                #region Другие привязки
+                #region Battle Process
 
-                this.OneWayBind(ViewModel, vm => vm.IsImmortal, v => v.dummyHealthProgressBar.IsVisible, x => !x)
+                this.OneWayBind(ViewModel, vm => vm.BattleTimeText, v => v.battleTimeLabel.Content)
+                    .DisposeWith(d);
+
+                this.OneWayBind(ViewModel, vm => vm.BattleSpeedText, v => v.battleSpeedLabel.Content)
+                    .DisposeWith(d);
+
+                this.OneWayBind(ViewModel, vm => vm.DummyCurrentHealth, v => v.dummyHealthLabel.Content)
+                    .DisposeWith(d);
+
+                this.OneWayBind(ViewModel, vm => vm.DummyCurrentHealth, v => v.dummyHealthProgressBar.Value)
+                    .DisposeWith(d);
+
+                this.OneWayBind(ViewModel, vm => vm.UnitCurrentHealth, v => v.unitHealthProgressBar.Value)
+                    .DisposeWith(d);
+
+                this.OneWayBind(ViewModel, vm => vm.TotalDamageText, v => v.totalDamageLabel.Content)
+                    .DisposeWith(d);
+
+                this.OneWayBind(ViewModel, vm => vm.TotalRecoverText, v => v.totalRecoverLabel.Content)
                     .DisposeWith(d);
 
                 this.OneWayBind(ViewModel, vm => vm.MessagesList, v => v.battleMessages.ItemsSource)
@@ -72,22 +70,17 @@ namespace NWO_DataBuilder.DesktopUI.Views
                 this.OneWayBind(ViewModel, vm => vm.UnitPositiveEffects, v => v.unitPositiveEffects.ItemsSource)
                     .DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.IsImmortal, v => v.immortalDummyCheckBox.IsChecked)
+                this.OneWayBind(ViewModel, vm => vm.BattleStarted, v => v.immortalDummyCheckBox.IsEnabled, x => !x)
                     .DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.SelectedUnit, v => v.unitComboBox.SelectedItem)
+                #endregion
+
+                #region Battle Settings
+
+                this.OneWayBind(ViewModel, vm => vm.DummySettings.IsImmortal, v => v.dummyHealthProgressBar.IsVisible, x => !x)
                     .DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.SelectedPurpose, v => v.purposeComboBox.SelectedItem)
-                    .DisposeWith(d);
-
-                this.Bind(ViewModel, vm => vm.MaxHealth, v => v.maxDummyHealthNUD.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
-                    .DisposeWith(d);
-
-                this.Bind(ViewModel, vm => vm.StartHealth, v => v.startDummyHealthNUD.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
-                    .DisposeWith(d);
-
-                this.OneWayBind(ViewModel, vm => vm.Health, v => v.dummyHealthProgressBar.Value)
                     .DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.BattleSpeed, v => v.battleSpeedNUD.Value, x => Convert.ToDecimal(x), x => Convert.ToDouble(x))
@@ -106,44 +99,78 @@ namespace NWO_DataBuilder.DesktopUI.Views
 
                 #region Dummy Settings
 
-                this.Bind(ViewModel, vm => vm.DamageForDummyDecrease, v => v.damageForDummyDecreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                this.Bind(ViewModel, vm => vm.DummySettings.MaxHealth, v => v.maxDummyHealthNUD.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
                     .DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.DamageForDummyIncrease, v => v.damageForDummyIncreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                this.Bind(ViewModel, vm => vm.DummySettings.StartHealth, v => v.startDummyHealthNUD.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
                     .DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.RecoveryForDummyDecrease, v => v.recoverForDummyDecreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                this.Bind(ViewModel, vm => vm.DummySettings.StartPercentage.DamageDecrease, v => v.damageForDummyDecreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
                     .DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.RecoveryForDummyIncrease, v => v.recoverForDummyIncreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                this.Bind(ViewModel, vm => vm.DummySettings.StartPercentage.DamageIncrease, v => v.damageForDummyIncreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
                     .DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.AllLeveragesForDummyDecrease, v => v.allLeveragesForDummyDecreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                this.Bind(ViewModel, vm => vm.DummySettings.StartPercentage.RecoveryDecrease, v => v.recoverForDummyDecreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
                     .DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.AllLeveragesForDummyIncrease, v => v.allLeveragesForDummyIncreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                this.Bind(ViewModel, vm => vm.DummySettings.StartPercentage.RecoveryIncrease, v => v.recoverForDummyIncreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                    .DisposeWith(d);
+
+                this.Bind(ViewModel, vm => vm.DummySettings.StartPercentage.AllLeveragesDecrease, v => v.allLeveragesForDummyDecreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                    .DisposeWith(d);
+
+                this.Bind(ViewModel, vm => vm.DummySettings.StartPercentage.AllLeveragesIncrease, v => v.allLeveragesForDummyIncreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                    .DisposeWith(d);
+
+                this.Bind(ViewModel, vm => vm.DummySettings.IsAlive, v => v.aliveDummyCheckBox.IsChecked)
+                    .DisposeWith(d);
+
+                this.Bind(ViewModel, vm => vm.DummySettings.IsOrganic, v => v.organicDummyCheckBox.IsChecked)
+                    .DisposeWith(d);
+
+                this.Bind(ViewModel, vm => vm.DummySettings.IsImmortal, v => v.immortalDummyCheckBox.IsChecked)
+                    .DisposeWith(d);
+
+                this.Bind(ViewModel, vm => vm.DummySettings.IsMech, v => v.mechDummyCheckBox.IsChecked)
+                    .DisposeWith(d);
+
+                this.OneWayBind(ViewModel, vm => vm.DummySettings.MaxHealth, v => v.dummyHealthProgressBar.Maximum)
                     .DisposeWith(d);
 
                 #endregion
 
-                #region UnitSettings
+                #region Unit Settings
 
-                this.Bind(ViewModel, vm => vm.UnitLeveragesIncreasePercent, v => v.unitLeveragesIncreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                this.Bind(ViewModel, vm => vm.SelectedUnit, v => v.unitComboBox.SelectedItem)
                     .DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.UnitLeveragesDecreasePercent, v => v.unitLeveragesDecreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                this.WhenAnyValue(v => v.ViewModel!.SelectedUnit)
+                    .WhereNotNull()
+                    .Subscribe(x => startUnitHealthNUD.Value = Convert.ToInt32(x.MaxHealth));
+
+                this.Bind(ViewModel, vm => vm.SelectedUnit.MaxHealth, v => v.startUnitHealthNUD.Maximum, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
                     .DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.UnitDamageIncreasePercent, v => v.unitDamageIncreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                this.Bind(ViewModel, vm => vm.SelectedUnitStartHealth, v => v.startUnitHealthNUD.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
                     .DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.UnitDamageDecreasePercent, v => v.unitDamageDecreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                this.Bind(ViewModel, vm => vm.UnitPercentageValues.AllLeveragesIncrease, v => v.unitLeveragesIncreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
                     .DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.UnitRecoveryIncreasePercent, v => v.unitRecoveryIncreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                this.Bind(ViewModel, vm => vm.UnitPercentageValues.AllLeveragesDecrease, v => v.unitLeveragesDecreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
                     .DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.UnitRecoveryDecreasePercent, v => v.unitRecoveryDecreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                this.Bind(ViewModel, vm => vm.UnitPercentageValues.DamageIncrease, v => v.unitDamageIncreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                    .DisposeWith(d);
+
+                this.Bind(ViewModel, vm => vm.UnitPercentageValues.DamageDecrease, v => v.unitDamageDecreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                    .DisposeWith(d);
+
+                this.Bind(ViewModel, vm => vm.UnitPercentageValues.RecoveryDecrease, v => v.unitRecoveryIncreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                    .DisposeWith(d);
+
+                this.Bind(ViewModel, vm => vm.UnitPercentageValues.RecoveryDecrease, v => v.unitRecoveryDecreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
                     .DisposeWith(d);
 
                 this.OneWayBind(ViewModel, vm => vm.SelectedUnit.MaxHealth, v => v.unitMaxHealth.Content)
@@ -168,6 +195,9 @@ namespace NWO_DataBuilder.DesktopUI.Views
                     .DisposeWith(d);
 
                 this.OneWayBind(ViewModel, vm => vm.SelectedUnit.IsBase, v => v.unitIsBase.Content, x => x ? "Да" : "Нет")
+                    .DisposeWith(d);
+
+                this.OneWayBind(ViewModel, vm => vm.SelectedUnit.MaxHealth, v => v.unitHealthProgressBar.Maximum)
                     .DisposeWith(d);
 
                 #endregion

@@ -27,18 +27,29 @@
 								Margin="0,8,0,0">
 
 						<!--Здоровье манекена -->
-						<TextBlock Text="Здоровье манекена" 
+						<TextBlock Text="Манекен" 
 								   FontSize="18"
 								   FontWeight="Bold"/>
 							
-						<CheckBox x:Name="immortalDummyCheckBox" Margin="4,8,4,0">Бессмертный манекен</CheckBox>
+						<CheckBox x:Name="immortalDummyCheckBox" 
+								  Margin="4,8,4,0">Бессмертный (здоровье не убывает)
+						</CheckBox>
+						<CheckBox x:Name="aliveDummyCheckBox"
+								  Margin="4,8,4,0">Живой
+						</CheckBox>
+						<CheckBox x:Name="organicDummyCheckBox"
+								 Margin="4,8,4,0">Органический
+						</CheckBox>
+						<CheckBox x:Name="mechDummyCheckBox"
+								Margin="4,8,4,0">Механический
+						</CheckBox>
 
 						<!--Здоровье манекена на старте-->
 						<StackPanel Orientation="Horizontal"
 									Margin="0,8,0,0">
-							<Label Content="Здоровье манекена на старте"
+							<Label Content="Здоровье на старте"
 								   Margin="0,6,4,0"
-								   Width="300"/>
+								   Width="200"/>
 							<NumericUpDown x:Name="startDummyHealthNUD"
 										   Value="1000"
 										   Width="200"
@@ -52,9 +63,9 @@
 						<!--Максимальное здоровье манекена-->
 						<StackPanel Orientation="Horizontal"
 									Margin="0,8,0,0">
-							<Label Content="Максимальное здоровье манекена"
+							<Label Content="Максимальное здоровье"
 								   Margin="0,6,4,0"
-								   Width="300"/>
+								   Width="200"/>
 							<NumericUpDown x:Name="maxDummyHealthNUD"
 										   Value="1000"
 										   Width="200"
@@ -64,12 +75,15 @@
 										   Minimum="1"
 										   Maximum="100000"/>
 						</StackPanel>
-						
-						<!--Все воздействия по манекену -->
-						<TextBlock Text="Воздействия по манекену"
+					</StackPanel>
+
+					<StackPanel Orientation="Vertical"
+								Margin="40,8,0,0">
+
+						<!--Урон по манекену -->
+						<TextBlock Text="Все воздействия манекена"
 								   FontSize="18"
-								   FontWeight="Bold"
-								   Margin="2,16,2,2"/>
+								   FontWeight="Bold"/>
 
 						<!--Увеличение всех воздействий по манекену-->
 						<StackPanel Orientation="Horizontal"
@@ -102,23 +116,13 @@
 											Minimum="0"
 											Maximum="1000"/>
 						</StackPanel>
-						
-					</StackPanel>
 
-					<StackPanel Orientation="Vertical"
-								Margin="40,0,0,0">
-
-						<!--Урон по манекену -->
-						<TextBlock Text="Урон по манекену"
-								   FontSize="18"
-								   FontWeight="Bold"/>
-						
 						<!--Увеличение урона по манекену-->
 						<StackPanel Orientation="Horizontal"
-									Margin="0,52,0,0">
+									Margin="0,8,4,0">
 							<Label Content="Урон по манекену увеличен на (%):"
 								   Margin="0,6,4,0"
-								   Width="330"/>
+								   Width="350"/>
 							<NumericUpDown x:Name="damageForDummyIncreaseOn"
 										   Value="0"
 										   Width="150"
@@ -131,10 +135,10 @@
 						
 						<!--Уменьшение урона по манекену-->
 						<StackPanel Orientation="Horizontal"
-									Margin="0,8,0,0">
+									Margin="0,8,4,0">
 							<Label Content="Урон по манекену уменьшен на (%):"
 								   Margin="0,6,4,0"
-								   Width="330"/>
+								   Width="350"/>
 							<NumericUpDown x:Name="damageForDummyDecreaseOn"
 										   Value="0"
 										   Width="150"
@@ -144,19 +148,13 @@
 										   Minimum="0"
 										   Maximum="1000"/>
 						</StackPanel>
-
-						<!--Восстановление манекена -->
-						<TextBlock Text="Восстановление манекена"
-								   FontSize="18"
-								   FontWeight="Bold"
-								   Margin="2,20,2,2"/>
-
+						
 						<!--Увеличение восстановления манекена-->
 						<StackPanel Orientation="Horizontal"
-									Margin="0,8,0,0">
+									Margin="0,8,4,0">
 							<Label Content="Восстановление манекена увеличено на (%):"
 								   Margin="0,6,4,0"
-								   Width="330"/>
+								   Width="350"/>
 							<NumericUpDown x:Name="recoverForDummyIncreaseOn"
 										   Value="0"
 										   Width="150"
@@ -169,10 +167,10 @@
 
 						<!--Уменьшение восстановления манекена-->
 						<StackPanel Orientation="Horizontal"
-									Margin="0,8,0,0">
+									Margin="0,8,4,0">
 							<Label Content="Восстановление манекена уменьшено на (%):"
 								   Margin="0,6,4,0"
-								   Width="330"/>
+								   Width="350"/>
 							<NumericUpDown x:Name="recoverForDummyDecreaseOn"
 										   Value="0"
 										   Width="150"
@@ -193,14 +191,14 @@
 					 Header="Настройки юнита">
 				<StackPanel Orientation="Horizontal">
 					<StackPanel Orientation="Vertical"
-								Margin="0,8,0,0">
+								Margin="0,4,0,0">
 
 						<!-- Юнит-->
 						<StackPanel Orientation="Horizontal">
 						<TextBlock Text="Юнит"
 								   FontSize="18"
 								   FontWeight="Bold"
-								   Margin="0,4,24,16"/>
+								   Margin="0,4,24,8"/>
 							<ComboBox x:Name="unitComboBox"
 										Width="300">
 								<ComboBox.ItemTemplate>
@@ -210,7 +208,21 @@
 								</ComboBox.ItemTemplate>
 							</ComboBox>	
 						</StackPanel>
-						
+						<!--Здоровье юнита на старте-->
+						<StackPanel Orientation="Horizontal"
+									Margin="0,4,0,0">
+							<Label Content="Здоровье на старте"
+								   Margin="0,6,4,0"
+								   Width="164"/>
+							<NumericUpDown x:Name="startUnitHealthNUD"
+										   Value="1000"
+										   Width="160"
+										   Margin="48,0,0,0"
+										   Increment="10"
+										   FormatString="0.00"
+										   Minimum="1"
+										   Maximum="100000"/>
+						</StackPanel>
 						<!--Характеристики юнита-->
 						<StackPanel Orientation="Vertical">
 							<StackPanel Orientation="Horizontal">
@@ -246,28 +258,28 @@
 									   Margin="0,6,4,0"
 									   Width="190"/>
 								<Label x:Name="unitIsBase"
-									   Margin="0,6,4,0"/>
-							</StackPanel>
-							<StackPanel Orientation="Horizontal">
+									   Margin="0,6,4,0"
+									   Width="40"/>
 								<Label Content="Механический:"
 									   Margin="0,6,4,0"
 									   Width="190"/>
 								<Label x:Name="unitIsMech"
-									   Margin="0,6,4,0"/>
+									   Margin="0,6,4,0"
+									   Width="40"/>
 							</StackPanel>
 							<StackPanel Orientation="Horizontal">
 								<Label Content="Органический:"
 									   Margin="0,6,4,0"
 									   Width="190"/>
 								<Label x:Name="unitIsOrganic"
-									   Margin="0,6,4,0"/>
-							</StackPanel>
-							<StackPanel Orientation="Horizontal">
+									   Margin="0,6,4,0"
+									   Width="40"/>
 								<Label Content="Живой:"
 									   Margin="0,6,4,0"
 									   Width="190"/>
 								<Label x:Name="unitIsAlive"
-									   Margin="0,6,4,0"/>
+									   Margin="0,6,4,0"
+									   Width="40"/>
 							</StackPanel>
 						</StackPanel>
 					</StackPanel>
@@ -526,7 +538,7 @@
 							   Width="100"/>
 					</StackPanel>
 					<StackPanel Orientation="Horizontal">
-						<Label Content="Восстановлено:"/>
+						<Label Content="Всего восстановлено:"/>
 						<Label x:Name="totalRecoverLabel"
 							   Margin="2,0,0,0"
 							   Width="100"/>
@@ -540,7 +552,24 @@
 							   Width="100"/>
 					</StackPanel>
 					<ProgressBar x:Name="dummyHealthProgressBar"
-								 Margin="0,46,0,0"
+								 Margin="0,4,0,0"
+								 Height="20"
+								 Minimum="0"
+								 Foreground="Red"
+								 Background="#a46994"
+								 ShowProgressText="True"
+								 VerticalAlignment="Bottom"
+								 ProgressTextFormat="{}{0}/{3}"/>
+					<StackPanel Orientation="Horizontal">
+						<Label Content="Здоровье юнита:"
+							   Margin="0,4,0,0"
+							   x:Name="unitHealthHeaderLabel"/>
+						<Label x:Name="unitHealthLabel"
+							   Margin="2,0,0,0"
+							   Width="100"/>
+					</StackPanel>
+					<ProgressBar x:Name="unitHealthProgressBar"
+								 Margin="0,4,0,0"
 								 Height="20"
 								 Minimum="0"
 								 Foreground="Red"

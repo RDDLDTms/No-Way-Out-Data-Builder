@@ -23,22 +23,22 @@ namespace NWO_DataBuilder.Core.Tests.Units
         {
             var allLSources = DictionaryStorage.GetInstance().AllLeveragesSources;
             LeveragesSourcesCreated = true;
-            return _leveragesSources = new List<IUnitLeveragesSource>()
+            return _leveragesSources = new()
             {
                 new UnitLeveragesSource(allLSources[nameof(ClaymoreOfLightLS)], SkillPriority.PrimalPriority,
-                    new LeverageHit(20, 40, 8, LeverageType.Damage),
-                    new LeverageHit(7, 12, 8, LeverageType.Damage)),
+                    new LeverageHit(44, 66, 8, LeverageType.Damage),
+                    new LeverageHit(11, 22, 8, LeverageType.Damage)),
 
                 new UnitLeveragesSource(allLSources[nameof(MirrorArmorLS)], SkillPriority.HighPriority,
-                    new LeverageHit(minValue: 10, maxValue: 20, cooldown: 7, LeverageType.Damage),
-                    new LeverageHit(minValue: 3, maxValue: 6, cooldown: 4, LeverageType.Damage)),
+                    new LeverageHit(minValue: 20, maxValue: 30, cooldown: 7, LeverageType.Damage),
+                    new LeverageHit(minValue: 22, maxValue: 33, cooldown: 4, LeverageType.Damage)),
 
                 new UnitLeveragesSource(allLSources[nameof(MirrorShieldLS)], SkillPriority.AdvancedPriority,
-                    new LeverageHit(minValue: 7, maxValue: 15, cooldown: 7, LeverageType.Damage),
-                    new LeverageHit(minValue: 5, maxValue: 8, cooldown: 6, LeverageType.Damage)),
+                    new LeverageHit(minValue: 13, maxValue: 21, cooldown: 7, LeverageType.Damage),
+                    new LeverageHit(minValue: 22, maxValue: 33, cooldown: 6, LeverageType.Damage)),
 
                 new UnitLeveragesSource(allLSources[nameof(ShieldStrikeLS)], SkillPriority.MiddlePriority,
-                    new LeverageHit(minValue: 5, maxValue: 8, cooldown: 7, LeverageType.Damage))
+                    new LeverageHit(minValue: 13, maxValue: 16, cooldown: 7, LeverageType.Damage))
             };
         }
     }

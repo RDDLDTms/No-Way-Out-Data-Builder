@@ -2,7 +2,7 @@
 
 public delegate void NewEmptyHandler();
 public delegate void NewMessageHandler(string newMessage);
-public delegate void NewDoubleHandler(double newValue);
+public delegate void NewTargetHealthValue(double newValue, ITarget target);
 public delegate void EffectHandler(IEffect newEffect, ITarget target);
 
 /// <summary>
@@ -59,7 +59,7 @@ public interface IBattleModelling : IDisposable
     /// <summary>
     /// Новое здоровье цели
     /// </summary>
-    public event NewDoubleValue? newTargetHealth;
+    public event NewTargetHealthValue? newTargetHealth;
 
     /// <summary>
     /// Изменение значения всего урона

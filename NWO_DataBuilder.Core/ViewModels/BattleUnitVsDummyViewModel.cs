@@ -1,5 +1,4 @@
 ﻿using BataBuilder.Items;
-using DataBuilder.Effects;
 using DataBuilder.Leverages;
 using DataBuilder.Units;
 using NWO_Abstractions;
@@ -38,47 +37,44 @@ namespace NWO_DataBuilder.Core.ViewModels
         public ReactiveCommand<System.Reactive.Unit, System.Reactive.Unit>? StartStopRagerBattleReactiveCommand { get; set; }
 
         [Reactive] public string StartStopButtonText { get; set; } = IBattleLogService.StartBattleText;
+
+        #region DummySettings
+
+        [Reactive] public DummySettings DummySettings { get; set; } = new DummySettings();
+
+        #endregion
+
+        #region UnitSettings
+
+        [Reactive] public Unit SelectedUnit { get; set; }
+        [Reactive] public double SelectedUnitStartHealth { get; set; } = 0;
+        [Reactive] public PercentageValues UnitPercentageValues { get; set; } = new PercentageValues(PercentageValuesType.Outcoming);
+
+        #endregion
+
+        #region Battle Settings
+
+        [Reactive] public double BattleSpeed { get; set; } = 1;
+        [Reactive] public IBattlePurpose SelectedPurpose { get; set; }
+        [Reactive] public int BattleTimeHours { get; set; } = 0;
+        [Reactive] public int BattleTimeMinutes { get; set; } = 0;
+        [Reactive] public int BattleTimeSeconds { get; set; } = 30;
+
+        #endregion
+
+        #region Battle Process
+
+        [Reactive] public double DummyCurrentHealth { get; set; }
+        [Reactive] public double UnitCurrentHealth { get; set; }
         [Reactive] public string BattleTimeText { get; set; } = "00:00:00";
         [Reactive] public string TotalDamageText { get; set; } = "0";
         [Reactive] public string TotalRecoverText { get; set; } = "0";
         [Reactive] public string BattleSpeedText { get; set; }
         [Reactive] public bool BattleStarted { get; set; } = false;
-        [Reactive] public Unit SelectedUnit { get; set; }
-        [Reactive] public IBattlePurpose SelectedPurpose { get; set; }
-        [Reactive] public int MaxHealth { get; set; } = 1000;
-        [Reactive] public int StartHealth { get; set; } = 1000;
-        [Reactive] public int Health { get; set; }
-        [Reactive] public int BattleTimeHours { get; set; } = 0;
-        [Reactive] public int BattleTimeMinutes { get; set; } = 0;
-        [Reactive] public int BattleTimeSeconds { get; set; } = 30;
-
-        #region LeveragesForDummy
-
-        [Reactive] public int AllLeveragesForDummyIncrease { get; set; } = 0;
-        [Reactive] public int AllLeveragesForDummyDecrease { get; set; } = 0;
-        [Reactive] public int RecoveryForDummyIncrease { get; set; } = 0;
-        [Reactive] public int RecoveryForDummyDecrease { get; set; } = 0;
-        [Reactive] public int DamageForDummyIncrease { get; set; } = 0;
-        [Reactive] public int DamageForDummyDecrease { get; set; } = 0;
 
         #endregion
 
-        #region UnitLeverages
-
-        [Reactive] public int UnitLeveragesIncreasePercent { get; set; } = 0;
-        [Reactive] public int UnitLeveragesDecreasePercent { get; set; } = 0;
-        [Reactive] public int UnitDamageIncreasePercent { get; set; } = 0;
-        [Reactive] public int UnitDamageDecreasePercent { get; set; } = 0;
-        [Reactive] public int UnitRecoveryIncreasePercent { get; set; } = 0;
-        [Reactive] public int UnitRecoveryDecreasePercent { get; set; } = 0;
-         
-        #endregion
-
-        [Reactive] public double BattleSpeed { get; set; } = 1;
-
-        public bool IsAlive { get { return IsImmortal ? true : Health > 0; } set { } }
-
-        [Reactive] public bool IsImmortal { get; set; } = false;
+        public bool DummyStillAlive { get { return DummySettings.IsImmortal ? true : DummyCurrentHealth > 0; } set { } }
 
         public BattleUnitVsDummyViewModel()
         {
@@ -136,24 +132,53 @@ namespace NWO_DataBuilder.Core.ViewModels
             });
         }
 
-        private void OnTargetHealthChanged(double targetHealth)
+        private void OnTargetHealthChanged(double targetHealth, ITarget target)
         {
-            _newHealthValue = targetHealth;
-            Task.Run(ChangeHealth);
+            if (target.TargetId == SelectedUnit.TargetId)
+            {
+                _newUnitHealthValue = targetHealth;
+                Task.Run(ChangeUnitHealth);
+            }
+            else if (target is Dummy)
+            {
+                _newDummyHealthValue = targetHealth;
+                Task.Run(ChangeDummyHealth);
+            }
         }
 
-        private async Task ChangeHealth()
+        private async Task ChangeUnitHealth()
         {
-            while (IsAlive)
+            while (UnitCurrentHealth != _newUnitHealthValue)
             {
                 RxApp.MainThreadScheduler.Schedule(() =>
                 {
-                    if (_newHealthValue > Health)
-                        Health++;
+                    if (_newUnitHealthValue > UnitCurrentHealth)
+                        UnitCurrentHealth++;
                     else
                     {
-                        if (_newHealthValue < Health)
-                            Health--;
+                        if (_newUnitHealthValue < UnitCurrentHealth)
+                            UnitCurrentHealth--;
+                    }
+                });
+                await Task.Delay(10);
+            }
+        }
+
+        private async Task ChangeDummyHealth()
+        {
+            if (DummyStillAlive is false)
+                return;
+
+            while (DummyCurrentHealth != _newDummyHealthValue)
+            {
+                RxApp.MainThreadScheduler.Schedule(() =>
+                {
+                    if (_newDummyHealthValue > DummyCurrentHealth)
+                        DummyCurrentHealth++;
+                    else
+                    {
+                        if (_newDummyHealthValue < DummyCurrentHealth)
+                            DummyCurrentHealth--;
                     }
                 });
                 await Task.Delay(10);
@@ -185,27 +210,6 @@ namespace NWO_DataBuilder.Core.ViewModels
             _unitInBattle = SelectedUnit;
             double battleSpeed = BattleSpeed;
             int battleTime = TimeTextConverter.ConvertToSeconds(BattleTimeHours, BattleTimeMinutes, BattleTimeSeconds);
-            int startHealth = MaxHealth < StartHealth ? MaxHealth : StartHealth;
-
-            IPercentageValues unitOutcomingStartPercentageValues = new PercentageValues(PercentageValuesType.Outcoming)
-            {
-                AllLeveragesDecrease = UnitLeveragesDecreasePercent,
-                AllLeveragesIncrease = UnitLeveragesIncreasePercent,
-                DamageDecrease = UnitDamageDecreasePercent,
-                DamageIncrease = UnitDamageIncreasePercent,
-                RecoveryDecrease = UnitRecoveryDecreasePercent,
-                RecoveryIncrease = UnitRecoveryIncreasePercent,
-            };
-
-            IPercentageValues dummyIncomingStartPercentageValues = new PercentageValues(PercentageValuesType.Incoming)
-            {
-                AllLeveragesIncrease = AllLeveragesForDummyIncrease,
-                AllLeveragesDecrease = AllLeveragesForDummyDecrease,
-                DamageDecrease = DamageForDummyDecrease,
-                DamageIncrease = DamageForDummyIncrease,
-                RecoveryDecrease = RecoveryForDummyDecrease,
-                RecoveryIncrease = RecoveryForDummyIncrease,
-            };
 
             RxApp.MainThreadScheduler.Schedule(() =>
             {
@@ -215,20 +219,19 @@ namespace NWO_DataBuilder.Core.ViewModels
                 BattleStarted = true;
             });
 
-            var dummySettings = new DummySettings(IsImmortal, dummyIncomingStartPercentageValues, MaxHealth, StartHealth, EffectsLists.Default(), isOrganic: true, isAlive: true, isMech: false);
-            _unitInBattle.StartPercentageValues = unitOutcomingStartPercentageValues;
+            _unitInBattle.StartPercentageValues = UnitPercentageValues;
+            _unitInBattle.Health = SelectedUnitStartHealth;
 
             OneDummyBattleSettings settings = new()
             {
-                Dummy = new Dummy(dummySettings),
+                Dummy = new Dummy(DummySettings),
                 BattleSpeed = BattleSpeed,
                 BattleTime = battleTime,
                 BattlePurpose = SelectedPurpose,
-                Unit = _unitInBattle,
-                
+                Unit = _unitInBattle,           
             };
             
-            if (IsImmortal)
+            if (DummySettings.IsImmortal)
             {
                 battle = new UnitVsImmortalDummyBattle(settings);
             }
@@ -236,8 +239,10 @@ namespace NWO_DataBuilder.Core.ViewModels
             {
                 RxApp.MainThreadScheduler.Schedule(() =>
                 {
-                    Health = startHealth;
-                    _newHealthValue = startHealth;
+                    DummyCurrentHealth = DummySettings.StartHealth;
+                    _newDummyHealthValue = DummySettings.StartHealth;
+                    UnitCurrentHealth = SelectedUnitStartHealth;
+                    _newUnitHealthValue = SelectedUnitStartHealth;
                 });
                 battle = new UnitVsMortalDummyBattle(settings);
             }
@@ -395,7 +400,8 @@ namespace NWO_DataBuilder.Core.ViewModels
 
         private Unit _unitInBattle;
         private IBattleModelling? battle;
-        private double _newHealthValue;
+        private double _newDummyHealthValue;
+        private double _newUnitHealthValue;
 
         private ObservableCollection<IEffect> _dummyNegativeEffects;
         private ObservableCollection<IEffect> _dummyPositiveEffects;

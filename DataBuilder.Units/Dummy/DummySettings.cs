@@ -1,35 +1,19 @@
-﻿using NWO_Abstractions;
+﻿using DataBuilder.Effects;
+using DataBuilder.Leverages;
+using NWO_Abstractions;
+using NWO_Abstractions.Enums;
 
 namespace DataBuilder.Units
 {
     public class DummySettings : IDummySettings
     {
-        public bool IsImmortal { get; }
-
-        public IPercentageValues StartPercentage { get; }
-
-        public double MaxHealth { get; }
-
-        public double StartHealth { get; } 
-
-        public IEffectsLists StartEffects { get; }
-
-        public bool IsOrganic { get; }
-
-        public bool IsAlive { get; }
-
-        public bool IsMech { get; }
-
-        public DummySettings(bool isImmortal, IPercentageValues startPercentage, double maxHealth, double startHealth, IEffectsLists startEffects, bool isOrganic, bool isAlive, bool isMech)
-        {
-            IsImmortal = isImmortal;
-            StartPercentage = startPercentage;
-            MaxHealth = maxHealth;
-            StartEffects = startEffects;
-            IsOrganic = isOrganic;
-            IsAlive = isAlive;
-            IsMech = isMech;
-            StartHealth = startHealth;
-        }
+        public bool IsImmortal { get; set; } = false;
+        public bool IsOrganic { get; set; } = true;
+        public bool IsAlive { get; set; } = true;
+        public bool IsMech { get; set; } = false;
+        public double MaxHealth { get; set; } = 1000;
+        public double StartHealth { get; set; } = 1000;
+        public IPercentageValues StartPercentage { get; set; } = new PercentageValues(PercentageValuesType.Incoming);
+        public IEffectsLists StartEffects => EffectsLists.Default();
     }
 }
