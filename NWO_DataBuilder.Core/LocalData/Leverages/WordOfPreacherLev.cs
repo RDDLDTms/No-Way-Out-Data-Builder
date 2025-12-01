@@ -1,6 +1,7 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
 using DataBuilder.Leverages.Base;
 using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 
 namespace NWO_DataBuilder.Core.LocalData.Leverages
 {
@@ -13,6 +14,7 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageTargeting Targeting => LeverageTargeting.Place;
         public override string UniversalName => "Word of preacher";
         public override string RussianDisplayName => "Слово проповедника";
+        public override string InstrumentalCase => "словом проповедника";
 
         public WordOfPreacherLev(ILeverageClass lClass, params ILeverageOption[] lOptions) : base(lClass, lOptions) { }
     }

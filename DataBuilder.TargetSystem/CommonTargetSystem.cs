@@ -1,6 +1,7 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
 using NWO_Abstractions;
 using NWO_Abstractions.Battles;
+using NWO_Abstractions.Leverages;
 
 namespace DataBuilder.TargetSystem
 {
@@ -13,27 +14,15 @@ namespace DataBuilder.TargetSystem
             _battle = battle;
         }
 
-        public IEnumerable<ITarget>? FindTargets(IUnitSkill skill, bool mainLeverage, int unitTeamNumber)
+        public IEnumerable<ITarget>? FindTargets(ILeverage leverage, int unitTeamNumber)
         {
-            ILeverage leverage = mainLeverage ? skill.MainLeverage : skill.AdditionalLeverage!;
-            switch (leverage.Type)
+            return leverage.Type switch
             {
-                case LeverageType.Damage:
-                case LeverageType.NegativeEffectApplying:
-                    return FindNonImmunedEnemies(leverage, unitTeamNumber);
-
-                case LeverageType.Recovery:
-                    return FindSuitableAlliesForRecover(leverage, unitTeamNumber);
-
-                case LeverageType.PositiveEffectApplying:
-                    return FindNonImmunedAllies(leverage, unitTeamNumber);
-
-                case LeverageType.PositiveEffectRemoval:
-                case LeverageType.NegativeEffectRemoval:
-                case LeverageType.Creation:
-                case LeverageType.None:
-                default: return null;
-            }
+                LeverageType.InstantDamage or LeverageType.NegativeEffectApplying or LeverageType.PassiveDamage => FindNonImmunedEnemies(leverage, unitTeamNumber),
+                LeverageType.InstantRecovery or LeverageType.PassiveRecovery => FindSuitableAlliesForRecover(leverage, unitTeamNumber),
+                LeverageType.PositiveEffectApplying => FindNonImmunedAllies(leverage, unitTeamNumber),
+                _ => null,
+            };
         }
 
         private IEnumerable<ITarget>? FindSuitableAlliesForRecover(ILeverage leverage, int teamNumber) => 

@@ -1,4 +1,5 @@
 ﻿using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 
 namespace DataBuilder.Effects
 {
@@ -7,8 +8,8 @@ namespace DataBuilder.Effects
         public override LeverageType Type => LeverageType.PositiveEffectApplying;
         public override EffectCarrier Carrier => EffectCarrier.Target;
 
-        public TargetPeriodicRecoveryEffect(int duration, ILeverage leverage, double cooldown, int minValue, int maxValue) :
-            base(duration, leverage, cooldown, minValue, maxValue)
+        public TargetPeriodicRecoveryEffect(ILeverage leverage, int duration, double cooldown, int minValue, int maxValue) :
+            base(leverage, duration, cooldown, minValue, maxValue)
         {
 
         }

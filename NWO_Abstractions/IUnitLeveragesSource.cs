@@ -1,4 +1,6 @@
-﻿namespace NWO_Abstractions
+﻿using NWO_Abstractions.Leverages;
+
+namespace NWO_Abstractions
 {
     /// <summary>
     /// Источник воздействий для юнита
@@ -8,12 +10,12 @@
         /// <summary>
         /// Данные для оснвного воздействия
         /// </summary>
-        public ILeverageData MainData { get; }
+        public ITypefulLeverage MainLeverageData { get; }
 
         /// <summary>
         /// Данные для дополнительного воздействия
         /// </summary>
-        public ILeverageData? AdditionalData { get; }
+        public ITypefulLeverage[]? AdditionalLeveragesData { get; }
         
         /// <summary>
         /// Источник воздействий

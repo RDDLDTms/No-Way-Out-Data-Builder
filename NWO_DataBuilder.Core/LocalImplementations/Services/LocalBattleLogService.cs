@@ -1,7 +1,7 @@
 ﻿using DataBuilder.Effects;
-using DataBuilder.Units;
 using DataBuilder.Units.Behaviors;
 using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 using NWO_Abstractions.Services;
 using System.Text;
 
@@ -22,32 +22,37 @@ namespace NWO_DataBuilder.Core.LocalImplementations.Services
 
         public string GetUnitWaitingSkillCooldownsMessage(string unitName) => $"{unitName} ожидает откатов умений";
 
-        public string BuildCompleteRussianLeverageActionTextMessage(string russianObjectName, IUnitLeveragesSource unitLeveragesSource, ISkillResultPart mainPart, ISkillResultPart? additionalPart)
+        public string BuildCompleteRussianLeverageActionTextMessage(string russianObjectName, IUnitLeveragesSource unitLeveragesSource, ISkillResult skillResult)
         {
             StringBuilder stringBuilder = new();
 
             // основная часть сообщения
-            string actionSentence = GetUnitLeverageActionTextMessage(unitLeveragesSource.LeveragesSource.MainLeverage, mainPart.Value);
-            string instrumentalCase = unitLeveragesSource.LeveragesSource.InstrumentalCase;
+            string actionSentence = GetUnitLeverageActionTextMessage(unitLeveragesSource.LeveragesSource.MainLeverage, skillResult.MainPart!.Value);
             stringBuilder.Append($"{russianObjectName} {actionSentence} ");
-            stringBuilder.Append(GetDataMessageToAppend(unitLeveragesSource.MainData, unitLeveragesSource.LeveragesSource.MainLeverage, instrumentalCase));
-
+            stringBuilder.Append(GetDataMessageToAppend(unitLeveragesSource.MainLeverageData, unitLeveragesSource.LeveragesSource.MainLeverage));
+            var additionalLeverages = unitLeveragesSource.LeveragesSource.AdditionalLeverages;
             // дополнительная часть сообщения
-            if (additionalPart is not null)
+            if (skillResult.AdditionalPart is not null && additionalLeverages is not null)
             {
-                string additionalSentense = GetUnitLeverageActionTextMessage(unitLeveragesSource.LeveragesSource.AdditionalLeverage!, additionalPart.Value);
-                stringBuilder.Append($" и дополнительно {additionalSentense} ");
-                stringBuilder.Append(GetDataMessageToAppend(unitLeveragesSource.AdditionalData!, unitLeveragesSource.LeveragesSource.AdditionalLeverage!, instrumentalCase));
+                stringBuilder.Append($" и дополнительно ");          
+                for (int i = 0; i < additionalLeverages.Length; i++)
+                {
+                    stringBuilder.Append(GetUnitLeverageActionTextMessage(additionalLeverages[i], skillResult.AdditionalPart[i].Value));
+                    stringBuilder.Append(GetDataMessageToAppend(unitLeveragesSource.AdditionalLeveragesData![i], additionalLeverages[i]));
+                    stringBuilder.Append(" и ");
+                }
             }
-            return stringBuilder.ToString();
+            return stringBuilder.ToString().TrimEnd(' ','и');
         }
 
         public string GetUnitLeverageActionTextMessage(ILeverage leverage, int? leverageValue = null)
         {
             return leverage.Type switch
             {
-                LeverageType.Damage => $"наносит {leverageValue} ед. урона от",
-                LeverageType.Recovery => $"восстанавливает {leverageValue} здоровья с помощью",
+                LeverageType.InstantDamage => $"наносит {leverageValue} ед. урона от",
+                LeverageType.PassiveDamage => $"наносит {leverageValue} ед. урона от",
+                LeverageType.InstantRecovery => $"восстанавливает {leverageValue} здоровья с помощью",
+                LeverageType.PassiveRecovery => $"восстанавливает {leverageValue} здоровья с помощью",
                 LeverageType.PositiveEffectApplying => "накладывает положительный эффект",
                 LeverageType.NegativeEffectApplying => "накладывает отрицательный эффект",
                 LeverageType.PositiveEffectRemoval => "снимает положительный эффект",
@@ -77,7 +82,7 @@ namespace NWO_DataBuilder.Core.LocalImplementations.Services
 
         private string HitPointRussianWord(bool isMech) => isMech ? "прочности" : "здоровья";
 
-        private string GetEffectApplyDisplayMessage(ILeverageData data)
+        private string GetEffectApplyDisplayMessage(ITypefulLeverage data)
         {
             var effect = (EffectBase)data;
             return $"\"{effect.EffectDisplayName}\" на {effect.Duration} сек.";
@@ -85,7 +90,7 @@ namespace NWO_DataBuilder.Core.LocalImplementations.Services
 
         private bool IsEffectApplying(LeverageType type) => type is LeverageType.NegativeEffectApplying or LeverageType.PositiveEffectApplying;
 
-        private string GetDataMessageToAppend(ILeverageData data, ILeverage leverage, string instumentalCase) =>
-            IsEffectApplying(leverage.Type) ? GetEffectApplyDisplayMessage(data) : $"{leverage.Class.Genitive} {instumentalCase}";
+        private string GetDataMessageToAppend(ITypefulLeverage data, ILeverage leverage) =>
+            IsEffectApplying(leverage.Type) ? GetEffectApplyDisplayMessage(data) : $"{leverage.Class.Genitive} {leverage.InstrumentalCase}";
     } 
 }

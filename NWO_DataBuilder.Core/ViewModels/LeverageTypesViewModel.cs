@@ -1,4 +1,4 @@
-﻿using NWO_Abstractions;
+﻿using NWO_Abstractions.Leverages;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;

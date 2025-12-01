@@ -1,4 +1,5 @@
 ﻿using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 
 namespace NWO_DataBuilder.Core.Services
 {
@@ -11,7 +12,7 @@ namespace NWO_DataBuilder.Core.Services
         /// Создать источник воздействий
         /// </summary>
         /// <returns>Новый истоник воздействий</returns>
-        public ILeveragesSource CreateLeveragesSource(ILeverage mainLeverage, ILeverage? additionalLeverage, string universalName, string russianName, string russianDescription, string secondWord);
+        public ILeveragesSource CreateLeveragesSource(ILeverage mainLeverage, ILeverage[]? additionalLeverages, string universalName, string russianName, string russianDescription, string secondWord);
 
         /// <summary>
         /// Создать источник воздействий для юнита
@@ -21,6 +22,6 @@ namespace NWO_DataBuilder.Core.Services
         /// <param name="mainValues">Значения основного воздействия</param>
         /// <param name="additionalValues">Значения дополнительного воздействия</param>
         /// <returns>Источник воздействий для юнита</returns>
-        public IUnitLeveragesSource CreateUnitLeverageSource(ILeveragesSource source, SkillPriority priority, ILeverageData mainData, ILeverageData? additionalData = null);
+        public IUnitLeveragesSource CreateUnitLeverageSource(ILeveragesSource source, SkillPriority priority, ITypefulLeverage mainLeverageData, ITypefulLeverage[]? additionalleveragesData);
     }
 }

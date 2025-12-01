@@ -4,7 +4,7 @@ namespace DataBuilder.Units
 {
     public class SkillResult : ISkillResult
     {
-        public SkillResult(ISkillResultPart mainPart, ISkillResultPart additionalPart, SkillPriority leveragesPriority) : this(mainPart, leveragesPriority)
+        public SkillResult(ISkillResultPart mainPart, ISkillResultPart[]? additionalPart, SkillPriority leveragesPriority) : this(mainPart, leveragesPriority)
         {
             AdditionalPart = additionalPart;
         }
@@ -23,6 +23,6 @@ namespace DataBuilder.Units
 
         public ISkillResultPart? MainPart { get; }
 
-        public ISkillResultPart? AdditionalPart { get; }
+        public ISkillResultPart[]? AdditionalPart { get; }
     }
 }

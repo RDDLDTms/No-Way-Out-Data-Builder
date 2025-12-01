@@ -1,4 +1,4 @@
-﻿namespace NWO_Abstractions
+﻿namespace NWO_Abstractions.Leverages
 {
     /// <summary>
     /// Значения воздействия

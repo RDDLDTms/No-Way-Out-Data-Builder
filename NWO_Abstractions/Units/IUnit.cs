@@ -1,6 +1,6 @@
 ﻿namespace NWO_Abstractions
 {
-    public delegate void UnitActionDelegate(string russianUnitName, IUnitLeveragesSource unitLeveragesSource, ISkillResultPart mainPart, ISkillResultPart? additionalPart);
+    public delegate void UnitActionDelegate(string russianUnitName, IUnitLeveragesSource unitLeveragesSource, ISkillResult skillresult);
     public delegate void UnitWaitingDelegate(string russianUnitName);
     public delegate void UnitBehaviorDelegate(string russianUnitName, IBehavior newBehavior);
 

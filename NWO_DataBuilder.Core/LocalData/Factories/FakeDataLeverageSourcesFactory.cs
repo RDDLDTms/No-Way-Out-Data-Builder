@@ -1,7 +1,7 @@
-﻿using NWO_Abstractions;
-using NWO_DataBuilder.Core.Models;
+﻿using NWO_DataBuilder.Core.Models;
 using NWO_DataBuilder.Core.LocalData.Leverages;
 using  NWO_DataBuilder.Core.LocalData.LeverageSources;
+using NWO_Abstractions.Leverages;
 
 namespace NWO_DataBuilder.Core.Tests
 {

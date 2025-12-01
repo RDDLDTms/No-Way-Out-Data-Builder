@@ -1,6 +1,6 @@
 ﻿using DataBuilder.BuilderObjects;
 using Newtonsoft.Json;
-using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 
 namespace DataBuilder.Data.Saver
 {

@@ -1,4 +1,4 @@
-﻿using NWO_Abstractions;
+﻿using NWO_Abstractions.Leverages;
 
 namespace DataBuilder.Items
 {

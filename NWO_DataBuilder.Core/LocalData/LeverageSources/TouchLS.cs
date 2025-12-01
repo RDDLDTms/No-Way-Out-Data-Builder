@@ -1,7 +1,7 @@
 ﻿using DataBuilder.BuilderObjects;
 using DataBuilder.BuilderObjects.Primal;
 using DataBuilder.Leverages.Base;
-using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 
 namespace  NWO_DataBuilder.Core.LocalData.LeverageSources
 {
@@ -9,7 +9,6 @@ namespace  NWO_DataBuilder.Core.LocalData.LeverageSources
     {
         public override string UniversalName => "Touch";
         public override string RussianDisplayName => "Касание";
-        public override string InstrumentalCase => "касанием";
         public override Description Description => new("Наносит урон в ближнем бою и восстанавливает здоровье дружественной цели", Language.Russian);
         public override Guid Id => new("49686B3C-A9B6-4A4E-8651-2ABAD42D06B6D");
 

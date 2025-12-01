@@ -1,6 +1,7 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
 using DataBuilder.Leverages.Base;
 using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 
 namespace DataBuilder.Leverages
 {

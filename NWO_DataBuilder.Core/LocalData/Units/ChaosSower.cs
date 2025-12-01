@@ -27,23 +27,23 @@ namespace NWO_DataBuilder.Core.Tests.Units
             return _leveragesSources = new()
             {
                 new UnitLeveragesSource(allLSources[nameof(TouchLS)], SkillPriority.PrimalPriority,
-                    new LeverageHit(minValue: 15, maxValue: 30, cooldown: 5, LeverageType.Damage),
-                    new LeverageHit(minValue: 5, maxValue: 9, cooldown: 5, LeverageType.Recovery)),
+                    new LeverageInstantStrike(minValue: 15, maxValue: 30, cooldown: 5),
+                    new LeverageInstantRecovery(minValue: 5, maxValue: 9, cooldown: 5)),
 
                 new UnitLeveragesSource(allLSources[nameof(BarrirerLS)], SkillPriority.SecondaryPriority,
-                    new EffectBase(5, allLSources[nameof(BarrirerLS)].MainLeverage, cooldown: 8)),
+                    new EffectBase(allLSources[nameof(BarrirerLS)].MainLeverage, duration:5, cooldown: 8)),
 
                 new UnitLeveragesSource(allLSources[nameof(ViscousSphereLS)], SkillPriority.HighPriority,
-                    new TargetDefenceIncreaseEffect(duration: 7, allLSources[nameof(ViscousSphereLS)].MainLeverage, cooldown: 3, percentage: 50)),
+                    new TargetDefenceIncreaseEffect(allLSources[nameof(ViscousSphereLS)].MainLeverage, duration: 7, cooldown: 3, percentage: 50)),
 
                 new UnitLeveragesSource(allLSources[nameof(InsanityLS)], SkillPriority.AdvancedPriority,
-                    new TargetControlEffect(duration: 5, allLSources[nameof(InsanityLS)].MainLeverage, cooldown: 11)),
+                    new TargetControlEffect(allLSources[nameof(InsanityLS)].MainLeverage, duration: 5, cooldown: 11)),
 
                 new UnitLeveragesSource(allLSources[nameof(PurifyingLS)], SkillPriority.SpecialSupportPriority,
-                    new LeverageEffectsRemoval(cooldown: 6, LeverageType.NegativeEffectRemoval)),
+                    new LeverageNegativeEffectsRemoval(cooldown: 6)),
 
                 new UnitLeveragesSource(allLSources[nameof(SeizureLS)], SkillPriority.BasePriority,
-                    new LeverageHit(minValue: 3, maxValue: 5, cooldown: 2, LeverageType.Damage))
+                    new LeverageInstantStrike(minValue: 3, maxValue: 5, cooldown: 2))
             };
         }
     }

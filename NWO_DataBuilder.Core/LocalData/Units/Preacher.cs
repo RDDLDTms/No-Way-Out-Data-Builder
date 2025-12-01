@@ -27,7 +27,7 @@ namespace NWO_DataBuilder.Core.Tests.Units
             return _leveragesSources = new()
             {
                 new UnitLeveragesSource(wordOfPrecaher, SkillPriority.MiddlePriority,
-                    new TargetControlEffect(duration: 3, wordOfPrecaher.MainLeverage, cooldown: 6))
+                    new TargetControlEffect(wordOfPrecaher.MainLeverage, duration: 3, cooldown: 6))
             };
         }
     }

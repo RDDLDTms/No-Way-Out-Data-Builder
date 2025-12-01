@@ -1,10 +1,11 @@
 ﻿using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 using NWO_Abstractions.Services;
 using Splat;
 
 namespace DataBuilder.Effects
 {
-    public class EffectBase : ILeverageEffect
+    public class EffectBase : ILeverageEffect, ILeverageWithCooldown, ITypefulLeverage
     {
         public event EffectTimeHandler? OnEffectTick;
         public event EffectEndHandler? OnEffectEnd;
@@ -35,7 +36,7 @@ namespace DataBuilder.Effects
 
         protected IBattleLogService BattleLogService { get; }
 
-        public EffectBase(int duration, ILeverage leverage, double cooldown)
+        public EffectBase(ILeverage leverage, int duration, double cooldown)
         {
             Duration = duration;
             EffectClass = leverage.Class;

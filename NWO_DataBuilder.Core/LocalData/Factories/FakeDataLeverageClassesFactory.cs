@@ -1,4 +1,4 @@
-﻿using NWO_Abstractions;
+﻿using NWO_Abstractions.Leverages;
 using NWO_DataBuilder.Core.Tests.LeverageClasses;
 
 namespace NWO_DataBuilder.Core.Tests

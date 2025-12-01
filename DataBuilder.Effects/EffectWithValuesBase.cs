@@ -1,8 +1,9 @@
 ﻿using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 
 namespace DataBuilder.Effects
 {
-    public class EffectWithValuesBase : EffectBase, ILeverageValues
+    public class EffectWithValuesBase : EffectBase, IUnitLeverageData, ILeverageValues
     {
         public int MinValue { get; }
 
@@ -10,8 +11,8 @@ namespace DataBuilder.Effects
 
         public int SourcePercentage { get; private set; }
 
-        public EffectWithValuesBase(int duration, ILeverage leverage, double cooldown, int minValue, int maxValue) 
-            : base(duration, leverage, cooldown)
+        public EffectWithValuesBase(ILeverage leverage, int duration, double cooldown, int minValue, int maxValue) 
+            : base(leverage, duration, cooldown)
         {
             MinValue = minValue;
             MaxValue = maxValue;

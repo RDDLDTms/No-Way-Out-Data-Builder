@@ -1,5 +1,5 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 
 namespace DataBuilder.Leverages
 {
@@ -7,7 +7,7 @@ namespace DataBuilder.Leverages
     {
         public ILeverage MainLeverage { get; set; }
 
-        public ILeverage? AdditionalLeverage { get; set; }
+        public ILeverage[]? AdditionalLeverages { get; set; }
 
         public string UniversalName { get; private set; }
 
@@ -21,11 +21,11 @@ namespace DataBuilder.Leverages
 
         public Description Description => throw new NotImplementedException();
 
-        public FakeLeveragesSource(ILeverage mainLeverage, ILeverage? additionalLeverage, string universalName, string russianDisplayName, string russianDescription, string instrumentalCase)
+        public FakeLeveragesSource(ILeverage mainLeverage, ILeverage[]? additionalLeverages, string universalName, string russianDisplayName, string russianDescription, string instrumentalCase)
         {
             Id = Guid.NewGuid();
             MainLeverage = mainLeverage;
-            AdditionalLeverage = additionalLeverage;
+            AdditionalLeverages = additionalLeverages;
             UniversalName = universalName;
             RussianDisplayName = russianDisplayName;
             RussianDescription = russianDescription;

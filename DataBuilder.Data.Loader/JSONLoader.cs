@@ -1,6 +1,6 @@
 ﻿using DataBuilder.BuilderObjects;
 using Newtonsoft.Json;
-using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 using System.Collections.ObjectModel;
 
 namespace DataBuilder.Data.Loader

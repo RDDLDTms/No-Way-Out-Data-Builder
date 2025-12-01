@@ -1,4 +1,5 @@
 ﻿using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 
 namespace DataBuilder.Effects
 {
@@ -7,8 +8,8 @@ namespace DataBuilder.Effects
         public override LeverageType Type => LeverageType.NegativeEffectApplying;
         public override EffectCarrier Carrier => EffectCarrier.Target;
 
-        public TargetControlEffect(int duration, ILeverage leverage, double cooldown) 
-            : base(duration, leverage, cooldown)
+        public TargetControlEffect(ILeverage leverage, int duration, double cooldown) 
+            : base(leverage, duration, cooldown)
         {
 
         }

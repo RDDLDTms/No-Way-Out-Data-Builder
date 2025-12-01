@@ -30,16 +30,16 @@ namespace NWO_DataBuilder.Core.Tests
             return _leveragesSources = new()
             {
                 new UnitLeveragesSource(defence, SkillPriority.HighPriority,
-                    new TargetDefenceIncreaseEffect(duration: 7, defence.MainLeverage, cooldown: 10, percentage: 30)),
+                    new TargetDefenceIncreaseEffect(defence.MainLeverage, duration: 7, cooldown: 10, percentage: 30)),
 
                 new UnitLeveragesSource(allLSources[nameof(WordOfHealerLS)], SkillPriority.AdvancedPriority, 
-                    new LeverageHit(minValue: 20, maxValue: 27, cooldown: 6, LeverageType.Recovery)),
+                    new LeverageInstantRecovery(minValue: 20, maxValue: 27, cooldown: 6)),
 
                 new UnitLeveragesSource(bless, SkillPriority.MiddlePriority, 
-                    new TargetPeriodicRecoveryEffect(duration: 6, bless.MainLeverage, cooldown: 8, minValue: 4, maxValue: 7)),
+                    new TargetPeriodicRecoveryEffect(bless.MainLeverage, duration: 6, cooldown: 8, minValue: 4, maxValue: 7)),
 
                 new UnitLeveragesSource(allLSources[nameof(PurifyingRitualLS)], SkillPriority.SpecialSupportPriority,
-                    new LeverageEffectsRemoval(cooldown: 10, LeverageType.NegativeEffectRemoval))
+                    new LeverageNegativeEffectsRemoval(cooldown: 10))
             };
         }
 

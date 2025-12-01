@@ -1,4 +1,5 @@
 ﻿using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 
 namespace DataBuilder.Units
 {
@@ -8,16 +9,16 @@ namespace DataBuilder.Units
 
         public SkillPriority LeveragesPriority { get; private set; }
 
-        public ILeverageData MainData { get; } 
+        public ITypefulLeverage MainLeverageData { get; } 
 
-        public ILeverageData? AdditionalData { get; }
+        public ITypefulLeverage[]? AdditionalLeveragesData { get; }
 
-        public UnitLeveragesSource(ILeveragesSource leveragesSource, SkillPriority leveragePriority, ILeverageData mainData, ILeverageData? additionalData = null) 
+        public UnitLeveragesSource(ILeveragesSource leveragesSource, SkillPriority leveragePriority, ITypefulLeverage mainLeverageData, params ITypefulLeverage[]? additionalLeveragesData) 
         { 
             LeveragesSource = leveragesSource;
-            MainData = mainData;
             LeveragesPriority = leveragePriority;
-            AdditionalData = additionalData;
+            MainLeverageData = mainLeverageData;
+            AdditionalLeveragesData = additionalLeveragesData;
         }
     }
 }

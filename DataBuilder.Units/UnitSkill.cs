@@ -1,37 +1,42 @@
-﻿using DataBuilder.Leverages;
-using NWO_Abstractions;
+﻿using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 
 namespace DataBuilder.Units
 {
     public class UnitSkill : IUnitSkill
     {
         private Timer? _mainTimer = null;
-        private Timer? _additionalTimer = null;
+        private Dictionary<int, Timer>? _additionalTimers = null;
 
-        private ILeverageData _mainData;
-        private ILeverageData? _additionalData;
+        private ITypefulLeverage _mainLeverageData;
+        private ITypefulLeverage[]? _additionalLeveragesData;
         private SkillPriority _priority;
 
         public SkillPriority Priority => _priority;
 
         public bool CanUseSkill { get; private set; } = true;
 
-        public bool CanUseAdditionalLeverage { get; private set; } = true;
+        public Dictionary<int, bool> CanUseAdditionalLeverages { get; private set; } = new();
 
         public ILeverage MainLeverage { get; }
 
-        public ILeverage? AdditionalLeverage { get; }
+        public ILeverage[]? AdditionalLeverages { get; }
 
         public UnitSkill(IUnitLeveragesSource unitLeveragesSource)
         {
-            _mainData = unitLeveragesSource.MainData;
-            _additionalData = unitLeveragesSource.AdditionalData;
+            _mainLeverageData = unitLeveragesSource.MainLeverageData;
+            _additionalLeveragesData = unitLeveragesSource.AdditionalLeveragesData;
             _priority = unitLeveragesSource.LeveragesPriority;
             MainLeverage = unitLeveragesSource.LeveragesSource.MainLeverage;
-            if (unitLeveragesSource.LeveragesSource.AdditionalLeverage is not null)
+            if (unitLeveragesSource.LeveragesSource.AdditionalLeverages is not null)
             {
-                _additionalData = unitLeveragesSource.AdditionalData;
-                AdditionalLeverage = unitLeveragesSource.LeveragesSource.AdditionalLeverage;
+                _additionalLeveragesData = unitLeveragesSource.AdditionalLeveragesData;
+                AdditionalLeverages = unitLeveragesSource.LeveragesSource.AdditionalLeverages;
+            }
+            CanUseAdditionalLeverages = new Dictionary<int, bool>();
+            for (int i = 0; i < AdditionalLeverages!.Length; i++)
+            {
+                CanUseAdditionalLeverages.Add(i, true);
             }
         }
 
@@ -48,12 +53,23 @@ namespace DataBuilder.Units
 
             SkillResult skillResult;
             RunSkillTimer(battleSpeed);
-            ISkillResultPart? mainPart = GetSkillResultPart(_mainData);
-            if (CanUseAdditionalLeverage && _additionalData is not null)
+            ISkillResultPart? mainPart = GetSkillResultPart(_mainLeverageData);
+            if (_additionalLeveragesData is not null)
             {
-                ISkillResultPart? additionalPart = GetSkillResultPart(_additionalData);
-                skillResult = new SkillResult(mainPart!, additionalPart!, _priority);
-                RunAdditionalLeverageTimer(battleSpeed);
+                List<ISkillResultPart> additionalPart = [];
+                for (int i = 0; i < _additionalLeveragesData.Length; i++)
+                {
+                    if (CanUseAdditionalLeverages[i])
+                    {
+                        var result = GetSkillResultPart(_additionalLeveragesData[i]);
+                        if (result is null)
+                            continue;
+
+                        additionalPart.Add(result);
+                        RunAdditionalLeverageTimer(battleSpeed, i);
+                    }
+                }
+                skillResult = new SkillResult(mainPart!, additionalPart.ToArray(), _priority);
             }
             else
             {
@@ -62,10 +78,10 @@ namespace DataBuilder.Units
             return skillResult;
         }
 
-        private ISkillResultPart? GetSkillResultPart(ILeverageData data)
+        private ISkillResultPart? GetSkillResultPart(ITypefulLeverage data)
         {
             ISkillResultPart? skillResultPart = null;
-            if (data is LeverageHit leverageHit)
+            if (data is IInstantLeverage leverageHit)
             {
                 skillResultPart = new SkillResultPart(leverageHit.GetValue(), data.Type);
             }
@@ -79,13 +95,20 @@ namespace DataBuilder.Units
         private void RunSkillTimer(double battleSpeed)
         {
             CanUseSkill = false;
-            _mainTimer = new Timer(new TimerCallback(MainTimerCallback), null, (int)(_mainData.Cooldown * 1000 / battleSpeed), Timeout.Infinite);
+            if (_mainLeverageData is not ILeverageWithCooldown levCooldown)
+                return;
+
+            _mainTimer = new Timer(new TimerCallback(MainTimerCallback), null, (int)(levCooldown.Cooldown * 1000 / battleSpeed), Timeout.Infinite);
         }
 
-        private void RunAdditionalLeverageTimer(double battleSpeed)
+        private void RunAdditionalLeverageTimer(double battleSpeed, int timerIndex)
         {
-            CanUseAdditionalLeverage = false;
-            _additionalTimer = new Timer(new TimerCallback(AdditionalTimerCallback), null, (int)(_additionalData!.Cooldown * 1000 / battleSpeed), Timeout.Infinite);
+            _additionalTimers ??= [];
+            CanUseAdditionalLeverages[timerIndex] = true;
+            if (_additionalLeveragesData![timerIndex] is not ILeverageWithCooldown levCooldown)
+                return;
+
+            _additionalTimers.Add(timerIndex, new Timer(new TimerCallback(AdditionalTimerCallback), timerIndex, (int)(levCooldown.Cooldown * 1000 / battleSpeed), Timeout.Infinite));
         }
 
         private void MainTimerCallback(object? state)
@@ -97,9 +120,12 @@ namespace DataBuilder.Units
 
         private void AdditionalTimerCallback(object? state)
         {
-            CanUseAdditionalLeverage = true;
-            _additionalTimer?.Dispose();
-            _additionalTimer = null;
+            if (state is null) return;
+            int index = (int)state!;
+            CanUseAdditionalLeverages[index] = true;
+            var timer = _additionalTimers![index];
+            _additionalTimers.Remove(index);
+            timer.Dispose();
         }
     }
 }

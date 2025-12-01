@@ -1,6 +1,7 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
 using DataBuilder.Leverages.Base;
 using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 
 namespace NWO_DataBuilder.Core.LocalData.Leverages
 {
@@ -13,6 +14,7 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageTargeting Targeting => LeverageTargeting.Single;
         public override string UniversalName => "Break";
         public override string RussianDisplayName => "Пролом";
+        public override string InstrumentalCase => "проломом";
 
         public BreakLev(ILeverageClass lClass) : base(lClass) { }
     }

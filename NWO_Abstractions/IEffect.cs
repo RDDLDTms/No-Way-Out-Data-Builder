@@ -1,4 +1,6 @@
-﻿namespace NWO_Abstractions
+﻿using NWO_Abstractions.Leverages;
+
+namespace NWO_Abstractions
 {
     public delegate void EffectTimeHandler(IEffect sender, int newTime, string logMessage);
     public delegate void EffectEndHandler(IEffect sender, string logMessage);

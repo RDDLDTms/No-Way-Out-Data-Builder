@@ -26,19 +26,19 @@ namespace NWO_DataBuilder.Core.Tests.Units
             return _leveragesSources = new()
             {
                 new UnitLeveragesSource(allLSources[nameof(ClaymoreOfLightLS)], SkillPriority.PrimalPriority,
-                    new LeverageHit(44, 66, 8, LeverageType.Damage),
-                    new LeverageHit(11, 22, 8, LeverageType.Damage)),
+                    new LeverageInstantStrike(minValue:44, maxValue:66, cooldown:8),
+                    new LeverageInstantStrike(minValue:11, maxValue:22, cooldown:8)),
 
                 new UnitLeveragesSource(allLSources[nameof(MirrorArmorLS)], SkillPriority.HighPriority,
-                    new LeverageHit(minValue: 20, maxValue: 30, cooldown: 7, LeverageType.Damage),
-                    new LeverageHit(minValue: 22, maxValue: 33, cooldown: 4, LeverageType.Damage)),
+                    new LeverageInstantStrike(minValue: 20, maxValue: 30, cooldown: 7),
+                    new LeverageInstantStrike(minValue: 22, maxValue: 33, cooldown: 4)),
 
                 new UnitLeveragesSource(allLSources[nameof(MirrorShieldLS)], SkillPriority.AdvancedPriority,
-                    new LeverageHit(minValue: 13, maxValue: 21, cooldown: 7, LeverageType.Damage),
-                    new LeverageHit(minValue: 22, maxValue: 33, cooldown: 6, LeverageType.Damage)),
+                    new LeverageInstantStrike(minValue: 13, maxValue: 21, cooldown: 7),
+                    new LeverageInstantStrike(minValue: 22, maxValue: 33, cooldown: 6)),
 
                 new UnitLeveragesSource(allLSources[nameof(ShieldStrikeLS)], SkillPriority.MiddlePriority,
-                    new LeverageHit(minValue: 13, maxValue: 16, cooldown: 7, LeverageType.Damage))
+                    new LeverageInstantStrike(minValue: 13, maxValue: 16, cooldown: 7))
             };
         }
     }

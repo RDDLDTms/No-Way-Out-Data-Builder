@@ -1,7 +1,7 @@
 ﻿using DataBuilder.BuilderObjects;
 using DataBuilder.BuilderObjects.Primal;
 using DataBuilder.Leverages.Base;
-using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 
 namespace  NWO_DataBuilder.Core.LocalData.LeverageSources
 {
@@ -9,7 +9,6 @@ namespace  NWO_DataBuilder.Core.LocalData.LeverageSources
     {
         public override string UniversalName => "Purifying ritual";
         public override string RussianDisplayName => "Ритуал очищения";
-        public override string InstrumentalCase => "ритуалом очищения";
         public override Description Description => new("Происходит ритуал очищения для снятия негативных эффектов по площади", Language.Russian);
         public override Guid Id => new("49686B3C-A9B6-4A4E-8651-2ABAD42D06B63");
 

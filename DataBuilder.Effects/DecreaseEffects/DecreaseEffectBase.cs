@@ -1,4 +1,5 @@
 ﻿using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 
 namespace DataBuilder.Effects
 {
@@ -6,8 +7,8 @@ namespace DataBuilder.Effects
     {
         public int Percentage { get; }
 
-        public DecreaseEffectBase(int duration, ILeverage leverage, double cooldown, int percentage) : 
-            base(duration, leverage, cooldown)
+        public DecreaseEffectBase(ILeverage leverage, int duration, double cooldown, int percentage) : 
+            base(leverage, duration, cooldown)
         {
             Percentage = percentage;
             EffectDisplayName = $"{leverage.RussianDisplayName} -{Percentage}%";

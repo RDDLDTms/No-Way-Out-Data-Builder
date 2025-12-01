@@ -1,4 +1,6 @@
-﻿namespace NWO_Abstractions.Services
+﻿using NWO_Abstractions.Leverages;
+
+namespace NWO_Abstractions.Services
 {
     /// <summary>
     /// Сервис для логгирования событий боя
@@ -32,7 +34,7 @@
         /// Построить полное русское ообщение о действии с воздействиями
         /// </summary>
         /// <returns>Сообщение для лога</returns>
-        public string BuildCompleteRussianLeverageActionTextMessage(string russianObjectName, IUnitLeveragesSource leveragesSource, ISkillResultPart mainPart, ISkillResultPart? additionalPart);
+        public string BuildCompleteRussianLeverageActionTextMessage(string russianObjectName, IUnitLeveragesSource leveragesSource, ISkillResult skillResult);
 
         /// <summary>
         /// Получить сообщение о действии юнита с воздействием

@@ -1,22 +1,21 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 
 namespace DataBuilder.Leverages.Base
 {
     public class LeverageSourceBase : ILeveragesSource
     {
         public ILeverage MainLeverage { get; }
-        public ILeverage? AdditionalLeverage { get; }
-        public virtual string InstrumentalCase { get; private set; } = string.Empty;
+        public ILeverage[] AdditionalLeverages { get; }
         public virtual string UniversalName { get; private set; } = string.Empty;
         public virtual string RussianDisplayName { get; private set; } = string.Empty;
         public virtual Description Description => new();
         public virtual Guid Id => Guid.Empty;
 
-        public LeverageSourceBase(ILeverage mainLeverage, ILeverage? additionalLeverage)
+        public LeverageSourceBase(ILeverage mainLeverage, params ILeverage[] additionalLeverages)
         {
             MainLeverage = mainLeverage;
-            AdditionalLeverage = additionalLeverage;
+            AdditionalLeverages = additionalLeverages;
         }
     }
 }

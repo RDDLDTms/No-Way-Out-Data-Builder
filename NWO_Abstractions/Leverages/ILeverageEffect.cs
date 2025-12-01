@@ -1,7 +1,7 @@
-﻿namespace NWO_Abstractions
+﻿namespace NWO_Abstractions.Leverages
 {
-    public interface ILeverageEffect : IEffect, ILeverageData
-    {
+    public interface ILeverageEffect : IEffect
+    { 
         public Timer? EffectTimer { get; }
 
         public int EffectCounter { get; }

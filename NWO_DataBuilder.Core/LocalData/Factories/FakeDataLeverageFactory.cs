@@ -1,4 +1,4 @@
-﻿using NWO_Abstractions;
+﻿using NWO_Abstractions.Leverages;
 using NWO_DataBuilder.Core.Models;
 using NWO_DataBuilder.Core.Tests.LeverageClasses;
 using NWO_DataBuilder.Core.Tests.LeverageOptions;
@@ -30,6 +30,7 @@ namespace NWO_DataBuilder.Core.Tests
                 { nameof(FlamingBroadswordLev), new FlamingBroadswordLev(lClasses[nameof(PhysicsLevCl)], lOptions[nameof(SlashingWeaponLevOpt)] )},
                 { nameof(GainLev), new GainLev(lClasses[nameof(GainLevCl)]) },
                 { nameof(InsanityLev), new InsanityLev(lClasses[nameof(WillLevCl)] )},
+                { nameof(LumenescenceLev), new LumenescenceLev(lClasses[nameof(EnergyLevCl)]) },
                 { nameof(MirrorArmorAddLev), new MirrorArmorAddLev(lClasses[nameof(DesctructionLevCl)])},
                 { nameof(MirrorArmorLev), new MirrorArmorLev(lClasses[nameof(PressureLevCl)])},
                 { nameof(MirrorShieldAddLev), new MirrorShieldAddLev(lClasses[nameof(DesctructionLevCl)])},

@@ -1,19 +1,14 @@
 ﻿using DataBuilder.BuilderObjects;
 using DataBuilder.BuilderObjects.Primal;
 
-namespace NWO_Abstractions
+namespace NWO_Abstractions.Leverages
 {
-    public interface ILeverage : IBaseBuilderObject
+    public interface ILeverage : IBaseBuilderObject, ITypefulLeverage
     {
         /// <summary>
         /// Классы воздействия
         /// </summary>
         public List<ILeverageOption> Options { get; }
-
-        /// <summary>
-        /// Тип воздействия
-        /// </summary>
-        public LeverageType Type { get; }
 
         /// <summary>
         /// Тип воздействия
@@ -39,5 +34,10 @@ namespace NWO_Abstractions
         /// Целеполагание воздействия
         /// </summary>
         public LeverageTargeting Targeting { get; }
+
+        /// <summary>
+        /// Творительный падеж
+        /// </summary>
+        public string InstrumentalCase { get; }
     }
 }

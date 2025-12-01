@@ -30,8 +30,8 @@ namespace NWO_DataBuilder.Core.LocalImplementations.Services
         {
             return type switch
             {
-                PercentageValuesType.Incoming => new TargetDefenceDecreaseEffect(200, DictionaryStorage.GetInstance().AllLeverages[nameof(BreakLev)], 200, increasePercentage),
-                _ => new ActorDamageIncreaseEffect(200, DictionaryStorage.GetInstance().AllLeverages[nameof(GainLev)], 200, increasePercentage)
+                PercentageValuesType.Incoming => new TargetDefenceDecreaseEffect(DictionaryStorage.GetInstance().AllLeverages[nameof(BreakLev)], 200, 200, increasePercentage),
+                _ => new ActorDamageIncreaseEffect(DictionaryStorage.GetInstance().AllLeverages[nameof(GainLev)], 200, 200, increasePercentage)
             };
         }
 
@@ -39,8 +39,8 @@ namespace NWO_DataBuilder.Core.LocalImplementations.Services
         {
             return type switch
             {
-                PercentageValuesType.Incoming => new TargetDefenceIncreaseEffect(200, DictionaryStorage.GetInstance().AllLeverages[nameof(DefenceLev)], 200, decreasePercentage),
-                _ => new ActorDamageDecreaseEffect(200, DictionaryStorage.GetInstance().AllLeverages[nameof(WeaknessLev)], 200, decreasePercentage)
+                PercentageValuesType.Incoming => new TargetDefenceIncreaseEffect(DictionaryStorage.GetInstance().AllLeverages[nameof(DefenceLev)], 200, 200, decreasePercentage),
+                _ => new ActorDamageDecreaseEffect(DictionaryStorage.GetInstance().AllLeverages[nameof(WeaknessLev)], 200, 200, decreasePercentage)
             };
         }
 
@@ -48,8 +48,8 @@ namespace NWO_DataBuilder.Core.LocalImplementations.Services
         {
             return type switch
             { 
-                PercentageValuesType.Incoming => new TargetRecoveryPowerIncreaseEffect(200, DictionaryStorage.GetInstance().AllLeverages[nameof(ShineLev)], 200, increasePercentage),
-                _ => new ActorRecoveringIncreaseEffect(200, DictionaryStorage.GetInstance().AllLeverages[nameof(ZealtoryLev)], 200, increasePercentage)
+                PercentageValuesType.Incoming => new TargetRecoveryPowerIncreaseEffect(DictionaryStorage.GetInstance().AllLeverages[nameof(ShineLev)], 200, 200, increasePercentage),
+                _ => new ActorRecoveringIncreaseEffect(DictionaryStorage.GetInstance().AllLeverages[nameof(ZealtoryLev)], 200, 200, increasePercentage)
             };
         }
 
@@ -57,8 +57,8 @@ namespace NWO_DataBuilder.Core.LocalImplementations.Services
         {
             return type switch
             {
-                PercentageValuesType.Incoming => new TargetRecoveryPowerDecreaseEffect(200, DictionaryStorage.GetInstance().AllLeverages[nameof(WoundsLev)], 200, decreasePercentage),
-                _ => new ActorRecoveringDecreaseEffect(200, DictionaryStorage.GetInstance().AllLeverages[nameof(DespondencyLev)], 200, decreasePercentage)
+                PercentageValuesType.Incoming => new TargetRecoveryPowerDecreaseEffect(DictionaryStorage.GetInstance().AllLeverages[nameof(WoundsLev)], 200, 200, decreasePercentage),
+                _ => new ActorRecoveringDecreaseEffect(DictionaryStorage.GetInstance().AllLeverages[nameof(DespondencyLev)], 200, 200, decreasePercentage)
             };
         }
     }

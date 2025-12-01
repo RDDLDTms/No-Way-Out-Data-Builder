@@ -1,18 +1,19 @@
 ﻿using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 
-namespace DataBuilder.Leverages
+namespace DataBuilder.Leverages.Base
 {
-    public class LeverageHit : ILeverageValues, ILeverageData
+    public class InstantLeverageBase : IInstantLeverage
     {
-        public int MinValue { get; private set; }
+        public int MinValue { get; }
 
-        public int MaxValue { get; private set; }
+        public int MaxValue { get; }
 
-        public double Cooldown { get; set; }
+        public double Cooldown { get; }
 
         public LeverageType Type { get; }
 
-        public LeverageHit(int minValue, int maxValue, double cooldown, LeverageType type) 
+        public InstantLeverageBase(int minValue, int maxValue, double cooldown, LeverageType type) 
         { 
             MinValue = minValue;
             MaxValue = maxValue;

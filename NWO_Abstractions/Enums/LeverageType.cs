@@ -13,12 +13,22 @@
         /// <summary>
         /// Урон
         /// </summary>
-        Damage,
+        InstantDamage,
 
         /// <summary>
         /// Восстановление
         /// </summary>
-        Recovery,
+        InstantRecovery,
+
+        /// <summary>
+        /// Пассивный урон
+        /// </summary>
+        PassiveDamage,
+
+        /// <summary>
+        /// Пассивное восстановление
+        /// </summary>
+        PassiveRecovery,
 
         /// <summary>
         /// Применение положительного эффекта

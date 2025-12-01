@@ -82,9 +82,8 @@ namespace DataBuilder.Units
         {
             OnUnitAction?.Invoke(
                 RussianDisplayName, 
-                LeveragesSources.First(x => x.LeveragesPriority == skillResult.Priority),
-                skillResult.MainPart, 
-                skillResult.AdditionalPart);
+                LeveragesSources.First(x => x.LeveragesPriority == skillResult.Priority), 
+                skillResult);
         }
     }
 }

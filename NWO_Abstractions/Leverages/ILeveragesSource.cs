@@ -1,6 +1,6 @@
 ﻿using DataBuilder.BuilderObjects;
 
-namespace NWO_Abstractions;
+namespace NWO_Abstractions.Leverages;
 
 /// <summary>
 /// Истоник воздействий
@@ -13,13 +13,8 @@ public interface ILeveragesSource : IBaseBuilderObject
     public ILeverage MainLeverage { get; }
 
     /// <summary>
-    /// Дополнительное воздействие
+    /// Дополнительные воздействия
     /// </summary>
-    public ILeverage? AdditionalLeverage { get; }
-
-    /// <summary>
-    /// Творительный падеж для сообщений (кем/чем)
-    /// </summary>
-    public string InstrumentalCase { get; }
+    public ILeverage[]? AdditionalLeverages { get; }
 }
 

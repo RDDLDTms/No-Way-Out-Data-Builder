@@ -1,4 +1,6 @@
-﻿namespace NWO_Abstractions
+﻿using NWO_Abstractions.Leverages;
+
+namespace NWO_Abstractions
 {
     /// <summary>
     /// Умение юнита
@@ -18,7 +20,7 @@
         /// <summary>
         /// Дополнительное воздействие
         /// </summary>
-        public ILeverage? AdditionalLeverage { get; }
+        public ILeverage[]? AdditionalLeverages { get; }
 
         /// <summary>
         /// Может ли использовать умение
@@ -26,9 +28,9 @@
         public bool CanUseSkill { get; }
 
         /// <summary>
-        /// Может ли использовать дополнительное воздействие
+        /// Может ли использовать дополнительные воздействия
         /// </summary>
-        public bool CanUseAdditionalLeverage { get; }
+        public Dictionary<int, bool> CanUseAdditionalLeverages { get; }
 
         /// <summary>
         /// Обновить кудауны воздействий

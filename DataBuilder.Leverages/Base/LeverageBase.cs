@@ -1,5 +1,6 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
 using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 
 namespace DataBuilder.Leverages.Base
 {
@@ -22,6 +23,8 @@ namespace DataBuilder.Leverages.Base
         public virtual string UniversalName { get; private set; } = string.Empty;
 
         public virtual string RussianDisplayName { get; private set; } = string.Empty;
+
+        public virtual string InstrumentalCase { get; private set; } = string.Empty;
 
         public Description Description { get; private set; } = new();
 

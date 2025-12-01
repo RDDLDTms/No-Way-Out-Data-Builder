@@ -1,7 +1,7 @@
 ﻿using DataBuilder.BuilderObjects;
 using DataBuilder.BuilderObjects.Primal;
 
-namespace NWO_Abstractions
+namespace NWO_Abstractions.Leverages
 {
     /// <summary>
     /// Класс воздействия

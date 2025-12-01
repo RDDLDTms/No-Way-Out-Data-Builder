@@ -4,7 +4,7 @@
     {
         public ISkillResultPart? MainPart { get; }
 
-        public ISkillResultPart? AdditionalPart { get; }
+        public ISkillResultPart[]? AdditionalPart { get; }
 
         public SkillPriority Priority { get; }
     }

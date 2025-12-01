@@ -1,4 +1,6 @@
-﻿namespace NWO_Abstractions
+﻿using NWO_Abstractions.Leverages;
+
+namespace NWO_Abstractions
 {
     public interface IImmune
     {

@@ -1,5 +1,5 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using NWO_Abstractions;
+using NWO_Abstractions.Leverages;
 using NWO_DataBuilder.Core.Models;
 using NWO_DataBuilder.Core.Support;
 using ReactiveUI;

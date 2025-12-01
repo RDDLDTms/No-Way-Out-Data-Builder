@@ -29,6 +29,7 @@ namespace DataBuilder.Units.Behaviors
         {
             waitingSeconds = 0;
             _timer = new Timer(TimerCallback, null, (int)(1000 / battleSpeed), (int)(1000 / battleSpeed));
+            EnablePassiveSkills();
             while (_unit.InBattle)
             {
                 if (CanIDoSmth() is false)
@@ -47,6 +48,7 @@ namespace DataBuilder.Units.Behaviors
                 SkillsCooldownWaiting = false;
                 await Task.Delay((int)(globalCooldown / battleSpeed));
             }
+            DisablePassiveSkills();
             waitingSeconds = 0;
             _timer?.Dispose();
         }
@@ -54,6 +56,16 @@ namespace DataBuilder.Units.Behaviors
         public void RefreshWaitingTimer()
         {
             waitingSeconds = 0;
+        }
+
+        private void EnablePassiveSkills()
+        {
+            //TODO
+        }
+
+        private void DisablePassiveSkills()
+        {
+            //TODO
         }
 
         private void TimerCallback(object? state) 
@@ -85,26 +97,29 @@ namespace DataBuilder.Units.Behaviors
                 if (skill is null || CanUseSkillOnTargets(skill.MainLeverage.Type) is false)
                     continue;
 
-                var targets = _targetSystem.FindTargets(skill, true, _unit.TeamNumber);
+                var targets = _targetSystem.FindTargets(skill.MainLeverage, _unit.TeamNumber);
                 if (targets is null || targets.Any() is false)
                     continue;
 
-                ISkillResult skillResult = skill.GetSkillResult(battleSpeed);
-
-                skillResult = ApplyEffectsToSkillResult(skillResult);
+                ISkillResult skillResult = ApplyEffectsToSkillResult(skill.GetSkillResult(battleSpeed));
 
                 if (DoActionToTargets(skill.MainLeverage.Type, targets, skillResult.MainPart!) is false)
                 {
                     return skillResult;
                 }
 
-                if (skillResult.AdditionalPart is not null)
-                { 
-                    var additionaltargets = skill.MainLeverage.Type == skill.AdditionalLeverage!.Type ? targets : _targetSystem.FindTargets(skill, false, _unit.TeamNumber);
-
-                    if (additionaltargets is not null && additionaltargets.Count() > 0)
+                if (skillResult.AdditionalPart is not null && skill.AdditionalLeverages is not null)
+                {
+                    for (int j = 0; j < skill.AdditionalLeverages.Length; j++)
                     {
-                        DoActionToTargets(skill.AdditionalLeverage.Type, additionaltargets, skillResult.AdditionalPart);
+                        if (skill.AdditionalLeverages[j] is null)
+                            continue;
+                        var additionaltargets = skill.MainLeverage.Type == skill.AdditionalLeverages[j].Type ? targets : _targetSystem.FindTargets(skill.AdditionalLeverages[j], _unit.TeamNumber);
+
+                        if (additionaltargets is not null && additionaltargets.Any())
+                        {
+                            DoActionToTargets(skill.AdditionalLeverages[j].Type, additionaltargets, skillResult.AdditionalPart[j]);
+                        }
                     }
                 }
                 _unit.CallUnitActionEvent(skillResult);
@@ -115,7 +130,7 @@ namespace DataBuilder.Units.Behaviors
 
         private int ApplyEffectsToSkillPart(ISkillResultPart skillResultPart)
         {
-            if (skillResultPart.LeverageType is LeverageType.Damage)
+            if (skillResultPart.LeverageType is LeverageType.InstantDamage or LeverageType.PassiveDamage)
             {
                 int percentage = 0;
                 foreach (var postivieActorDamageEffect in _unit.Effects.PositiveEffects.Where(x => x is ActorDamageIncreaseEffect).Cast<ActorDamageIncreaseEffect>())
@@ -130,7 +145,7 @@ namespace DataBuilder.Units.Behaviors
                 return (int)skillResultPart.Value! < 0 ? 0: (int)skillResultPart.Value!;
             }
 
-            if (skillResultPart.LeverageType is LeverageType.Recovery)
+            if (skillResultPart.LeverageType is LeverageType.InstantRecovery or LeverageType.PassiveRecovery)
             {
                 int percentage = 0;
                 foreach (var positiveActorRecoveryEffect in _unit.Effects.PositiveEffects.Where(x => x is ActorRecoveringIncreaseEffect).Cast<ActorRecoveringIncreaseEffect>())
@@ -150,18 +165,25 @@ namespace DataBuilder.Units.Behaviors
 
         private ISkillResult ApplyEffectsToSkillResult(ISkillResult skillResult)
         {
-            if (skillResult.MainPart is SkillResultPart mainPart && mainPart.LeverageType is LeverageType.Damage or LeverageType.Recovery)
+            if (skillResult.MainPart is SkillResultPart mainPart && IsDamageOrRecovery(mainPart.LeverageType))
             {
                 skillResult.MainPart.Value = ApplyEffectsToSkillPart(mainPart);
             }
-            
-            if (skillResult.AdditionalPart is SkillResultPart additionalPart && additionalPart.LeverageType is LeverageType.Damage or LeverageType.Recovery)
+
+            if (skillResult.AdditionalPart is not null && skillResult.AdditionalPart.Any())
             {
-                skillResult.AdditionalPart.Value = ApplyEffectsToSkillPart(additionalPart);
+                for (int i = 0; i < skillResult.AdditionalPart.Length; i++)
+                {
+                    if (skillResult.AdditionalPart[i] is SkillResultPart additionalPart && IsDamageOrRecovery(additionalPart.LeverageType))
+                        skillResult.AdditionalPart[i].Value = ApplyEffectsToSkillPart(additionalPart);
+                }
             }
 
             return skillResult;
         }
+
+        private bool IsDamageOrRecovery(LeverageType type)
+            => type is LeverageType.InstantDamage or LeverageType.InstantRecovery or LeverageType.PassiveDamage or LeverageType.PassiveRecovery;
 
         private bool CanIDoSmth()
         {
@@ -227,11 +249,11 @@ namespace DataBuilder.Units.Behaviors
             
             switch (type)
             {
-                case LeverageType.Damage:
+                case LeverageType.InstantDamage:
                     targets.ToList().ForEach(x => skillResultPart.Value = x.DamageTarget((int)skillResultPart.Value!));
                     return true;
 
-                case LeverageType.Recovery:
+                case LeverageType.InstantRecovery:
                     targets.ToList().ForEach(x => x.RecoverTarget((int)skillResultPart.Value!));
                     return true;
 
@@ -286,12 +308,12 @@ namespace DataBuilder.Units.Behaviors
 
         private bool CanRecover()
         {
-            return CanUseSkill(LeverageType.Recovery);
+            return CanUseSkill(LeverageType.InstantRecovery);
         }
 
         private bool CanDamage()
         {
-            return CanUseSkill(LeverageType.Damage);
+            return CanUseSkill(LeverageType.InstantDamage);
         }
 
         private bool CanUseSkill(LeverageType leverageType)
@@ -304,10 +326,10 @@ namespace DataBuilder.Units.Behaviors
             var _myEnemyTargets = _battle.GetEnemies(_unit.TeamNumber);
             var _myAlliesTargets = _battle.GetAllies(_unit.TeamNumber);
 
-            if (type is LeverageType.Damage && _myEnemyTargets.Count > 0)
+            if (type is LeverageType.InstantDamage && _myEnemyTargets.Count > 0)
                 return true;
 
-            if (type is LeverageType.Recovery && _myAlliesTargets.Count(x => x.Health < x.MaxHealth) > 0)
+            if (type is LeverageType.InstantRecovery && _myAlliesTargets.Count(x => x.Health < x.MaxHealth) > 0)
                 return true;
 
             if (type is LeverageType.NegativeEffectRemoval && _myAlliesTargets.Any(x => x.Effects.NegativeEffects.Count > 0))

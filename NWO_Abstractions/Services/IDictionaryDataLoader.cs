@@ -1,4 +1,6 @@
-﻿namespace NWO_Abstractions.Services
+﻿using NWO_Abstractions.Leverages;
+
+namespace NWO_Abstractions.Services
 {
     public interface IDictionaryDataLoader
     {

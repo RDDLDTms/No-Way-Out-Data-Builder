@@ -27,17 +27,17 @@ namespace NWO_DataBuilder.Core.Tests.Units
             return _leveragesSources = new()
             {
                 new UnitLeveragesSource(allLSources[nameof(VoiceOfHealerLS)], SkillPriority.PrimalPriority,
-                    new LeverageHit(minValue: 25, maxValue: 38, cooldown: 3, LeverageType.Recovery),
-                    new TargetPeriodicRecoveryEffect(duration: 6, allLSources[nameof(VoiceOfHealerLS)].AdditionalLeverage!, cooldown: 12, minValue: 5, maxValue: 9)),
+                    new LeverageInstantStrike(minValue: 25, maxValue: 38, cooldown: 3),
+                    new TargetPeriodicRecoveryEffect(allLSources[nameof(VoiceOfHealerLS)].AdditionalLeverages![0], duration: 6, cooldown: 12, minValue: 5, maxValue: 9)),
 
                 new UnitLeveragesSource(allLSources[nameof(AppealOfHealerLS)], SkillPriority.MiddlePriority,
-                    new LeverageHit(minValue: 15, maxValue: 20, cooldown: 5, LeverageType.Recovery)),
+                    new LeverageInstantStrike(minValue: 15, maxValue: 20, cooldown: 5)),
 
                 new UnitLeveragesSource(allLSources[nameof(PurifyingRitualLS)], SkillPriority.SpecialSupportPriority,
-                    new LeverageEffectsRemoval(cooldown: 8, LeverageType.NegativeEffectRemoval)),
+                    new LeverageNegativeEffectsRemoval(cooldown: 8)),
 
                 new UnitLeveragesSource(allLSources[nameof(ArmouredBodyLS)], SkillPriority.SubsidiaryPriority,
-                    new LeverageHit(minValue: 10, maxValue: 20, cooldown: 7, LeverageType.Damage))
+                    new LeverageInstantStrike(minValue: 10, maxValue: 20, cooldown: 7))
             };
         }
     }

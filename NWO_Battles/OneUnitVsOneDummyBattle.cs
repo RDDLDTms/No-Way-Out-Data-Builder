@@ -128,8 +128,8 @@ namespace NWO_Battles
         private void Actor_OnUnitWaiting(string russianUnitName) =>
             OnAction(BattleLogService.GetUnitWaitingSkillCooldownsMessage(russianUnitName));
 
-        private void Actor_OnUnitAction(string russianUnitName, IUnitLeveragesSource leveragesSource, ISkillResultPart mainPart, ISkillResultPart? additionalPart) =>
-            OnAction(BattleLogService.BuildCompleteRussianLeverageActionTextMessage(russianUnitName, leveragesSource, mainPart, additionalPart));
+        private void Actor_OnUnitAction(string russianUnitName, IUnitLeveragesSource leveragesSource, ISkillResult skillResult) =>
+            OnAction(BattleLogService.BuildCompleteRussianLeverageActionTextMessage(russianUnitName, leveragesSource, skillResult));
 
         private void Dummy_OnTargetRecovered(int newValue) => base.OnNewRecover(newValue);
 
