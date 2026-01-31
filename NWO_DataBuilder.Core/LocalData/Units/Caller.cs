@@ -1,10 +1,10 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using DataBuilder.Effects;
-using DataBuilder.Leverages;
 using DataBuilder.Units;
 using NWO_Abstractions;
+using NWO_Abstractions.Skills;
+using NWO_DataBuilder.Core.LocalData.LeverageSources;
 using NWO_DataBuilder.Core.Models;
-using  NWO_DataBuilder.Core.LocalData.LeverageSources;
+using NWO_DataBuilder.Core.Models.Leverages.LeverageData;
 
 namespace NWO_DataBuilder.Core.Tests.Units
 {
@@ -24,20 +24,24 @@ namespace NWO_DataBuilder.Core.Tests.Units
         {
             var allLSources = DictionaryStorage.GetInstance().AllLeveragesSources;
             LeveragesSourcesCreated = true;
+            var voiceOfHealer = allLSources[nameof(VoiceOfHealerLS)];
+            var appealOfHealer = allLSources[nameof(AppealOfHealerLS)];
+            var armouredBody = allLSources[nameof(ArmouredBodyLS)];
+            var purifyingRitual = allLSources[nameof(PurifyingRitualLS)];
             return _leveragesSources = new()
             {
-                new UnitLeveragesSource(allLSources[nameof(VoiceOfHealerLS)], SkillPriority.PrimalPriority,
-                    new LeverageInstantStrike(minValue: 25, maxValue: 38, cooldown: 3),
-                    new TargetPeriodicRecoveryEffect(allLSources[nameof(VoiceOfHealerLS)].AdditionalLeverages![0], duration: 6, cooldown: 12, minValue: 5, maxValue: 9)),
+                new UnitLeveragesSource(voiceOfHealer, SkillPriority.PrimalPriority,
+                    new InstantLeverageData(voiceOfHealer.MainLeverage.Id, minValue: 25, maxValue: 38, cooldown: 3000),
+                    new PeriodicEffectCompleteData(voiceOfHealer.AdditionalLeverages![0].Effects[0].Id, Id, cooldown: 12000, duration: 6000, minValue: 5, maxValue: 9, defaultDelay : 1000, startDelay : 1000)),
 
-                new UnitLeveragesSource(allLSources[nameof(AppealOfHealerLS)], SkillPriority.MiddlePriority,
-                    new LeverageInstantStrike(minValue: 15, maxValue: 20, cooldown: 5)),
+                new UnitLeveragesSource(appealOfHealer, SkillPriority.MiddlePriority,
+                    new InstantLeverageData(appealOfHealer.MainLeverage.Id, minValue: 15, maxValue: 20, cooldown: 5000)),
 
                 new UnitLeveragesSource(allLSources[nameof(PurifyingRitualLS)], SkillPriority.SpecialSupportPriority,
-                    new LeverageNegativeEffectsRemoval(cooldown: 8)),
+                    new EffectRemovalData(purifyingRitual.MainLeverage.Id, cooldown: 8000)),
 
-                new UnitLeveragesSource(allLSources[nameof(ArmouredBodyLS)], SkillPriority.SubsidiaryPriority,
-                    new LeverageInstantStrike(minValue: 10, maxValue: 20, cooldown: 7))
+                new UnitLeveragesSource(armouredBody, SkillPriority.SubsidiaryPriority,
+                    new InstantLeverageData(armouredBody.MainLeverage.Id, minValue: 10, maxValue: 20, cooldown: 7000))
             };
         }
     }

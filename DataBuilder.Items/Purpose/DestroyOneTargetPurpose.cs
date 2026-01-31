@@ -7,5 +7,7 @@ namespace BataBuilder.Items
         public string RussianDisplayName => "Уничтожить одну цель";
 
         public string Description => "Требуется опустить здоровье одной цели до нуля.";
+
+        public bool WatchDummy => true;
     }
 }

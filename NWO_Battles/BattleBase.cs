@@ -1,7 +1,9 @@
 ﻿using BataBuilder.Items;
+using DataBuilder.Units;
 using NWO_Abstractions;
 using NWO_Abstractions.Battles;
-using NWO_Abstractions.Services;
+using NWO_Abstractions.Effects;
+using NWO_Abstractions.Services.BattleLog;
 using Splat;
 
 namespace NWO_Battles;
@@ -35,8 +37,8 @@ public abstract class BattleBase : IBattleModelling
 
     protected IBattleLogService BattleLogService { get; }
 
-    private int totalBattleDamage = 0;
-    private int totalBattleRecover = 0;
+    private double totalBattleDamage = 0;
+    private double totalBattleRecover = 0;
 
     public event NewMessageHandler? newActionMessage;
     public event NewMessageHandler? battleStartMessage;
@@ -44,12 +46,14 @@ public abstract class BattleBase : IBattleModelling
     public event NewEmptyHandler? OnBattleFinished;
     public event NewIntValue? battleTimeLeftChanged;
     public event NewTargetHealthValue? newTargetHealth;
-    public event NewIntValue? totalDamage;
-    public event NewIntValue? totalRecover;
-    public event EffectHandler? OnNewNegativeEffect;
-    public event EffectHandler? OnNewPositiveEffect;
-    public event EffectHandler? OnNegativeEffectEnds;
-    public event EffectHandler? OnPositiveEffectEnds;
+    public event NewDoubleValue? totalDamage;
+    public event NewDoubleValue? totalRecover;
+    public event EffectApplyingHandler OnNewPositiveEffect;
+    public event EffectApplyingHandler OnNewNegativeEffect;
+    public event EffectApplyingHandler OnNewOtherEffect;
+    public event EffectFinishedHandler OnPositiveEffectFinished;
+    public event EffectFinishedHandler OnNegativeEffectFinished;
+    public event EffectFinishedHandler OnOtherEffectFinished;
 
     protected Task? timerTask;
 
@@ -83,7 +87,14 @@ public abstract class BattleBase : IBattleModelling
         BattleStoppedByReason = true;
         while (Targets.Count > 0)
         {
-            Targets.Last().LeaveBattle();
+            try
+            {
+                Targets.Last().LeaveBattle();
+            }
+            finally
+            {
+
+            }
         }
 
         string message = BattleLogService.GetBattleFinishTextMessage(reason);
@@ -94,25 +105,16 @@ public abstract class BattleBase : IBattleModelling
         Started = false;
     }
 
-    protected virtual void OnTargetNegativeEffectEnds(IEffect positiveEffect, ITarget target)
-    {
-        OnNegativeEffectEnds?.Invoke(positiveEffect, target);
-    }
+    protected virtual void OnTargetNegativeEffectFinished(IEffect positiveEffect, ITarget target, EffectFinishReason reason) =>
+        OnNegativeEffectFinished?.Invoke(positiveEffect, target, reason);
+    protected virtual void OnTargetPositiveEffectFinished(IEffect negativeEffect, ITarget target, EffectFinishReason reason) =>
+        OnPositiveEffectFinished?.Invoke(negativeEffect, target, reason);
+    protected virtual void OnTargetOtherEffectFinished(IEffect otherEffect, ITarget target, EffectFinishReason reason) =>
+        OnOtherEffectFinished?.Invoke(otherEffect, target, reason);
 
-    protected virtual void OnTargetPositiveEffectEnds(IEffect negativeEffect, ITarget target)
-    {
-        OnPositiveEffectEnds?.Invoke(negativeEffect, target);
-    }
-
-    protected virtual void OnNewTargetPositiveEffect(IEffect positiveEffect, ITarget target)
-    {
-        OnNewPositiveEffect?.Invoke(positiveEffect, target);
-    }
-
-    protected virtual void OnNewTargetNeagetiveEffect(IEffect negativeEffect, ITarget target)
-    {
-        OnNewNegativeEffect?.Invoke(negativeEffect, target);
-    }
+    protected virtual void OnNewTargetPositiveEffect(IEffect positiveEffect, ITarget target) => OnNewPositiveEffect?.Invoke(positiveEffect, target);
+    protected virtual void OnNewTargetNegativeEffect(IEffect negativeEffect, ITarget target) => OnNewNegativeEffect?.Invoke(negativeEffect, target);
+    protected virtual void OnNewTargetOtherEffect(IEffect otherEffect, ITarget target) => OnNewOtherEffect?.Invoke(otherEffect, target);
 
     protected virtual void OnNewTargetHealth(double newHealth, ITarget target)
     {   
@@ -123,17 +125,52 @@ public abstract class BattleBase : IBattleModelling
             return;
         }
 
-        if (BattlePurpose is RecoverOneTargetPurpose && Targets.Count >= 1 && target.MaxHealth <= newHealth)
+        if (BattlePurpose is RecoverOneOtherTargetPurpose && Targets.Count > 0 && target.MaxHealth <= newHealth)
         {
-            FinishBattle(BattleFinishingReason.TargetRecovered);
+            if ((target is Dummy && BattlePurpose.WatchDummy) || (target is not Dummy && BattlePurpose.WatchDummy is false))
+                FinishBattle(BattleFinishingReason.TargetRecovered);
         }
     }
-    
+
+    protected virtual void OnPeriodicEffectTick(IEffect effect, double value, bool isMechTarget)
+    {
+        switch (effect.Type)
+        {
+            case EffectType.Positive:
+                OnAction(BattleLogService.EffectsLogService.GetPeriodicRecoveringTextMessage(effect.DisplayName, value, effect.LeverageClass.Genitive, isMechTarget));
+                break;
+            case EffectType.Negative:
+                OnAction(BattleLogService.EffectsLogService.GetPeriodicDamageTextMessage(effect.DisplayName, value, effect.LeverageClass.Genitive));
+                break;
+            case EffectType.None:
+            default:
+                break;
+        }
+    }
+
+    protected virtual void OnEffectWithDurationFinished(IEffectWithDuration effect, EffectFinishReason finishReason, ITarget target, string targetDisplayName)
+    {
+        OnAction(BattleLogService.EffectsLogService.EffectFinished(effect.DisplayName, targetDisplayName, finishReason));
+        switch (effect.Type)
+        {
+            case EffectType.Positive:
+                OnTargetPositiveEffectFinished(effect, target, finishReason);
+                break;
+            case EffectType.Negative:
+                OnTargetNegativeEffectFinished(effect, target, finishReason);
+                break;
+            case EffectType.None:
+            default:
+                OnTargetOtherEffectFinished(effect, target, finishReason);
+                break;
+        }
+    }
+
     /// <summary>
     /// Вызов события нового лечения
     /// </summary>
     /// <param name="recover">Величина лечения</param>
-    protected virtual void OnNewRecover(int recover)
+    protected virtual void OnNewRecover(double recover)
     {
         totalBattleRecover += recover;
         totalRecover?.Invoke(totalBattleRecover);
@@ -143,7 +180,7 @@ public abstract class BattleBase : IBattleModelling
     /// Вызов события нового урона
     /// </summary>
     /// <param name="damage">Величина урона</param>
-    protected virtual void OnNewDamage(int damage)
+    protected virtual void OnNewDamage(double damage)
     {      
         totalBattleDamage += damage;
         totalDamage?.Invoke(totalBattleDamage);
@@ -213,15 +250,10 @@ public abstract class BattleBase : IBattleModelling
 
     public abstract void Dispose();
 
-    public List<ITarget> GetEnemies(int teamNumber)
-    {
-        return Targets.Where(x => x.TeamNumber != teamNumber).ToList();
-    }
+    public List<ITarget> GetEnemies(int teamNumber) => Targets.Where(x => x.TeamNumber != teamNumber).ToList();
 
-    public List<ITarget> GetAllies(int teamNumber)
-    {
-        return Targets.Where(x => x.TeamNumber == teamNumber).ToList();
-    }
+    public List<ITarget> GetAllies(int teamNumber) => Targets.Where(x => x.TeamNumber == teamNumber).ToList();
+ 
 }
 
 

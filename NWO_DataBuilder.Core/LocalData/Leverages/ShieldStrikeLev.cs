@@ -1,13 +1,11 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using DataBuilder.Leverages.Base;
-using NWO_Abstractions;
 using NWO_Abstractions.Leverages;
+using NWO_DataBuilder.Core.Models.Leverages;
 
 namespace NWO_DataBuilder.Core.LocalData.Leverages
 {
-    public class ShieldStrikeLev : LeverageBase
+    public class ShieldStrikeLev : InstantDamage
     {
-        public override LeverageType Type => LeverageType.InstantDamage;
         public override LeverageTargetType TargetType => LeverageTargetType.Enemies;
         public override LeverageHitPoint HitPoint => LeverageHitPoint.Vision;
         public override LeverageRangeType RangeType => LeverageRangeType.Melee;
@@ -16,6 +14,9 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override string RussianDisplayName => "Удар щитом";
         public override string InstrumentalCase => "ударом щитом";
 
-        public ShieldStrikeLev(ILeverageClass lClass) : base(lClass) { }
+        public ShieldStrikeLev(ILeverageClass lClass) : base(lClass)
+        {
+
+        }
     }
 }

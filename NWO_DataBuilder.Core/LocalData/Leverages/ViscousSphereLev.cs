@@ -1,11 +1,12 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using DataBuilder.Leverages.Base;
-using NWO_Abstractions;
+using DataBuilder.Effects.PercentageEffects;
+using NWO_Abstractions.Effects;
 using NWO_Abstractions.Leverages;
+using NWO_DataBuilder.Core.Models.Leverages;
 
 namespace NWO_DataBuilder.Core.LocalData.Leverages
 {
-    public class ViscousSphereLev : LeverageBase
+    public class ViscousSphereLev : PositiveEffectApplying
     {
         public override LeverageType Type => LeverageType.PositiveEffectApplying;
         public override LeverageTargetType TargetType => LeverageTargetType.Alias;
@@ -16,6 +17,9 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override string RussianDisplayName => "Вязкая сфера";
         public override string InstrumentalCase => "вязкой сферой";
 
-        public ViscousSphereLev(ILeverageClass lClass) : base(lClass) { }
+        public ViscousSphereLev(ILeverageClass lClass) : base(lClass) 
+        {
+            Effects.Add(new IncreaseEffectWithDuration(EffectType.Positive, lClass, UniversalName, RussianDisplayName));
+        }
     }
 }

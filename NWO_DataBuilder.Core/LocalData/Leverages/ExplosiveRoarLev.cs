@@ -1,13 +1,11 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using DataBuilder.Leverages.Base;
-using NWO_Abstractions;
 using NWO_Abstractions.Leverages;
+using NWO_DataBuilder.Core.Models.Leverages;
 
 namespace NWO_DataBuilder.Core.LocalData.Leverages
 {
-    public class ExplosiveRoarLev : LeverageBase
+    public class ExplosiveRoarLev : InstantDamage
     {
-        public override LeverageType Type => LeverageType.InstantDamage;
         public override LeverageTargetType TargetType => LeverageTargetType.Enemies;
         public override LeverageHitPoint HitPoint => LeverageHitPoint.SpaceAroundUnit;
         public override LeverageRangeType RangeType => LeverageRangeType.Range;

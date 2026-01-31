@@ -1,11 +1,13 @@
-﻿namespace NWO_Abstractions
+﻿using NWO_Abstractions.Effects;
+
+namespace NWO_Abstractions
 {
     public interface IUniversalObject 
     {
         /// <summary>
         /// Начальные эффекты на объекте
         /// </summary>
-        public IEffectsLists StartEffects { get; }
+        public IEffectsSet StartEffects { get; }
 
         /// <summary>
         /// Есть ли в объекте органика

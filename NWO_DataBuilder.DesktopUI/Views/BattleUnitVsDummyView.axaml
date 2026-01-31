@@ -501,7 +501,7 @@
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="{Binding EffectDisplayName}"
+							<TextBlock Text="{Binding DisplayName}"
 									   Margin="-2,-2,0,-2"
 									   Foreground="RosyBrown"/>
 						</StackPanel>
@@ -520,7 +520,7 @@
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="{Binding EffectDisplayName}"
+							<TextBlock Text="{Binding DisplayName}"
 									   Margin="-2,-2,0,-2"
 									   Foreground="Green"/>
 						</StackPanel>
@@ -589,7 +589,7 @@
 						<ListBox.ItemTemplate>
 							<DataTemplate>
 								<StackPanel Orientation="Horizontal">
-									<TextBlock Text="{Binding EffectDisplayName}" 
+									<TextBlock Text="{Binding DisplayName}" 
 											   Margin="-2,-2,0,-2"
 											   Foreground="RosyBrown"/>
 								</StackPanel>
@@ -606,7 +606,7 @@
 						<ListBox.ItemTemplate>
 							<DataTemplate>
 								<StackPanel Orientation="Horizontal">
-									<TextBlock Text="{Binding EffectDisplayName}"
+									<TextBlock Text="{Binding DisplayName}"
 											   Margin="-2,-2,0,-2"
 											   Foreground="Green"/>
 								</StackPanel>

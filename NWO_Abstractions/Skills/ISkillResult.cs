@@ -2,10 +2,8 @@
 {
     public interface ISkillResult
     {
-        public ISkillResultPart? MainPart { get; }
+        public ISkillResultPart? MainPart { get; set; }
 
-        public ISkillResultPart[]? AdditionalPart { get; }
-
-        public SkillPriority Priority { get; }
+        public ISkillResultPart[]? AdditionalParts { get; }
     }
 }

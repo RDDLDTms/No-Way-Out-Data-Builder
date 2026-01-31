@@ -1,11 +1,11 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using DataBuilder.Effects;
-using DataBuilder.Leverages;
 using DataBuilder.Units;
 using NWO_Abstractions;
+using NWO_Abstractions.Skills;
+using NWO_DataBuilder.Core.LocalData.LeverageSources;
 using NWO_DataBuilder.Core.Models;
+using NWO_DataBuilder.Core.Models.Leverages.LeverageData;
 using NWO_DataBuilder.Core.Tests.LeverageClasses;
-using  NWO_DataBuilder.Core.LocalData.LeverageSources;
 
 namespace NWO_DataBuilder.Core.Tests
 {
@@ -26,20 +26,22 @@ namespace NWO_DataBuilder.Core.Tests
             var allLSources = DictionaryStorage.GetInstance().AllLeveragesSources;
             var bless = allLSources[nameof(BlessLS)];
             var defence = allLSources[nameof(DefenceLS)];
+            var purifyingRitual = allLSources[nameof(PurifyingRitualLS)];
+            var wordOfHealer = allLSources[nameof(WordOfHealerLS)];
             LeveragesSourcesCreated = true;
             return _leveragesSources = new()
             {
                 new UnitLeveragesSource(defence, SkillPriority.HighPriority,
-                    new TargetDefenceIncreaseEffect(defence.MainLeverage, duration: 7, cooldown: 10, percentage: 30)),
+                    new PercentageEffectCompleteData(defence.MainLeverage.Effects[0].Id, Id, cooldown: 10000, duration: 7000, percentage: 30)),
 
-                new UnitLeveragesSource(allLSources[nameof(WordOfHealerLS)], SkillPriority.AdvancedPriority, 
-                    new LeverageInstantRecovery(minValue: 20, maxValue: 27, cooldown: 6)),
+                new UnitLeveragesSource(wordOfHealer, SkillPriority.AdvancedPriority,
+                    new InstantLeverageData(wordOfHealer.MainLeverage.Id, minValue: 20, maxValue: 27, cooldown: 6000)),
 
-                new UnitLeveragesSource(bless, SkillPriority.MiddlePriority, 
-                    new TargetPeriodicRecoveryEffect(bless.MainLeverage, duration: 6, cooldown: 8, minValue: 4, maxValue: 7)),
+                new UnitLeveragesSource(bless, SkillPriority.MiddlePriority,
+                    new PeriodicEffectCompleteData(bless.MainLeverage.Effects[0].Id, Id, cooldown: 8000, duration: 6000, minValue: 4, maxValue: 7, defaultDelay: 1000, startDelay : 0)),
 
-                new UnitLeveragesSource(allLSources[nameof(PurifyingRitualLS)], SkillPriority.SpecialSupportPriority,
-                    new LeverageNegativeEffectsRemoval(cooldown: 10))
+                new UnitLeveragesSource(purifyingRitual, SkillPriority.SpecialSupportPriority,
+                    new EffectRemovalData(purifyingRitual.MainLeverage.Id, cooldown: 10000))
             };
         }
 

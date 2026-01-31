@@ -1,11 +1,10 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using DataBuilder.Leverages.Base;
-using NWO_Abstractions;
 using NWO_Abstractions.Leverages;
+using NWO_DataBuilder.Core.Models.Leverages;
 
 namespace NWO_DataBuilder.Core.LocalData.Leverages
 {
-    public class ShineLev : LeverageBase
+    public class ShineLev : PositiveEffectApplying
     {
         public override LeverageType Type => LeverageType.PositiveEffectApplying;
         public override LeverageTargetType TargetType => LeverageTargetType.Alias;

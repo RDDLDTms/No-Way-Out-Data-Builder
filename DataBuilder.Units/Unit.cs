@@ -3,6 +3,10 @@ using DataBuilder.TargetSystem;
 using DataBuilder.Units.Behaviors;
 using NWO_Abstractions;
 using NWO_Abstractions.Battles;
+using NWO_Abstractions.Effects;
+using NWO_Abstractions.Skills;
+using Splat;
+using NWO_Abstractions.Services;
 
 namespace DataBuilder.Units
 {
@@ -17,7 +21,7 @@ namespace DataBuilder.Units
         public List<IEffect> PositiveEffects => Effects.PositiveEffects;
         public List<IEffect> NegativeEffects => Effects.NegativeEffects;
         public List<IUnitLeveragesSource> LeveragesSources => Data.LeveragesSources;
-        public List<IUnitSkill> Skills { get; private set; }
+        public List<ISkill> Skills { get; private set; }
         public List<IBehavior> Behaviors { get; private set; }
         public List<Guid> Formula => Data.Formula;
         public AccessLevel AccessLevel => Data.AccessLevel;
@@ -60,8 +64,9 @@ namespace DataBuilder.Units
 
         public void CreateSkills()
         {
+            var skillService = Locator.Current.GetService<ISkillService>();
             Skills = new();
-            LeveragesSources.ForEach(x => Skills.Add(new UnitSkill(x)));
+            LeveragesSources.ForEach(x => Skills.Add(skillService!.CreateSkill(x, x.SkillPriority)));
         }
 
         public void CreateBehaviors()
@@ -78,12 +83,12 @@ namespace DataBuilder.Units
             OnUnitWaiting?.Invoke(RussianDisplayName);
         }
 
-        public void CallUnitActionEvent(ISkillResult skillResult)
+        public void CallUnitUseSkillOnTargetsEvent(ISkillResult skillResult, SkillPriority skillPriority, IEnumerable<ITarget> targets)
         {
             OnUnitAction?.Invoke(
                 RussianDisplayName, 
-                LeveragesSources.First(x => x.LeveragesPriority == skillResult.Priority), 
-                skillResult);
+                LeveragesSources.First(x => x.SkillPriority == skillPriority), 
+                skillResult, targets);
         }
     }
 }

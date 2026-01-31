@@ -1,6 +1,7 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
 using DataBuilder.Effects;
 using NWO_Abstractions;
+using NWO_Abstractions.Effects;
 
 namespace DataBuilder.Units
 {
@@ -38,7 +39,7 @@ namespace DataBuilder.Units
 
         public virtual Description Description { get; } = new();
 
-        public IEffectsLists StartEffects { get; } = EffectsLists.Default();
+        public IEffectsSet StartEffects { get; } = EffectsSetBase.Default();
 
         public List<IUnitLeveragesSource> LeveragesSources => LeveragesSourcesCreated ? _leveragesSources : CreateLeveragesSources();
         public List<IImmune> Immunes => ImmunesCreated ? Immunes : CreateImmunes();

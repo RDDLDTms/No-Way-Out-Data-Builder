@@ -18,8 +18,8 @@ namespace DataBuilder.TargetSystem
         {
             return leverage.Type switch
             {
-                LeverageType.InstantDamage or LeverageType.NegativeEffectApplying or LeverageType.PassiveDamage => FindNonImmunedEnemies(leverage, unitTeamNumber),
-                LeverageType.InstantRecovery or LeverageType.PassiveRecovery => FindSuitableAlliesForRecover(leverage, unitTeamNumber),
+                LeverageType.Damage or LeverageType.NegativeEffectApplying => FindNonImmunedEnemies(leverage, unitTeamNumber),
+                LeverageType.Recovery => FindSuitableAlliesForRecover(leverage, unitTeamNumber),
                 LeverageType.PositiveEffectApplying => FindNonImmunedAllies(leverage, unitTeamNumber),
                 _ => null,
             };

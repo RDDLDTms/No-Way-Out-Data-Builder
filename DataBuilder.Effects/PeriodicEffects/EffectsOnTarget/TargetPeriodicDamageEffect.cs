@@ -1,51 +1,17 @@
-﻿using NWO_Abstractions;
+﻿using DataBuilder.Effects.PeriodicEffects;
+using NWO_Abstractions.Effects;
 using NWO_Abstractions.Leverages;
 
 namespace DataBuilder.Effects
 {
-    public sealed class TargetPeriodicDamageEffect : EffectWithValuesBase
-    {
-        public override LeverageType Type => LeverageType.NegativeEffectApplying;
+    public class TargetPeriodicDamageEffect : PeriodicEffectBase
+    { 
         public override EffectCarrier Carrier => EffectCarrier.Target;
 
-        public TargetPeriodicDamageEffect(ILeverage leverage, int duration, double cooldown, int minValue, int maxValue) :
-            base(leverage, duration, cooldown, minValue, maxValue)
+        public TargetPeriodicDamageEffect(ILeverageClass leverageClass, string effectUniversalName, string russianDisplayName) :
+            base(EffectType.Negative, leverageClass, effectUniversalName, russianDisplayName)
         {
 
-        }
-
-        public override int GetValue()
-        {
-            // получаем случайное значение в границах
-            int value = Random.Shared.Next(MinValue, MaxValue + 1);
-
-            // добавляется доп проценты или убираем доп проценты в зависимости от момента создания эффекта
-            value += value * SourcePercentage / 100;
-
-            // добавляем доп проценты или убираем доп проценты в зависимости от эффектов на цели
-            value += value * GetTargetDamagePercentage() / 100;
-            return value < 0 ? 0 : value;
-        }
-
-        protected override void TimerCallback(object? state)
-        {
-            if (TargetIsNull)
-                return;
-
-            if (EffectImmuneFound())
-                return;
-
-            string logMessage;
-
-            // получаем начальное значение урона
-            int damage = GetValue(); 
-
-            // пробрасываем урон в цель и на выходе получаем изменённое значение урона в зависимости от эффектов и защит
-            damage = TargetForEffect!.DamageTarget(damage);
-
-            DecreaseCounterByOne();
-            logMessage = BattleLogService.GetPeriodicDamageTextMessage(EffectDisplayName, damage, EffectClass.Genitive);
-            OnTimerTick(logMessage);
         }
     }
 }

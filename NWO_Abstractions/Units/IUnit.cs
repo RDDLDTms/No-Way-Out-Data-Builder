@@ -1,6 +1,8 @@
-﻿namespace NWO_Abstractions
+﻿using NWO_Abstractions.Skills;
+
+namespace NWO_Abstractions
 {
-    public delegate void UnitActionDelegate(string russianUnitName, IUnitLeveragesSource unitLeveragesSource, ISkillResult skillresult);
+    public delegate void UnitActionDelegate(string russianUnitName, IUnitLeveragesSource unitLeveragesSource, ISkillResult skillresult, IEnumerable<ITarget> targets);
     public delegate void UnitWaitingDelegate(string russianUnitName);
     public delegate void UnitBehaviorDelegate(string russianUnitName, IBehavior newBehavior);
 
@@ -25,7 +27,7 @@
         /// <summary>
         /// Умения юнита
         /// </summary>
-        public List<IUnitSkill> Skills { get; }
+        public List<ISkill> Skills { get; }
 
         /// <summary>
         /// Создать умения юнита
@@ -37,7 +39,7 @@
         /// </summary>
         public void CreateBehaviors();
 
-        public void CallUnitActionEvent(ISkillResult skillResult);
+        public void CallUnitUseSkillOnTargetsEvent(ISkillResult skillResult, SkillPriority skillPriority, IEnumerable<ITarget> targets);
 
         public void CallUnitWaitingEvent();
     }

@@ -1,6 +1,7 @@
 ﻿using DataBuilder.Effects;
 using DataBuilder.Leverages;
 using NWO_Abstractions;
+using NWO_Abstractions.Effects;
 using NWO_Abstractions.Enums;
 
 namespace DataBuilder.Units
@@ -14,6 +15,6 @@ namespace DataBuilder.Units
         public double MaxHealth { get; set; } = 1000;
         public double StartHealth { get; set; } = 1000;
         public IPercentageValues StartPercentage { get; set; } = new PercentageValues(PercentageValuesType.Incoming);
-        public IEffectsLists StartEffects => EffectsLists.Default();
+        public IEffectsSet StartEffects => EffectsSetBase.Default();
     }
 }

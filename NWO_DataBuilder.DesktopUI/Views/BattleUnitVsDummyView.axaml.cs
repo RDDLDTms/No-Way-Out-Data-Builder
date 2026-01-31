@@ -167,7 +167,7 @@ namespace NWO_DataBuilder.DesktopUI.Views
                 this.Bind(ViewModel, vm => vm.UnitPercentageValues.DamageDecrease, v => v.unitDamageDecreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
                     .DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.UnitPercentageValues.RecoveryDecrease, v => v.unitRecoveryIncreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
+                this.Bind(ViewModel, vm => vm.UnitPercentageValues.RecoveryIncrease, v => v.unitRecoveryIncreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))
                     .DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.UnitPercentageValues.RecoveryDecrease, v => v.unitRecoveryDecreaseOn.Value, x => Convert.ToDecimal(x), x => Convert.ToInt32(x))

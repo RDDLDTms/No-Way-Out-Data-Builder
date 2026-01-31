@@ -1,9 +1,10 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using DataBuilder.Effects;
 using DataBuilder.Units;
 using NWO_Abstractions;
+using NWO_Abstractions.Skills;
+using NWO_DataBuilder.Core.LocalData.LeverageSources;
 using NWO_DataBuilder.Core.Models;
-using  NWO_DataBuilder.Core.LocalData.LeverageSources;
+using NWO_DataBuilder.Core.Models.Leverages.LeverageData;
 
 namespace NWO_DataBuilder.Core.Tests.Units
 {
@@ -27,7 +28,7 @@ namespace NWO_DataBuilder.Core.Tests.Units
             return _leveragesSources = new()
             {
                 new UnitLeveragesSource(wordOfPrecaher, SkillPriority.MiddlePriority,
-                    new TargetControlEffect(wordOfPrecaher.MainLeverage, duration: 3, cooldown: 6))
+                    new NonPeriodicEffectDataWithDuration(wordOfPrecaher.MainLeverage.Effects[0].Id, cooldown: 3000, duration: 6000))
             };
         }
     }

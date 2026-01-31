@@ -1,4 +1,6 @@
 ﻿using NWO_Abstractions.Leverages;
+using NWO_Abstractions.Leverages.LeverageData;
+using NWO_Abstractions.Skills;
 
 namespace NWO_Abstractions
 {
@@ -7,15 +9,15 @@ namespace NWO_Abstractions
     /// </summary>
     public interface IUnitLeveragesSource
     {
-        /// <summary>
-        /// Данные для оснвного воздействия
+                /// <summary>
+        /// Данные для основного воздействия
         /// </summary>
-        public ITypefulLeverage MainLeverageData { get; }
+        public ILeverageData MainLeverageData { get; }
 
         /// <summary>
         /// Данные для дополнительного воздействия
         /// </summary>
-        public ITypefulLeverage[]? AdditionalLeveragesData { get; }
+        public ILeverageData[]? AdditionalLeveragesData { get; }
         
         /// <summary>
         /// Источник воздействий
@@ -25,6 +27,6 @@ namespace NWO_Abstractions
         /// <summary>
         /// Приоритет использования воздействия
         /// </summary>
-        public SkillPriority LeveragesPriority { get; }
+        public SkillPriority SkillPriority { get; }
     }
 }

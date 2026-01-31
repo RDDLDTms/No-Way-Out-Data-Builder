@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataBuilder.Effects\DataBuilder.Effects.csproj" />
+    <ProjectReference Include="..\DataBuilder.StartData\DataBuilder.StartData.csproj" />
     <ProjectReference Include="..\NWO_Abstractions\NWO_Abstractions.csproj" />
   </ItemGroup>
 

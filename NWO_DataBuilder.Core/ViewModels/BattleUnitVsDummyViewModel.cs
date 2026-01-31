@@ -3,8 +3,9 @@ using DataBuilder.Leverages;
 using DataBuilder.Units;
 using NWO_Abstractions;
 using NWO_Abstractions.Battles;
+using NWO_Abstractions.Effects;
 using NWO_Abstractions.Enums;
-using NWO_Abstractions.Services;
+using NWO_Abstractions.Services.BattleLog;
 using NWO_Battles;
 using NWO_DataBuilder.Core.Models;
 using NWO_Support;
@@ -100,7 +101,7 @@ namespace NWO_DataBuilder.Core.ViewModels
             _purposes = new ObservableCollection<IBattlePurpose>
             {
                 new DestroyOneTargetPurpose(),
-                new RecoverOneTargetPurpose()
+                new RecoverOneOtherTargetPurpose()
             };
 
             _allPurposes = new ReadOnlyObservableCollection<IBattlePurpose>(_purposes);
@@ -116,19 +117,21 @@ namespace NWO_DataBuilder.Core.ViewModels
             });
         }
 
-        private void Battle_totalRecover(int newValue)
+        private void Battle_totalRecover(double newValue)
         {
+            var valueText = Math.Round(newValue).ToString();
             RxApp.MainThreadScheduler.Schedule(() =>
             {
-                TotalRecoverText = newValue.ToString();
+                TotalRecoverText = valueText;
             });
         }
 
-        private void Battle_totalDamage(int newValue)
+        private void Battle_totalDamage(double newValue)
         {
+            var valueText = Math.Round(newValue).ToString();
             RxApp.MainThreadScheduler.Schedule(() =>
             {
-                TotalDamageText = newValue.ToString();
+                TotalDamageText = valueText;
             });
         }
 
@@ -152,11 +155,11 @@ namespace NWO_DataBuilder.Core.ViewModels
             {
                 RxApp.MainThreadScheduler.Schedule(() =>
                 {
-                    if (_newUnitHealthValue > UnitCurrentHealth)
+                    if (Math.Round(_newUnitHealthValue) > UnitCurrentHealth)
                         UnitCurrentHealth++;
                     else
                     {
-                        if (_newUnitHealthValue < UnitCurrentHealth)
+                        if (Math.Round(_newUnitHealthValue) < UnitCurrentHealth)
                             UnitCurrentHealth--;
                     }
                 });
@@ -173,11 +176,11 @@ namespace NWO_DataBuilder.Core.ViewModels
             {
                 RxApp.MainThreadScheduler.Schedule(() =>
                 {
-                    if (_newDummyHealthValue > DummyCurrentHealth)
+                    if (Math.Round(_newDummyHealthValue) > DummyCurrentHealth)
                         DummyCurrentHealth++;
                     else
                     {
-                        if (_newDummyHealthValue < DummyCurrentHealth)
+                        if (Math.Round(_newDummyHealthValue) < DummyCurrentHealth)
                             DummyCurrentHealth--;
                     }
                 });
@@ -256,13 +259,13 @@ namespace NWO_DataBuilder.Core.ViewModels
             battle.newTargetHealth += OnTargetHealthChanged;
             battle.OnNewNegativeEffect += Battle_OnNewNegativeEffect;
             battle.OnNewPositiveEffect += Battle_OnNewPositiveEffect;
-            battle.OnNegativeEffectEnds += Battle_OnNegativeEffectEnds;
-            battle.OnPositiveEffectEnds += Battle_OnPositiveEffectEnds;
+            battle.OnNegativeEffectFinished += Battle_OnNegativeEffectFinished;
+            battle.OnPositiveEffectFinished += Battle_OnPositiveEffectFinished;
             battle.OnBattleFinished += Battle_OnBattleFinished;
             battle.StartBattle();
         }
 
-        private void Battle_OnPositiveEffectEnds(IEffect effect, ITarget target)
+        private void Battle_OnPositiveEffectFinished(IEffect effect, ITarget target, EffectFinishReason reason)
         {
             if (_dummyPositiveEffects.Count == 0 && _unitPositiveEffects.Count == 0)
                 return;
@@ -286,7 +289,7 @@ namespace NWO_DataBuilder.Core.ViewModels
             });
         }
 
-        private void Battle_OnNegativeEffectEnds(IEffect effect, ITarget target)
+        private void Battle_OnNegativeEffectFinished(IEffect effect, ITarget target, EffectFinishReason reason)
         {
             if (_dummyNegativeEffects.Count == 0 && _unitNegativeEffects.Count == 0)
                 return;
@@ -319,11 +322,13 @@ namespace NWO_DataBuilder.Core.ViewModels
                 {
                     if (target is Dummy)
                     {
-                        _dummyPositiveEffects.Add(effect);
+                        if (_dummyPositiveEffects.Contains(effect) is false)
+                            _dummyPositiveEffects.Add(effect);
                     }
                     else
                     {
-                        _unitPositiveEffects.Add(effect);
+                        if (_unitPositiveEffects.Contains(effect) is false)
+                            _unitPositiveEffects.Add(effect);
                     }
                 }
                 catch (Exception ex)
@@ -341,11 +346,13 @@ namespace NWO_DataBuilder.Core.ViewModels
                 {
                     if (target is Dummy)
                     {
-                        _dummyNegativeEffects.Add(effect);
+                        if (_dummyNegativeEffects.Contains(effect) is false)
+                            _dummyNegativeEffects.Add(effect);
                     }
                     else
-                    {
-                        _unitNegativeEffects.Add(effect);
+                    {   
+                        if(_dummyNegativeEffects.Contains(effect) is false)
+                            _unitNegativeEffects.Add(effect);
                     }
                 }
                 catch (Exception ex) 
@@ -377,8 +384,8 @@ namespace NWO_DataBuilder.Core.ViewModels
                 battle.OnBattleFinished -= Battle_OnBattleFinished; 
                 battle.OnNewNegativeEffect -= Battle_OnNewNegativeEffect;
                 battle.OnNewPositiveEffect -= Battle_OnNewPositiveEffect;
-                battle.OnNegativeEffectEnds -= Battle_OnNegativeEffectEnds;
-                battle.OnNegativeEffectEnds -= Battle_OnNegativeEffectEnds;
+                battle.OnNegativeEffectFinished -= Battle_OnNegativeEffectFinished;
+                battle.OnNegativeEffectFinished -= Battle_OnNegativeEffectFinished;
                 battle.newActionMessage -= ShowBattleMessage;
                 battle.Dispose();
                 battle = null;

@@ -2,6 +2,6 @@
 {
     public interface IPercentage
     {
-        int Percentage { get; }
+        public double Percentage { get; }
     }
 }

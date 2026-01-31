@@ -1,11 +1,11 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using DataBuilder.Leverages.Base;
-using NWO_Abstractions;
+using DataBuilder.Effects;
 using NWO_Abstractions.Leverages;
+using NWO_DataBuilder.Core.Models.Leverages;
 
 namespace NWO_DataBuilder.Core.LocalData.Leverages
 {
-    public class FlamingAxeAddLev : LeverageBase
+    public class FlamingAxeAddLev : NegativeEffectApplying
     {
         public override LeverageType Type => LeverageType.NegativeEffectApplying;
         public override LeverageTargetType TargetType => LeverageTargetType.Enemies;
@@ -16,6 +16,9 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override string RussianDisplayName => "Горение (Пылающий топор)";
         public override string InstrumentalCase => "горением (Пылающий топор)";
 
-        public FlamingAxeAddLev(ILeverageClass lClass, ILeverageOption lOption) : base(lClass, lOption) { }
+        public FlamingAxeAddLev(ILeverageClass lClass, ILeverageOption lOption) : base(lClass, lOption) 
+        {
+            Effects.Add(new TargetPeriodicDamageEffect(lClass, UniversalName, RussianDisplayName));
+        }
     }
 }

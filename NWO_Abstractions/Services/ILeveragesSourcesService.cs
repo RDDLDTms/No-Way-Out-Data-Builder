@@ -1,5 +1,7 @@
 ﻿using NWO_Abstractions;
 using NWO_Abstractions.Leverages;
+using NWO_Abstractions.Leverages.LeverageData;
+using NWO_Abstractions.Skills;
 
 namespace NWO_DataBuilder.Core.Services
 {
@@ -22,6 +24,6 @@ namespace NWO_DataBuilder.Core.Services
         /// <param name="mainValues">Значения основного воздействия</param>
         /// <param name="additionalValues">Значения дополнительного воздействия</param>
         /// <returns>Источник воздействий для юнита</returns>
-        public IUnitLeveragesSource CreateUnitLeverageSource(ILeveragesSource source, SkillPriority priority, ITypefulLeverage mainLeverageData, ITypefulLeverage[]? additionalleveragesData);
+        public IUnitLeveragesSource CreateUnitLeverageSource(ILeveragesSource source, SkillPriority priority, ILeverageData mainLeverageData, ILeverageData[]? additionalleveragesData);
     }
 }

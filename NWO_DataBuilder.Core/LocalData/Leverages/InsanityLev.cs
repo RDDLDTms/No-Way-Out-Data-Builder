@@ -1,11 +1,11 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using DataBuilder.Leverages.Base;
-using NWO_Abstractions;
+using DataBuilder.Effects.ControlEffects;
 using NWO_Abstractions.Leverages;
+using NWO_DataBuilder.Core.Models.Leverages;
 
 namespace NWO_DataBuilder.Core.LocalData.Leverages
 {
-    public class InsanityLev : LeverageBase
+    public class InsanityLev : NegativeEffectApplying
     {
         public override LeverageType Type => LeverageType.NegativeEffectApplying;
         public override LeverageTargetType TargetType => LeverageTargetType.Enemies;
@@ -16,6 +16,9 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override string RussianDisplayName => "Помешательство";
         public override string InstrumentalCase => "помешательством";
 
-        public InsanityLev(ILeverageClass lClass) : base(lClass) { }
+        public InsanityLev(ILeverageClass lClass) : base(lClass) 
+        {
+            Effects.Add(new TargetControlEffectWithDuration(lClass, UniversalName, RussianDisplayName));
+        }
     }
 }

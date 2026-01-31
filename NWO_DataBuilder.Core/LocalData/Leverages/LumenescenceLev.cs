@@ -1,13 +1,12 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
 using DataBuilder.Leverages.Base;
-using NWO_Abstractions;
 using NWO_Abstractions.Leverages;
 
 namespace NWO_DataBuilder.Core.LocalData.Leverages
 {
     public class LumenescenceLev : LeverageBase
     {
-        public override LeverageType Type => LeverageType.PassiveDamage;
+        public override LeverageType Type => LeverageType.Damage;
         public override LeverageTargetType TargetType => LeverageTargetType.Enemies;
         public override LeverageHitPoint HitPoint => LeverageHitPoint.SpaceAroundUnit;
         public override LeverageRangeType RangeType => LeverageRangeType.Range;

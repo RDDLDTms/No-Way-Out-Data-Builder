@@ -1,17 +1,33 @@
 ﻿using DataBuilder.BuilderObjects;
 using DataBuilder.BuilderObjects.Primal;
+using NWO_Abstractions.Effects;
 
 namespace NWO_Abstractions.Leverages
 {
-    public interface ILeverage : IBaseBuilderObject, ITypefulLeverage
+    public interface ILeverage : IBaseBuilderObject
     {
         /// <summary>
-        /// Классы воздействия
+        /// Тип воздействия
+        /// </summary>
+        public LeverageType Type { get; }
+
+        /// <summary>
+        /// Длительность воздействия
+        /// </summary>
+        public LeverageDuration Duration { get; }
+
+        /// <summary>
+        /// Опции воздействия
         /// </summary>
         public List<ILeverageOption> Options { get; }
 
         /// <summary>
-        /// Тип воздействия
+        /// Эффекты воздействия
+        /// </summary>
+        public List<IEffect> Effects { get; }
+
+        /// <summary>
+        /// Класс воздействия
         /// </summary>
         public ILeverageClass Class { get; }
 
@@ -39,5 +55,10 @@ namespace NWO_Abstractions.Leverages
         /// Творительный падеж
         /// </summary>
         public string InstrumentalCase { get; }
+
+        /// <summary>
+        /// Есть ли эффекты внутри воздействия
+        /// </summary>
+        public bool HasEffects => Effects is not null && Effects.Count > 0;
     }
 }

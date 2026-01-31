@@ -1,9 +1,10 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using DataBuilder.Leverages;
 using DataBuilder.Units;
 using NWO_Abstractions;
+using NWO_Abstractions.Skills;
+using NWO_DataBuilder.Core.LocalData.LeverageSources;
 using NWO_DataBuilder.Core.Models;
-using  NWO_DataBuilder.Core.LocalData.LeverageSources;
+using NWO_DataBuilder.Core.Models.Leverages.LeverageData;
 
 namespace NWO_DataBuilder.Core.Tests.Units
 {
@@ -23,22 +24,26 @@ namespace NWO_DataBuilder.Core.Tests.Units
         {
             var allLSources = DictionaryStorage.GetInstance().AllLeveragesSources;
             LeveragesSourcesCreated = true;
+            var claymoreOfLight = allLSources[nameof(ClaymoreOfLightLS)];
+            var mirrorArmor = allLSources[nameof(MirrorArmorLS)];
+            var mirrorShield = allLSources[nameof(MirrorShieldLS)];
+            var shieldStrike = allLSources[nameof(ShieldStrikeLS)];
             return _leveragesSources = new()
             {
-                new UnitLeveragesSource(allLSources[nameof(ClaymoreOfLightLS)], SkillPriority.PrimalPriority,
-                    new LeverageInstantStrike(minValue:44, maxValue:66, cooldown:8),
-                    new LeverageInstantStrike(minValue:11, maxValue:22, cooldown:8)),
+                new UnitLeveragesSource(claymoreOfLight, SkillPriority.PrimalPriority,
+                    new InstantLeverageData(claymoreOfLight.MainLeverage.Id, minValue:44, maxValue:66, cooldown:8000),
+                    new InstantLeverageData(claymoreOfLight.AdditionalLeverages![0].Id, minValue:11, maxValue:22, cooldown:8000)),
 
-                new UnitLeveragesSource(allLSources[nameof(MirrorArmorLS)], SkillPriority.HighPriority,
-                    new LeverageInstantStrike(minValue: 20, maxValue: 30, cooldown: 7),
-                    new LeverageInstantStrike(minValue: 22, maxValue: 33, cooldown: 4)),
+                new UnitLeveragesSource(mirrorArmor, SkillPriority.HighPriority,
+                    new InstantLeverageData(mirrorArmor.MainLeverage.Id, minValue: 20, maxValue: 30, cooldown: 7000),
+                    new InstantLeverageData(mirrorArmor.AdditionalLeverages![0].Id, minValue: 22, maxValue: 33, cooldown: 4000)),
 
-                new UnitLeveragesSource(allLSources[nameof(MirrorShieldLS)], SkillPriority.AdvancedPriority,
-                    new LeverageInstantStrike(minValue: 13, maxValue: 21, cooldown: 7),
-                    new LeverageInstantStrike(minValue: 22, maxValue: 33, cooldown: 6)),
+                new UnitLeveragesSource(mirrorShield, SkillPriority.AdvancedPriority,
+                    new InstantLeverageData(mirrorShield.MainLeverage.Id, minValue: 13, maxValue: 21, cooldown: 7000),
+                    new InstantLeverageData(mirrorShield.AdditionalLeverages![0].Id, minValue: 22, maxValue: 33, cooldown: 6000)),
 
-                new UnitLeveragesSource(allLSources[nameof(ShieldStrikeLS)], SkillPriority.MiddlePriority,
-                    new LeverageInstantStrike(minValue: 13, maxValue: 16, cooldown: 7))
+                new UnitLeveragesSource(shieldStrike, SkillPriority.MiddlePriority,
+                    new InstantLeverageData(shieldStrike.MainLeverage.Id, minValue: 13, maxValue: 16, cooldown: 7000))
             };
         }
     }

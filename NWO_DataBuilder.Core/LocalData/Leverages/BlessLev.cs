@@ -1,11 +1,11 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using DataBuilder.Leverages.Base;
-using NWO_Abstractions;
+using DataBuilder.Effects;
 using NWO_Abstractions.Leverages;
+using NWO_DataBuilder.Core.Models.Leverages;
 
 namespace NWO_DataBuilder.Core.LocalData.Leverages
 {
-    public class BlessLev : LeverageBase
+    public class BlessLev : PositiveEffectApplying
     {
         public override LeverageType Type => LeverageType.PositiveEffectApplying;
         public override LeverageTargetType TargetType => LeverageTargetType.Alias;
@@ -16,6 +16,9 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override string RussianDisplayName => "Благословение";
         public override string InstrumentalCase => "благословением";
 
-        public BlessLev(ILeverageClass lClass, ILeverageOption lOption) : base(lClass, lOption) { }
+        public BlessLev(ILeverageClass lClass, ILeverageOption lOption) : base(lClass, lOption) 
+        {
+            Effects.Add(new TargetPeriodicRecoveryEffect(lClass, UniversalName, RussianDisplayName));
+        }
     }
 }

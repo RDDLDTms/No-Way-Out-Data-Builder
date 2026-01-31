@@ -5,5 +5,7 @@
         public string RussianDisplayName { get; }
 
         public string Description { get; }
+
+        public bool WatchDummy { get; }
     }
 }

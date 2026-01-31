@@ -1,11 +1,12 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using DataBuilder.Leverages.Base;
-using NWO_Abstractions;
+using DataBuilder.Effects.PercentageEffects;
+using NWO_Abstractions.Effects;
 using NWO_Abstractions.Leverages;
+using NWO_DataBuilder.Core.Models.Leverages;
 
 namespace NWO_DataBuilder.Core.LocalData.Leverages
 {
-    public class DefenceLev : LeverageBase
+    public class DefenceLev : PositiveEffectApplying
     {
         public override LeverageType Type => LeverageType.PositiveEffectApplying;
         public override LeverageTargetType TargetType => LeverageTargetType.Alias;
@@ -16,6 +17,9 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override string RussianDisplayName => "Защита";
         public override string InstrumentalCase => "защитой";
 
-        public DefenceLev(ILeverageClass lClass, ILeverageOption lOption) : base(lClass, lOption) { }
+        public DefenceLev(ILeverageClass lClass, ILeverageOption lOption) : base(lClass, lOption)
+        {
+            Effects.Add(new IncreaseEffectWithDuration(EffectType.Positive, lClass, UniversalName, RussianDisplayName));
+        }
     }
 }

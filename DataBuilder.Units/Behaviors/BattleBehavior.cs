@@ -1,7 +1,12 @@
 ﻿using DataBuilder.Effects;
+using DataBuilder.StartData;
 using DataBuilder.TargetSystem;
+using DataBuilder.Skills;
 using NWO_Abstractions;
 using NWO_Abstractions.Battles;
+using NWO_Abstractions.Data.Effects;
+using NWO_Abstractions.Leverages;
+using NWO_Abstractions.Skills;
 
 namespace DataBuilder.Units.Behaviors
 {
@@ -15,6 +20,12 @@ namespace DataBuilder.Units.Behaviors
         private IBattleModelling _battle;
         private CommonTargetSystem _targetSystem;
         private bool SkillsCooldownWaiting = false;
+
+        //TODO cache
+        private bool _startDamagePercentageCalculated = false;
+        private bool _startRecoveryPercentageCalculated = false;
+        private double _startDamage = 0;
+        private double _startRecovery = 0;
 
         public bool CanUseAnySkill => _unit.Skills.Any(x => x.CanUseSkill);
         
@@ -37,13 +48,19 @@ namespace DataBuilder.Units.Behaviors
                     await Wait(battleSpeed);
                     continue;
                 }
-                var skillResult = TryUseSkill(battleSpeed);
-
-                if (skillResult is null)
+                try
                 {
-                    await Wait(battleSpeed);
-                    continue;
+                    if (TryUseSkill(battleSpeed, out ISkillResult? skillResult) is false)
+                    {
+                        await Wait(battleSpeed);
+                        continue;
+                    }
                 }
+                catch (Exception ex)
+                {
+
+                }
+
                 RefreshWaitingTimer();
                 SkillsCooldownWaiting = false;
                 await Task.Delay((int)(globalCooldown / battleSpeed));
@@ -89,7 +106,7 @@ namespace DataBuilder.Units.Behaviors
             await Task.Delay((int)(WAITING_COOLDOWN / battleSpeed));
         }
 
-        private ISkillResult? TryUseSkill(double battleSpeed)
+        private bool TryUseSkill(double battleSpeed, out ISkillResult? skillResult)
         {
             for (int i = (int)SkillPriority.PrimalPriority; i > -1; i--)
             {
@@ -101,238 +118,196 @@ namespace DataBuilder.Units.Behaviors
                 if (targets is null || targets.Any() is false)
                     continue;
 
-                ISkillResult skillResult = ApplyEffectsToSkillResult(skill.GetSkillResult(battleSpeed));
+                List<ITarget> targetsFixed = targets.ToList();
 
-                if (DoActionToTargets(skill.MainLeverage.Type, targets, skillResult.MainPart!) is false)
-                {
-                    return skillResult;
-                }
+                skillResult = ApplyEffectsToSkillResult(skill.GetSkillResult(battleSpeed));
 
-                if (skillResult.AdditionalPart is not null && skill.AdditionalLeverages is not null)
+                if (DoActionToTargets(targetsFixed, skillResult.MainPart!) is false)
+                    return false;              
+
+                if (skillResult.AdditionalParts is not null  && skill.AdditionalLeverages is not null)
                 {
                     for (int j = 0; j < skill.AdditionalLeverages.Length; j++)
                     {
-                        if (skill.AdditionalLeverages[j] is null)
+                        if (skill.AdditionalLeverages[j] is null || skillResult.AdditionalParts.Length == 0 || skillResult.AdditionalParts[j] is null)
                             continue;
-                        var additionaltargets = skill.MainLeverage.Type == skill.AdditionalLeverages[j].Type ? targets : _targetSystem.FindTargets(skill.AdditionalLeverages[j], _unit.TeamNumber);
+                        var additionalTargets = skill.MainLeverage.Type == skill.AdditionalLeverages[j].Type ? targetsFixed : _targetSystem.FindTargets(skill.AdditionalLeverages[j], _unit.TeamNumber);
 
-                        if (additionaltargets is not null && additionaltargets.Any())
+                        if (additionalTargets is not null && additionalTargets.Any())
                         {
-                            DoActionToTargets(skill.AdditionalLeverages[j].Type, additionaltargets, skillResult.AdditionalPart[j]);
+                            try
+                            {
+                                DoActionToTargets(additionalTargets, skillResult.AdditionalParts[j]);
+                            }
+                            catch (Exception ex)
+                            {
+                                //TODO
+                            }
                         }
                     }
                 }
-                _unit.CallUnitActionEvent(skillResult);
-                return skillResult;
+                try
+                {
+                    _unit.CallUnitUseSkillOnTargetsEvent(skillResult, skill.Priority, targetsFixed);
+                }
+                catch (Exception ex)
+                {
+                    //TODO
+                }
+                return true;
             }
-            return null;
+            skillResult = null;
+            return false;
         }
 
-        private int ApplyEffectsToSkillPart(ISkillResultPart skillResultPart)
+        private ISkillResultPart ApplyEffectsToSkillPart(ISkillResultPart skillResultPart)
         {
-            if (skillResultPart.LeverageType is LeverageType.InstantDamage or LeverageType.PassiveDamage)
+            if (skillResultPart is SkillValuesResultPart skillValuesResultPart)
             {
-                int percentage = 0;
-                foreach (var postivieActorDamageEffect in _unit.Effects.PositiveEffects.Where(x => x is ActorDamageIncreaseEffect).Cast<ActorDamageIncreaseEffect>())
+                if (skillValuesResultPart.LeverageType is LeverageType.Damage or LeverageType.Recovery)
                 {
-                    percentage += postivieActorDamageEffect.Percentage;
+                    var percentage = skillValuesResultPart.LeverageType is LeverageType.Damage ? CollectActorDamagePercentage() : CollectActorRecoveryPercentage();
+                    double newValue = skillValuesResultPart.Value + skillValuesResultPart.Value * percentage / 100;
+                    skillValuesResultPart.UpdateValue(newValue > 0 ? newValue : 0);
                 }
-                foreach (var negativeActorDamageEffect in _unit.Effects.NegativeEffects.Where(x => x is ActorDamageDecreaseEffect).Cast<ActorDamageDecreaseEffect>())
+                return skillValuesResultPart;
+            }
+            else if (skillResultPart is SkillEffectResultPart skillEffectResultPart)
+            {
+                if (skillEffectResultPart.EffectData is IPeriodicEffectCompleteData data)
                 {
-                    percentage -= negativeActorDamageEffect.Percentage;
+                    if (skillEffectResultPart.Effect is TargetPeriodicDamageEffect)
+                    {
+                        data.StoredIncomingAdditionalPercentage = CollectActorDamagePercentage();
+                    }
+
+                    if (skillEffectResultPart.Effect is TargetPeriodicRecoveryEffect)
+                    {
+                        data.StoredIncomingAdditionalPercentage = CollectActorRecoveryPercentage();
+                    }
                 }
-                skillResultPart.Value += skillResultPart.Value * percentage / 100;
-                return (int)skillResultPart.Value! < 0 ? 0: (int)skillResultPart.Value!;
+                return skillEffectResultPart;
             }
 
-            if (skillResultPart.LeverageType is LeverageType.InstantRecovery or LeverageType.PassiveRecovery)
-            {
-                int percentage = 0;
-                foreach (var positiveActorRecoveryEffect in _unit.Effects.PositiveEffects.Where(x => x is ActorRecoveringIncreaseEffect).Cast<ActorRecoveringIncreaseEffect>())
-                {
-                    percentage += positiveActorRecoveryEffect.Percentage;
-                }
-                foreach (var negativeActorRecoveryPowerEffect in _unit.Effects.NegativeEffects.Where(x => x is ActorRecoveringDecreaseEffect).Cast<ActorRecoveringDecreaseEffect>())
-                {
-                    percentage -= negativeActorRecoveryPowerEffect.Percentage;
-                }
-                skillResultPart.Value += skillResultPart.Value * percentage /100;
-                return (int)skillResultPart.Value! < 0 ? 0 : (int)skillResultPart.Value!;
-            }
-
-            return (int)skillResultPart.Value!;
+            return skillResultPart;
         }
 
         private ISkillResult ApplyEffectsToSkillResult(ISkillResult skillResult)
         {
-            if (skillResult.MainPart is SkillResultPart mainPart && IsDamageOrRecovery(mainPart.LeverageType))
-            {
-                skillResult.MainPart.Value = ApplyEffectsToSkillPart(mainPart);
-            }
+            if (skillResult.MainPart is not null)
+                skillResult.MainPart = ApplyEffectsToSkillPart(skillResult.MainPart);
 
-            if (skillResult.AdditionalPart is not null && skillResult.AdditionalPart.Any())
+            if (skillResult.AdditionalParts is not null)
             {
-                for (int i = 0; i < skillResult.AdditionalPart.Length; i++)
+                for (int i = 0; i < skillResult.AdditionalParts.Length; i++)
                 {
-                    if (skillResult.AdditionalPart[i] is SkillResultPart additionalPart && IsDamageOrRecovery(additionalPart.LeverageType))
-                        skillResult.AdditionalPart[i].Value = ApplyEffectsToSkillPart(additionalPart);
+                    if (skillResult.AdditionalParts[i] is not null)
+                        skillResult.AdditionalParts[i] = ApplyEffectsToSkillPart(skillResult.AdditionalParts[i]);
                 }
             }
 
             return skillResult;
         }
 
-        private bool IsDamageOrRecovery(LeverageType type)
-            => type is LeverageType.InstantDamage or LeverageType.InstantRecovery or LeverageType.PassiveDamage or LeverageType.PassiveRecovery;
-
         private bool CanIDoSmth()
         {
             if (CanUseAnySkill)
             {
                 // могу ли я дамажить?
-                if (CanDamage())
-                {
-                    return true;
-                }
+                if (HasDamageSkills)
+                    return true;               
 
                 // могу ли я восстанавливать хп?
-                if (CanRecover())
-                {
+                if (HasRecoverySkills)
                     return true;
-                }
 
                 // могу ли я создать что-то?
-                if (CanCreate())
-                {
-                    //TODO
+                if (HasCreationSkills)
                     return true;
-                }
 
                 // могу ли я накладывать положительные эффекты?
-                if (CanApplyPositiveEffect())
-                {
-                    //TODO
+                if (HasPoisitiveEffectApplyingSkills)
                     return true;
-                }
 
                 // могу ли я накладывать отрицательные эффекты?
-                if (CanApplyNegativeEffect())
-                {
-                    //TODO
+                if (HasNegativeEffectApplyingSkills)
                     return true;
-                }
 
                 // могу ли я снимать положительные эффекты?
-                if (CanRemovePositiveEffect())
-                {
-                    //TODO
+                if (HasPositiveEffectRemovalSkills)
                     return true;
-                }
 
                 // могу ли я снимать отрицательные эффекты?
-                if (CanRemoveNegativeEffect())
-                {
-                    //TODO
+                if (HasNegativeEffectRemovalSkills)
                     return true;
-                }
             }
 
             return false;
         }
 
-        private bool DoActionToTargets(LeverageType type, IEnumerable<ITarget>? targets, ISkillResultPart skillResultPart)
+        private bool DoActionToTargets(IEnumerable<ITarget>? targets, ISkillResultPart skillResultPart)
         {
             if (targets is null || skillResultPart is null)
             {
                 return false;
             }
-            
-            switch (type)
+            try
             {
-                case LeverageType.InstantDamage:
-                    targets.ToList().ForEach(x => skillResultPart.Value = x.DamageTarget((int)skillResultPart.Value!));
-                    return true;
+                switch (skillResultPart.LeverageType)
+                {
+                    case LeverageType.Damage:
+                        var damageResultPart = ((SkillValuesResultPart)skillResultPart);
+                        targets.ToList().ForEach(x => damageResultPart.UpdateValue(x.DamageTarget(damageResultPart.Value)));
+                        return true;
 
-                case LeverageType.InstantRecovery:
-                    targets.ToList().ForEach(x => x.RecoverTarget((int)skillResultPart.Value!));
-                    return true;
+                    case LeverageType.Recovery:
+                        var recoveryResultPart = ((SkillValuesResultPart)skillResultPart);
+                        targets.ToList().ForEach(x => recoveryResultPart.UpdateValue(x.RecoverTarget(recoveryResultPart.Value)));
+                        return true;
 
-                case LeverageType.NegativeEffectApplying:
-                    targets.ToList().ForEach(x => x.ApplyNegativeEffect(skillResultPart.EffectForTargets!, skillResultPart.EffectForTargets is TargetPeriodicDamageEffect ? GetActorDamagePercentage() : 0));
-                    return true;
+                    case LeverageType.NegativeEffectApplying:
+                    case LeverageType.PositiveEffectApplying:
+                        var effectResultPart = (SkillEffectResultPart)skillResultPart;
+                        targets.ToList().ForEach(x => x.ApplyEffect(effectResultPart));
+                        return true;
 
-                case LeverageType.PositiveEffectApplying:
-                    targets.ToList().ForEach(x => x.ApplyPositiveEffect(skillResultPart.EffectForTargets!, skillResultPart.EffectForTargets is TargetPeriodicRecoveryEffect ? GetActorRecoveryPercentage() : 0));
-                    return true;
+                    case LeverageType.PositiveEffectRemoving:
+                    case LeverageType.NegativeEffectRemoving:
+                        var effectsRemovingResultPart = (SkillEffectRemovingResultPart)skillResultPart;
+                        targets.ToList().ForEach(x => x.RemoveEffects(effectsRemovingResultPart.Effects));
+                        return true;
 
-                case LeverageType.PositiveEffectRemoval:
-                    targets.ToList().ForEach(x => x.RemovePositiveEffect(skillResultPart.EffectForTargets!));
-                    return true;
-
-                case LeverageType.NegativeEffectRemoval:
-                    targets.ToList().ForEach(x => x.RemoveNegativeEffect(skillResultPart.EffectForTargets!));
-                    return true;
-
-                case LeverageType.Creation:
-                    //TODO
-                    return true;
-
-                default: return false;
+                    default: return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                //TODO
+                return false;
             }
         }
 
-        private bool CanRemovePositiveEffect()
-        {
-            return CanUseSkill(LeverageType.PositiveEffectRemoval);
-        }
-
-        private bool CanRemoveNegativeEffect()
-        {
-            return CanUseSkill(LeverageType.NegativeEffectRemoval);
-        }
-
-        private bool CanApplyPositiveEffect()
-        {
-            return CanUseSkill(LeverageType.PositiveEffectApplying);
-        }
-
-        private bool CanApplyNegativeEffect()
-        {
-            return CanUseSkill(LeverageType.NegativeEffectApplying);
-        }
-
-        private bool CanCreate()
-        {
-            return CanUseSkill(LeverageType.Creation);
-        }
-
-        private bool CanRecover()
-        {
-            return CanUseSkill(LeverageType.InstantRecovery);
-        }
-
-        private bool CanDamage()
-        {
-            return CanUseSkill(LeverageType.InstantDamage);
-        }
-
-        private bool CanUseSkill(LeverageType leverageType)
-        {
-            return _unit.Skills.Any(x => x.MainLeverage.Type == leverageType);
-        }
+        private bool HasNegativeEffectApplyingSkills => CanUseSkill(LeverageType.NegativeEffectApplying);
+        private bool HasPoisitiveEffectApplyingSkills => CanUseSkill(LeverageType.PositiveEffectApplying);
+        private bool HasNegativeEffectRemovalSkills => CanUseSkill(LeverageType.NegativeEffectRemoving);
+        private bool HasPositiveEffectRemovalSkills => CanUseSkill(LeverageType.PositiveEffectRemoving);
+        private bool HasCreationSkills => CanUseSkill(LeverageType.Creation);
+        private bool HasRecoverySkills => CanUseSkill(LeverageType.Recovery);
+        private bool HasDamageSkills => CanUseSkill(LeverageType.Damage);
+        private bool CanUseSkill(LeverageType leverageType) => _unit.Skills.Any(x => x.MainLeverage.Type == leverageType);
 
         private bool CanUseSkillOnTargets(LeverageType type)
         {
             var _myEnemyTargets = _battle.GetEnemies(_unit.TeamNumber);
             var _myAlliesTargets = _battle.GetAllies(_unit.TeamNumber);
 
-            if (type is LeverageType.InstantDamage && _myEnemyTargets.Count > 0)
+            if (type is LeverageType.Damage && _myEnemyTargets.Count > 0)
                 return true;
 
-            if (type is LeverageType.InstantRecovery && _myAlliesTargets.Count(x => x.Health < x.MaxHealth) > 0)
+            if (type is LeverageType.Recovery && _myAlliesTargets.Count(x => x.Health < x.MaxHealth) > 0)
                 return true;
 
-            if (type is LeverageType.NegativeEffectRemoval && _myAlliesTargets.Any(x => x.Effects.NegativeEffects.Count > 0))
+            if (type is LeverageType.NegativeEffectRemoving && _myAlliesTargets.Any(x => x.Effects.NegativeEffects.Count > 0))
                 return true;
 
             if (type is LeverageType.NegativeEffectApplying && _myEnemyTargets.Count > 0)
@@ -341,38 +316,50 @@ namespace DataBuilder.Units.Behaviors
             if (type is LeverageType.PositiveEffectApplying && _myAlliesTargets.Count > 0)
                 return true;
 
-            if (type is LeverageType.PositiveEffectRemoval && _myEnemyTargets.Any(x => x.Effects.PositiveEffects.Count > 0))
+            if (type is LeverageType.PositiveEffectRemoving && _myEnemyTargets.Any(x => x.Effects.PositiveEffects.Count > 0))
                 return true;
 
             return false;
         }
 
-        private int GetActorDamagePercentage()
+        private double CollectActorDamagePercentage() => (_startDamagePercentageCalculated ? _startDamage : CollectActorStartDamagePercentage()) + CollectActorDynamicDamagePercentage();
+        
+        private double CollectActorRecoveryPercentage() => (_startRecoveryPercentageCalculated ? _startRecovery : CollectActorStartRecoveryPercentage()) + CollectActorDynamicRecoveryPercentage();
+
+        //TODO
+        private double CollectActorDynamicDamagePercentage() => 0;
+
+        //TODO
+        private double CollectActorDynamicRecoveryPercentage() => 0;
+
+        private double CollectActorStartDamagePercentage()
         {
-            int summaryPercentage = 0;
-            foreach (ActorDamageIncreaseEffect damInc in (_unit as ITarget).Effects.PositiveEffects.Where(x => x is ActorDamageIncreaseEffect).Cast<ActorDamageIncreaseEffect>())
+            var startEffects = _unit.Data.StartEffects;
+            double summaryPercentage = 0;
+            foreach (var startGain in startEffects.PositiveEffects.Where(x => x is ActorStartGain).Cast<ActorStartGain>())
             {
-                summaryPercentage += damInc.Percentage;
+                summaryPercentage += startEffects.TryGetPercentage(startGain);
             }
 
-            foreach (ActorDamageDecreaseEffect damDec in _unit.Data.StartEffects.NegativeEffects.Where(x => x is ActorDamageDecreaseEffect).Cast<ActorDamageDecreaseEffect>())
+            foreach (var startWeakness in startEffects.NegativeEffects.Where(x => x is ActorStartWeakness).Cast<ActorStartWeakness>())
             {
-                summaryPercentage -= damDec.Percentage;
+                summaryPercentage -= startEffects.TryGetPercentage(startWeakness);
             }
             return summaryPercentage;
         }
 
-        private int GetActorRecoveryPercentage()
+        private double CollectActorStartRecoveryPercentage()
         {
-            int summaryPercentage = 0;
-            foreach (ActorRecoveringIncreaseEffect recInc in _unit.Data.StartEffects.PositiveEffects.Where(x => x is ActorRecoveringIncreaseEffect).Cast<ActorRecoveringIncreaseEffect>())
+            var startEffects = _unit.Data.StartEffects;
+            double summaryPercentage = 0;
+            foreach (var startZealtory in startEffects.PositiveEffects.Where(x => x is ActorStartZealtory).Cast<ActorStartZealtory>())
             {
-                summaryPercentage += recInc.Percentage;
+                summaryPercentage += startEffects.TryGetPercentage(startZealtory);
             }
 
-            foreach (ActorRecoveringDecreaseEffect recDec in _unit.Data.StartEffects.NegativeEffects.Where(x => x is ActorRecoveringDecreaseEffect).Cast<ActorRecoveringDecreaseEffect>())
+            foreach (var startDespondency in startEffects.NegativeEffects.Where(x => x is ActorStartDespondency).Cast<ActorStartDespondency>())
             {
-                summaryPercentage -= recDec.Percentage;
+                summaryPercentage -= startEffects.TryGetPercentage(startDespondency);
             }
             return summaryPercentage;
         }

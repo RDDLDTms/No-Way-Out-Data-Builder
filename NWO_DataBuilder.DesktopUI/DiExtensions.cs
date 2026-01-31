@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NWO_Abstractions.Services;
+using NWO_Abstractions.Services.BattleLog;
 using NWO_DataBuilder.Core.LocalImplementations.Services;
 using NWO_DataBuilder.Core.Models;
 using NWO_DataBuilder.Core.Services;
@@ -22,5 +23,6 @@ public static class DiExtensions
         Locator.CurrentMutable.RegisterLazySingleton(() => new LocalLeverageSourcesService(), typeof(ILeveragesSourcesService));
         Locator.CurrentMutable.RegisterLazySingleton(() => new LocalEffectsService(), typeof(IEffectsService));
         Locator.CurrentMutable.RegisterLazySingleton(() => new LocalUnitsService(), typeof(IUnitsService));
+        Locator.CurrentMutable.RegisterLazySingleton(() => new LocalSkillService(), typeof(ISkillService));
     }
 }

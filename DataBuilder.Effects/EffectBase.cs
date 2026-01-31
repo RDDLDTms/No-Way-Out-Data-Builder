@@ -1,100 +1,48 @@
-﻿using NWO_Abstractions;
+﻿using NWO_Abstractions.Effects;
 using NWO_Abstractions.Leverages;
-using NWO_Abstractions.Services;
-using Splat;
 
 namespace DataBuilder.Effects
 {
-    public class EffectBase : ILeverageEffect, ILeverageWithCooldown, ITypefulLeverage
+    public class EffectBase : IEffect
     {
-        public event EffectTimeHandler? OnEffectTick;
-        public event EffectEndHandler? OnEffectEnd;
-
         public Guid Id { get; }
+
+        public EffectType Type { get; }
+
+        public ILeverageClass LeverageClass { get; }
 
         public virtual EffectCarrier Carrier { get; protected set; }
 
-        public virtual LeverageType Type { get; protected set; }
+        public string UniversalName { get; } = string.Empty;
 
-        public ILeverageClass EffectClass { get; }
+        public string RussianName { get; } = string.Empty;
 
-        public int Duration { get; }
+        public string DisplayName { get; set; }
 
-        public string EffectName { get; }
+        public virtual bool IsRemovable { get; }
 
-        public string EffectDisplayName { get; protected set; } = string.Empty;
+        public virtual bool HasLifeTime { get; }
 
-        public double Cooldown { get; }
+        public virtual bool HasPoints { get; }
 
-        public Timer? EffectTimer { get; protected set; }
+        public virtual bool HasValues { get; }
 
-        public int EffectCounter { get; protected set; }
+        public virtual bool HasPercentage { get; }
 
-        public ITarget? TargetForEffect { get; protected set; }
-
-        protected bool TargetIsNull => TargetForEffect is null;
-
-        protected IBattleLogService BattleLogService { get; }
-
-        public EffectBase(ILeverage leverage, int duration, double cooldown)
+        public EffectBase(EffectType type, ILeverageClass leverageClass, string universalName, string russianName) 
+            : this(type, leverageClass, universalName)
         {
-            Duration = duration;
-            EffectClass = leverage.Class;
-            Cooldown = cooldown;
-            EffectName = leverage.UniversalName;
-            if (string.IsNullOrWhiteSpace(EffectDisplayName))
-                EffectDisplayName = leverage.RussianDisplayName;
+            RussianName = russianName;
+            DisplayName = string.IsNullOrWhiteSpace(RussianName) ? UniversalName : RussianName;
+        }
+
+        public EffectBase(EffectType type, ILeverageClass leverageClass, string universalName)
+        {
             Id = Guid.NewGuid();
-            BattleLogService = Locator.Current.GetService<IBattleLogService>()!;
-        }
-
-        public virtual void Start(ITarget target, double battleSpeed, int effectDelay = 0)
-        {
-            TargetForEffect = target;
-            EffectCounter = Duration;
-            EffectTimer = new Timer(TimerCallback, null, effectDelay, (int)Math.Round(1000 / battleSpeed));
-        }
-
-        protected virtual void TimerCallback(object? state)
-        {
-
-        }
-
-        protected void OnTimerTick(string logMessage)
-        {
-            OnEffectTick?.Invoke(this, EffectCounter, logMessage);
-        }
-
-        protected void OnEffectEnds(string logMessage)
-        {
-            OnEffectEnd?.Invoke(this, logMessage);
-            EffectTimer?.Dispose();
-        }
-
-        protected bool EffectImmuneFound()
-        {
-            string logMessage;
-            if (TargetForEffect!.Immunes.Any(x => x.ImmuneClass == EffectClass))
-            {
-                EffectCounter = 0;
-                logMessage = BattleLogService.GetEffectImmuneFoundMessage(EffectDisplayName, EffectClass.RussianDisplayName);
-                OnTimerTick(logMessage);
-                return true;
-            }
-            return false;
-        }
-
-        protected void DecreaseCounterByOne()
-        {
-            EffectCounter--;
-            if (EffectCounter == 0)
-            {
-                OnEffectEnds(string.Empty);
-            }
-            if (EffectCounter >= 0)
-            { 
-                OnTimerTick(string.Empty);
-            }
-        }
+            Type = type;
+            UniversalName = universalName;
+            DisplayName = UniversalName;
+            LeverageClass = leverageClass;
+        }   
     }
 }

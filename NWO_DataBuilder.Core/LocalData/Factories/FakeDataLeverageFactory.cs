@@ -3,6 +3,7 @@ using NWO_DataBuilder.Core.Models;
 using NWO_DataBuilder.Core.Tests.LeverageClasses;
 using NWO_DataBuilder.Core.Tests.LeverageOptions;
 using NWO_DataBuilder.Core.LocalData.Leverages;
+using DataBuilder.StartData;
 
 namespace NWO_DataBuilder.Core.Tests
 {

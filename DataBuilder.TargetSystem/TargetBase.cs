@@ -1,6 +1,11 @@
-﻿using DataBuilder.Effects;
+﻿using DataBuilder.BuilderObjects;
+using DataBuilder.Effects;
+using DataBuilder.StartData;
 using NWO_Abstractions;
 using NWO_Abstractions.Battles;
+using NWO_Abstractions.Data.Effects;
+using NWO_Abstractions.Effects;
+using NWO_Abstractions.Skills;
 
 namespace DataBuilder.TargetSystem
 {
@@ -8,23 +13,25 @@ namespace DataBuilder.TargetSystem
     {
         private IBattleModelling? _battle;
 
-        public event NewIntValue? OnTargetDamaged;
-        public event NewIntValue? OnTargetRecovered;
+        public event NewDoubleValue? OnTargetDamaged;
+        public event NewDoubleValue? OnTargetRecovered;
         public event NewDoubleValue? OnHealthChanged;
-        public event EffectDelegate? OnPositiveEffectApplied;
-        public event EffectDelegate? OnNegativeEffectApplied;
-        public event EffectDelegate? OnPositiveEffectRemoved;
-        public event EffectDelegate? OnNegativeEffectRemoved;
-        public event NewUnitLogMessage? OnEffectTickMessage;
-        public event NewUnitLogMessage? OnEffectEndMessage;
+        public event EffectApplyingHandler OnPositiveEffectApplied;
+        public event EffectApplyingHandler OnNegativeEffectApplied;
+        public event EffectApplyingHandler OnOtherEffectApplied;
+        public event EffectFinishedHandler OnPositiveEffectRemoved;
+        public event EffectFinishedHandler OnNegativeEffectRemoved;
+        public event EffectFinishedHandler OnOtherEffectRemoved;
+        public event EffectPeriodicTick OnPeriodicEffectTick;
+        public event EffectWithDurationDelegateFinished OnEffectWithDurationFinished;
 
         public Guid TargetId { get; }
 
         public IPercentageValues StartPercentageValues { get; set; }
 
-        public IEffectsLists Effects { get; }
+        public IEffectsSet Effects { get; }
 
-        public IEffectsLists StartEffects { get; }
+        public IEffectsSet StartEffects { get; }
 
         public List<IDefence> Defences { get; }
 
@@ -42,12 +49,12 @@ namespace DataBuilder.TargetSystem
 
         public int TeamNumber { get; set; } = 0;
 
-        public TargetBase(IPercentageValues startPercentageValues, double maxHealth, IEffectsLists startEffects, List<IDefence> defences, List<IImmune> immunes, 
+        public TargetBase(IPercentageValues startPercentageValues, double maxHealth, IEffectsSet startEffects, List<IDefence> defences, List<IImmune> immunes, 
             bool isAlive, bool isOrganic, bool isMech)
         {
             StartPercentageValues = startPercentageValues;
             MaxHealth = maxHealth;
-            Effects = EffectsLists.Default();
+            Effects = EffectsSetBase.Default();
             Effects.PositiveEffects = new();
             Effects.NegativeEffects = new();
             StartEffects = startEffects;
@@ -62,8 +69,8 @@ namespace DataBuilder.TargetSystem
         public virtual void JoinBattle(IBattleModelling battle, int teamNumber, int globalCooldown)
         {
             _battle = battle;
-            StartEffects.NegativeEffects?.ForEach(x => ApplyNegativeEffect(x, percentage: 0));
-            StartEffects.PositiveEffects?.ForEach(x => ApplyPositiveEffect(x, percentage: 0));
+            StartEffects.NegativeEffects?.ForEach(x => ApplyEffect(x, StartEffects.EffectsData[x.Id]));
+            StartEffects.PositiveEffects?.ForEach(x => ApplyEffect(x, StartEffects.EffectsData[x.Id]));
             TeamNumber = teamNumber;
             battle.Targets.Add(this);
         }
@@ -78,9 +85,9 @@ namespace DataBuilder.TargetSystem
             }
         }
 
-        public int DamageTarget(int value)
+        public double DamageTarget(double value)
         {
-            value -= GetTargetDamagePercentage() * value / 100;
+            value -= CollectTargetDamagePercentage() * value / 100;
             Health -= value;
             if (Health < 0)
                 Health = 0;
@@ -90,9 +97,9 @@ namespace DataBuilder.TargetSystem
             return value;
         }
 
-        public int RecoverTarget(int value)
+        public double RecoverTarget(double value)
         {
-            value -= GetTargetRecoveryPercentage() * value / 100;
+            value -= CollectTargetRecoveryPercentage() * value / 100;
             Health += value;
             if (Health > MaxHealth)
             {
@@ -103,101 +110,119 @@ namespace DataBuilder.TargetSystem
             return value;
         }
 
-        public void ApplyPositiveEffect(IEffect effect, int percentage = 0)
+        public void ApplyEffect(IEffect effect, IEffectData data)
         {
-            Effects.PositiveEffects.Add(effect);
-            StartEffect(effect, percentage);
-            OnPositiveEffectApplied?.Invoke(effect);
-        }
-
-        public void ApplyNegativeEffect(IEffect effect, int percentage = 0)
-        {
-            Effects.NegativeEffects.Add(effect);
-            StartEffect(effect, percentage);
-            OnNegativeEffectApplied?.Invoke(effect);
-        }
-
-        private void StartEffect(IEffect effect, int percentage)
-        {
-            effect.OnEffectTick += LeverageEffect_OnEffectTick;
-            effect.OnEffectEnd += Effect_OnEffectEnd;
-
-            if (effect is EffectWithValuesBase effectWithValues)
+            if (effect is PercentageEffectBase peb)
             {
-                effectWithValues.Start(this, _battle!.BattleSpeed, percentage, effectDelay: 1);
+                peb.SetPercentageSuffix(((IPercentageEffectData)data).Percentage);
+            }
+
+            if (Effects.Contains(effect, data.SenderId) is false)
+            {
+                Effects.AddAndSpreadEffects(effect);
+                Effects.AddEffectsData(data);
+                if (effect is IEffectWithDuration effectWithDuration)
+                {
+                    StartEffect(effectWithDuration, data);
+                }
+                switch (effect.Type)
+                {
+                    case EffectType.Positive:
+                        OnPositiveEffectApplied?.Invoke(effect, this);
+                        break;
+                    case EffectType.Negative:
+                        OnNegativeEffectApplied?.Invoke(effect, this);
+                        break;
+                    case EffectType.None:
+                    default:
+                        OnOtherEffectApplied?.Invoke(effect, this);
+                        break;
+                }
             }
             else
             {
-                effect.Start(this, _battle!.BattleSpeed);
+                Effects.RefreshEffect(effect, data);
             }
         }
 
-        private void Effect_OnEffectEnd(IEffect sender, string logMessage)
-        {
-            if (Effects.NegativeEffects.Contains(sender))
-                RemoveNegativeEffect(sender);
-            else if (Effects.PositiveEffects.Contains(sender))
-                RemovePositiveEffect(sender);
-            if (string.IsNullOrWhiteSpace(logMessage) is false)
-                OnEffectEndMessage?.Invoke(logMessage);
-        }
+        public void RemoveEffects(List<IEffect> effects) => Effects.RemoveEffects(effects);
 
-        public void RemovePositiveEffect(IEffect effect)
+        public void ApplyEffect(ISkillEffectResultPart effectResultPart) => ApplyEffect(effectResultPart.Effect, effectResultPart.EffectData);
+
+        private void StartEffect(IEffectWithDuration effect, IEffectData effectData)
         {
-            if (effect is EffectBase effectBase)
+            if (effectData is IObjectWithDuration effectDataWithDuration)
             {
-                effectBase.OnEffectTick -= LeverageEffect_OnEffectTick;
-                effectBase.OnEffectEnd -= Effect_OnEffectEnd;
-                Effects.PositiveEffects.Remove(effect);
-                OnPositiveEffectRemoved?.Invoke(effect);
+                effect.OnEffectFinishedByTime += OnEffectFinishedByTime;
+                if (effectData is IPeriodicEffectCompleteData)
+                    effect.OnEffectTick += OnEffectTick;
+                effect.Start(_battle!.BattleSpeed, effectDataWithDuration.Duration);
             }
         }
 
-        public void RemoveNegativeEffect(IEffect effect)
+        private void OnEffectTick(IEffectWithDuration effect)
         {
-            if (effect is EffectBase leverageEffect)
+            var data = Effects.EffectsData[effect.Id];
+            if (data is IPeriodicEffectCompleteData periodicData)
             {
-                leverageEffect.OnEffectTick -= LeverageEffect_OnEffectTick;
-                leverageEffect.OnEffectEnd -= Effect_OnEffectEnd;
-                Effects.NegativeEffects.Remove(effect);
-                OnNegativeEffectRemoved?.Invoke(effect);
+                var value = periodicData.GetValue();
+                value += value *periodicData.StoredIncomingAdditionalPercentage /100;
+                if (effect.Type is EffectType.Negative)
+                    DamageTarget(value);
+                else if (effect.Type is EffectType.Positive)
+                    RecoverTarget(value);
+                OnPeriodicEffectTick?.Invoke(effect, value);
             }
         }
 
-        private void LeverageEffect_OnEffectTick(IEffect sender, int newTime, string logMessage)
+        private void OnEffectFinishedByTime(IEffectWithDuration effect)
         {
-            if (string.IsNullOrWhiteSpace(logMessage) is false)
-                OnEffectTickMessage?.Invoke(logMessage);
+            effect.OnEffectFinishedByTime -= OnEffectFinishedByTime;
+            effect.OnEffectTick -= OnEffectTick;
+            OnEffectWithDurationFinished?.Invoke(effect, EffectFinishReason.FinishedByTime);
+            Effects.RemoveEffect(effect.Id);
         }
 
-        private int GetTargetDamagePercentage()
+        private double CollectTargetDamagePercentage()
         {
-            int summaryPercentage = 0;
-            foreach (TargetDefenceIncreaseEffect defInc in Effects.PositiveEffects.Where(x => x is TargetDefenceIncreaseEffect).Cast<TargetDefenceIncreaseEffect>())
-            {
-                summaryPercentage += defInc.Percentage;
-            }
-
-            foreach (TargetDefenceDecreaseEffect defDec in Effects.NegativeEffects.Where(x => x is TargetDefenceDecreaseEffect).Cast<TargetDefenceDecreaseEffect>())
-            {
-                summaryPercentage -= defDec.Percentage;
-            }
-            return summaryPercentage;
+            //TODO Добавить не только стартовый процент по урону, но и динамический во время боя
+            return CollectStartTargetDamagePercentage();
         }
 
-        private int GetTargetRecoveryPercentage()
+        private double CollectTargetRecoveryPercentage()
         {
-            int summaryPercentage = 0;
-            foreach (TargetRecoveryPowerIncreaseEffect recPowInc in Effects.PositiveEffects.Where(x => x is TargetRecoveryPowerIncreaseEffect).Cast<TargetRecoveryPowerIncreaseEffect>())
+            //TODO Добавить не только стартовый процент по восстановлению, но и динамический во время боя
+            return CollectStartTargetRecoveryPercentage();
+        }
+
+        private double CollectStartTargetDamagePercentage()
+        {
+            double summaryRecoveryPercentage = 0;
+            foreach (var effect in Effects.PositiveEffects.Where(x => x is TargetStartDefence).Cast<TargetStartDefence>())
             {
-                summaryPercentage += recPowInc.Percentage;
+                summaryRecoveryPercentage += Effects.TryGetPercentage(effect);
             }
 
-            foreach (TargetRecoveryPowerDecreaseEffect recPowDec in Effects.NegativeEffects.Where(x => x is TargetRecoveryPowerDecreaseEffect).Cast<TargetRecoveryPowerDecreaseEffect>())
+            foreach (var effect in Effects.NegativeEffects.Where(x => x is TargetStartBreak).Cast<TargetStartBreak>())
             {
-                summaryPercentage -= recPowDec.Percentage;
+                summaryRecoveryPercentage -= Effects.TryGetPercentage(effect);
             }
-            return summaryPercentage;
+            return summaryRecoveryPercentage;
+        }
+
+        private double CollectStartTargetRecoveryPercentage()
+        {
+            double summaryRecoveryPercentage = 0;
+            foreach (var effect in Effects.PositiveEffects.Where(x => x is TargetStartShine).Cast<TargetStartShine>())
+            {
+                summaryRecoveryPercentage += Effects.TryGetPercentage(effect);
+            }
+
+            foreach (var effect in Effects.NegativeEffects.Where(x => x is TargetStartWounds).Cast<TargetStartWounds>())
+            {
+                summaryRecoveryPercentage -= Effects.TryGetPercentage(effect);
+            }
+            return summaryRecoveryPercentage;
         }
     }
 }

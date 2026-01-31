@@ -1,11 +1,10 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using DataBuilder.Leverages.Base;
-using NWO_Abstractions;
 using NWO_Abstractions.Leverages;
+using NWO_DataBuilder.Core.Models.Leverages;
 
 namespace NWO_DataBuilder.Core.LocalData.Leverages
 {
-    public class DespondencyLev : LeverageBase
+    public class DespondencyLev : NegativeEffectApplying
     {
         public override LeverageType Type => LeverageType.NegativeEffectApplying;
         public override LeverageTargetType TargetType => LeverageTargetType.Enemies;

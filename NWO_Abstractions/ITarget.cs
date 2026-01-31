@@ -1,11 +1,14 @@
 ﻿using NWO_Abstractions.Battles;
+using NWO_Abstractions.Effects;
+using NWO_Abstractions.Skills;
 
 namespace NWO_Abstractions
 {
     public delegate void NewIntValue(int newValue);
     public delegate void NewDoubleValue(double newValue);
-    public delegate void NewUnitLogMessage(string logMessage);
+    public delegate void EffectPeriodicTick(IEffect effect, double value);
     public delegate void EffectDelegate(IEffect Effect);
+    public delegate void EffectWithDurationDelegateFinished(IEffectWithDuration effect, EffectFinishReason finishReason);
 
     /// <summary>
     /// Цель
@@ -20,32 +23,15 @@ namespace NWO_Abstractions
         /// <summary>
         /// Цель получила новый урон
         /// </summary>
-        public event NewIntValue OnTargetDamaged;
+        public event NewDoubleValue OnTargetDamaged;
         /// <summary>
         /// Цель получила новое восстановление
         /// </summary>
-        public event NewIntValue OnTargetRecovered;
+        public event NewDoubleValue OnTargetRecovered;
         /// <summary>
         /// Изменилось здоровье цели
         /// </summary>
         public event NewDoubleValue OnHealthChanged;
-
-        /// <summary>
-        /// На цель был наложен новый положительный эффект
-        /// </summary>
-        public event EffectDelegate OnPositiveEffectApplied;
-        /// <summary>
-        /// На цель был наложен новый отрицательный эффект
-        /// </summary>
-        public event EffectDelegate OnNegativeEffectApplied;
-        /// <summary>
-        /// С цели был убран положительный эффект
-        /// </summary>
-        public event EffectDelegate OnPositiveEffectRemoved;
-        /// <summary>
-        /// С цели был убран отрицательный эффект
-        /// </summary>
-        public event EffectDelegate OnNegativeEffectRemoved;
 
         /// <summary>
         /// Начальные проценты увеличения/уменьшения воздейтвий
@@ -53,51 +39,45 @@ namespace NWO_Abstractions
         public IPercentageValues StartPercentageValues { get; }
 
         /// <summary>
-        /// Эффекты на цели
+        /// Набор эффектов цели
         /// </summary>
-        public IEffectsLists Effects { get; }
+        public IEffectsSet Effects { get; }
 
+        /// <summary>
+        /// Защиты цели
+        /// </summary>
         public List<IDefence> Defences { get; }
 
+        /// <summary>
+        /// Иммунитеты цели
+        /// </summary>
         public List<IImmune> Immunes { get; }
 
         /// <summary>
-        /// Нанести урон цели
+        /// Нанести цели урон
         /// </summary>
-        /// <returns></returns>
-        public int DamageTarget(int value);
+        /// <param name="value">Сколько урона отправлено цели из источника</param>
+        /// <returns>Сколько урона цель реально получила</returns>
+        public double DamageTarget(double value);
 
         /// <summary>
-        /// Вылечить цель
+        /// Восстановить цель
         /// </summary>
-        /// <returns></returns>
-        public int RecoverTarget(int value);
+        /// <param name="value">Сколько восстановления отправлено цели из источника</param>
+        /// <returns>Сколько восстановления реально получено целью</returns>
+        public double RecoverTarget(double value);
 
         /// <summary>
-        /// Применить положительный эффект к цели
+        /// Применить эффект к цели
         /// </summary>
-        /// <returns></returns>
-        public void ApplyPositiveEffect(IEffect effect, int percentage = 0);
+        /// <param name="effectResultPart">Результат выполнения умения</param>
+        public void ApplyEffect(ISkillEffectResultPart effectResultPart);
 
         /// <summary>
-        /// Снять положительный эффект с цели
+        /// Снять эффекты с цели
         /// </summary>
         /// <returns></returns>
-        public void RemovePositiveEffect(IEffect effect);
-
-        /// <summary>
-        /// Применить отрицательный эффект к цели
-        /// </summary>
-        /// <param name="effect"></param>
-        /// <returns></returns>
-        public void ApplyNegativeEffect(IEffect effect, int percentage = 0);
-
-        /// <summary>
-        /// Снять отрицательный эффект с цели
-        /// </summary>
-        /// <param name="effect"></param>
-        /// <returns></returns>
-        public void RemoveNegativeEffect(IEffect effect);
+        public void RemoveEffects(List<IEffect> effects);
 
         /// <summary>
         /// Присоединиться к битве

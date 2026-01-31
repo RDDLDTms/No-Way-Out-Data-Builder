@@ -1,9 +1,12 @@
-﻿namespace NWO_Abstractions.Battles;
+﻿using NWO_Abstractions.Effects;
+
+namespace NWO_Abstractions.Battles;
 
 public delegate void NewEmptyHandler();
 public delegate void NewMessageHandler(string newMessage);
 public delegate void NewTargetHealthValue(double newValue, ITarget target);
-public delegate void EffectHandler(IEffect newEffect, ITarget target);
+public delegate void EffectApplyingHandler(IEffect newEffect, ITarget target);
+public delegate void EffectFinishedHandler(IEffect effect, ITarget target, EffectFinishReason reason);
 
 /// <summary>
 /// Моделирование боя
@@ -13,23 +16,28 @@ public interface IBattleModelling : IDisposable
     /// <summary>
     /// В бою появляется новый отрицательный эффект на цели
     /// </summary>
-    public event EffectHandler OnNewNegativeEffect;
-
-    /// <summary>
-    /// С цели пропадает отрицательный эффект
-    /// </summary>
-    public event EffectHandler OnNegativeEffectEnds;
-
+    public event EffectApplyingHandler OnNewPositiveEffect;
     /// <summary>
     /// В бою появляется новый отрицательный эффект на цели
     /// </summary>
-    public event EffectHandler OnNewPositiveEffect;
+    public event EffectApplyingHandler OnNewNegativeEffect;
+    /// <summary>
+    /// В бою появляется новый прочий эффект на цели
+    /// </summary>
+    public event EffectApplyingHandler OnNewOtherEffect;
 
     /// <summary>
     /// С цели пропадает положительный эффект
     /// </summary>
-
-    public event EffectHandler OnPositiveEffectEnds;
+    public event EffectFinishedHandler OnPositiveEffectFinished;
+    /// <summary>
+    /// С цели пропадает отрицательный эффект
+    /// </summary>
+    public event EffectFinishedHandler OnNegativeEffectFinished;
+    /// <summary>
+    /// С цели пропадает прочий эффект
+    /// </summary>
+    public event EffectFinishedHandler OnOtherEffectFinished;
 
     /// <summary>
     /// Событие завершения боя
@@ -64,12 +72,12 @@ public interface IBattleModelling : IDisposable
     /// <summary>
     /// Изменение значения всего урона
     /// </summary>
-    public event NewIntValue? totalDamage;
+    public event NewDoubleValue? totalDamage;
 
     /// <summary>
     /// Изменение значения всего исцеления
     /// </summary>
-    public event NewIntValue? totalRecover;
+    public event NewDoubleValue? totalRecover;
 
     /// <summary>
     /// Цель битвы

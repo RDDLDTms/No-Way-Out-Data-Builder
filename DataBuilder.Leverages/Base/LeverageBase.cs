@@ -1,5 +1,5 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using NWO_Abstractions;
+using NWO_Abstractions.Effects;
 using NWO_Abstractions.Leverages;
 
 namespace DataBuilder.Leverages.Base
@@ -8,9 +8,13 @@ namespace DataBuilder.Leverages.Base
     {
         public List<ILeverageOption> Options { get; } = new();
 
-        public ILeverageClass Class { get; } 
+        public List<IEffect> Effects { get; private set; } = new();
 
-        public virtual LeverageType Type { get; private set; } = LeverageType.None;
+        public ILeverageClass Class { get; }
+
+        public virtual LeverageType Type { get; }
+
+        public virtual LeverageDuration Duration { get; }
 
         public virtual LeverageTargetType TargetType { get; private set; } = LeverageTargetType.None;
 

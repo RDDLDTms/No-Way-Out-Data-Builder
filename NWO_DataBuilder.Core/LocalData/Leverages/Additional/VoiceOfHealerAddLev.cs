@@ -1,11 +1,11 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using DataBuilder.Leverages.Base;
-using NWO_Abstractions;
+using DataBuilder.Effects;
 using NWO_Abstractions.Leverages;
+using NWO_DataBuilder.Core.Models.Leverages;
 
 namespace NWO_DataBuilder.Core.LocalData.Leverages
 {
-    public class VoiceOfHealerAddLev : LeverageBase
+    public class VoiceOfHealerAddLev : PositiveEffectApplying
     {
         public override LeverageType Type => LeverageType.PositiveEffectApplying;
         public override LeverageTargetType TargetType => LeverageTargetType.Alias;
@@ -16,6 +16,9 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override string RussianDisplayName => "Эхо гласа лекаря";
         public override string InstrumentalCase => "эхом гласа лекаря";
 
-        public VoiceOfHealerAddLev(ILeverageClass lClass, ILeverageOption lOption) : base(lClass, lOption) { }
+        public VoiceOfHealerAddLev(ILeverageClass lClass, ILeverageOption lOption) : base(lClass, lOption) 
+        {
+            Effects.Add(new TargetPeriodicRecoveryEffect(lClass, UniversalName, RussianDisplayName));
+        }
     }
 }

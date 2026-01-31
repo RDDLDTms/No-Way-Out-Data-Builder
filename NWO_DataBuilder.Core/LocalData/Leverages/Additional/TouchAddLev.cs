@@ -1,13 +1,11 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using DataBuilder.Leverages.Base;
-using NWO_Abstractions;
 using NWO_Abstractions.Leverages;
+using NWO_DataBuilder.Core.Models.Leverages;
 
 namespace NWO_DataBuilder.Core.LocalData.Leverages
 {
-    public class TouchAddLev : LeverageBase
+    public class TouchAddLev : InstantRecovery
     {
-        public override LeverageType Type => LeverageType.InstantRecovery;
         public override LeverageTargetType TargetType => LeverageTargetType.Alias;
         public override LeverageHitPoint HitPoint => LeverageHitPoint.Vision;
         public override LeverageRangeType RangeType => LeverageRangeType.Range;

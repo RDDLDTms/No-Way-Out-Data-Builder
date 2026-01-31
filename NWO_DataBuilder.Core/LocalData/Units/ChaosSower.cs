@@ -1,10 +1,10 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using DataBuilder.Effects;
-using DataBuilder.Leverages;
 using DataBuilder.Units;
 using NWO_Abstractions;
+using NWO_Abstractions.Skills;
+using NWO_DataBuilder.Core.LocalData.LeverageSources;
 using NWO_DataBuilder.Core.Models;
-using  NWO_DataBuilder.Core.LocalData.LeverageSources;
+using NWO_DataBuilder.Core.Models.Leverages.LeverageData;
 
 namespace NWO_DataBuilder.Core.Tests.Units
 {
@@ -24,26 +24,32 @@ namespace NWO_DataBuilder.Core.Tests.Units
         {
             var allLSources = DictionaryStorage.GetInstance().AllLeveragesSources;
             LeveragesSourcesCreated = true;
+            var touch = allLSources[nameof(TouchLS)];
+            var seizure = allLSources[nameof(SeizureLS)];
+            var purifying = allLSources[nameof(PurifyingLS)];
+            var barrier = allLSources[nameof(BarrirerLS)];
+            var viscousSphere = allLSources[nameof(ViscousSphereLS)];
+            var insanity = allLSources[nameof(InsanityLS)];
             return _leveragesSources = new()
             {
-                new UnitLeveragesSource(allLSources[nameof(TouchLS)], SkillPriority.PrimalPriority,
-                    new LeverageInstantStrike(minValue: 15, maxValue: 30, cooldown: 5),
-                    new LeverageInstantRecovery(minValue: 5, maxValue: 9, cooldown: 5)),
+                new UnitLeveragesSource(touch, SkillPriority.PrimalPriority,
+                    new InstantLeverageData(touch.MainLeverage.Id, minValue: 15, maxValue: 30, cooldown: 5000),
+                    new InstantLeverageData(touch.AdditionalLeverages![0].Id, minValue: 5, maxValue: 9, cooldown: 5000)),
 
-                new UnitLeveragesSource(allLSources[nameof(BarrirerLS)], SkillPriority.SecondaryPriority,
-                    new EffectBase(allLSources[nameof(BarrirerLS)].MainLeverage, duration:5, cooldown: 8)),
+                new UnitLeveragesSource(barrier, SkillPriority.SecondaryPriority,
+                    new InstantCreationData(barrier.MainLeverage.Id, cooldown: 8000, duration:5000)),
 
-                new UnitLeveragesSource(allLSources[nameof(ViscousSphereLS)], SkillPriority.HighPriority,
-                    new TargetDefenceIncreaseEffect(allLSources[nameof(ViscousSphereLS)].MainLeverage, duration: 7, cooldown: 3, percentage: 50)),
+                new UnitLeveragesSource(viscousSphere, SkillPriority.HighPriority,
+                    new PercentageEffectCompleteData(viscousSphere.MainLeverage.Effects[0].Id, Id, cooldown: 3000, duration: 7000,  percentage: 50)),
 
-                new UnitLeveragesSource(allLSources[nameof(InsanityLS)], SkillPriority.AdvancedPriority,
-                    new TargetControlEffect(allLSources[nameof(InsanityLS)].MainLeverage, duration: 5, cooldown: 11)),
+                new UnitLeveragesSource(insanity, SkillPriority.AdvancedPriority,
+                    new NonPeriodicEffectDataWithDuration(insanity.MainLeverage.Effects[0].Id, cooldown: 11000, duration: 5000)),
 
-                new UnitLeveragesSource(allLSources[nameof(PurifyingLS)], SkillPriority.SpecialSupportPriority,
-                    new LeverageNegativeEffectsRemoval(cooldown: 6)),
+                new UnitLeveragesSource(purifying, SkillPriority.SpecialSupportPriority,
+                    new EffectRemovalData(purifying.MainLeverage.Id, cooldown: 6000)),
 
-                new UnitLeveragesSource(allLSources[nameof(SeizureLS)], SkillPriority.BasePriority,
-                    new LeverageInstantStrike(minValue: 3, maxValue: 5, cooldown: 2))
+                new UnitLeveragesSource(seizure, SkillPriority.BasePriority,
+                    new InstantLeverageData(seizure.MainLeverage.Id, minValue: 3, maxValue: 5, cooldown: 2000))
             };
         }
     }

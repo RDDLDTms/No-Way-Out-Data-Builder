@@ -1,13 +1,11 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using DataBuilder.Leverages.Base;
-using NWO_Abstractions;
 using NWO_Abstractions.Leverages;
+using NWO_DataBuilder.Core.Models.Leverages;
 
 namespace NWO_DataBuilder.Core.LocalData.Leverages
 {
-    public class FlamingBroadswordLev : LeverageBase
+    public class FlamingBroadswordLev : InstantDamage
     {
-        public override LeverageType Type => LeverageType.InstantDamage;
         public override LeverageTargetType TargetType => LeverageTargetType.Enemies;
         public override LeverageHitPoint HitPoint => LeverageHitPoint.Vision;
         public override LeverageRangeType RangeType => LeverageRangeType.Melee;
