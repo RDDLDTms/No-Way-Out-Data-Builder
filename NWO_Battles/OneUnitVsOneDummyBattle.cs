@@ -123,7 +123,7 @@ namespace NWO_Battles
         }
 
         private void Actor_OnUnitBehaviorChanged(string russianUnitName, IBehavior newBehavior) =>
-            OnAction(BattleLogService.BehaviorLogService.GetUnitBehavourChangeMessage(russianUnitName, newBehavior));
+            OnAction(BattleLogService.BehaviorLogService.GetUnitBehaviorChangeMessage(russianUnitName, newBehavior));
 
         private void Dummy_OnPeriodicEffectTick(IEffect effect, double value) => OnPeriodicEffectTick(effect, value, Dummy.IsMech);
 

@@ -19,7 +19,7 @@ namespace NWO_DataBuilder.Core.LocalImplementations.Services
 
         public LocalBattleLogService()
         {
-            BehaviorLogService = new LocalBevaviorLogService();
+            BehaviorLogService = new LocalBehaviorLogService();
             EffectsLogService = new LocalEffectLogService();
         }
 
