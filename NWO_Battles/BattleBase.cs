@@ -18,19 +18,16 @@ public abstract class BattleBase : IBattleModelling
 
     public string UniversalDisplayName { get; }
 
-    public int BattleTime { get; private set; }
-
     public int BattleTimeLeft { get; private set; }
 
-    public double BattleSpeed { get; private set; }
+    public IBattleSettings BattleSettings { get; }
 
     public int TotalDamage { get; set; }
 
     public int TotalRecover { get; set; }
 
-    public IBattlePurpose BattlePurpose { get; private set; }
-
     public BattleFinishingReason BattleFinishingReason { get; protected set; }
+
     public List<ITarget> Targets { get; set; } = new List<ITarget>();
 
     public bool Started { get; private set; } = false;
@@ -59,9 +56,7 @@ public abstract class BattleBase : IBattleModelling
 
     public BattleBase(IBattleSettings settings, string russianDisplayName, string universalDisplayName)
     {
-        BattleSpeed = settings.BattleSpeed;
-        BattleTime = settings.BattleTime;
-        BattlePurpose = settings.BattlePurpose;
+        BattleSettings = settings;
         RussianDisplayName = russianDisplayName;
         UniversalDisplayName = universalDisplayName;
         BattleLogService = Locator.Current.GetService<IBattleLogService>()!;
@@ -70,7 +65,7 @@ public abstract class BattleBase : IBattleModelling
     public virtual void StartBattle()
     {
         BattleStoppedByReason = false;
-        BattleTimeLeft = BattleTime;
+        BattleTimeLeft = BattleSettings.BattleTime;
         OnTimeLeftChanged(BattleTimeLeft);
         battleStartMessage?.Invoke(IBattleLogService.BattleBeginningText);
         totalBattleDamage = 0;
@@ -119,15 +114,15 @@ public abstract class BattleBase : IBattleModelling
     protected virtual void OnNewTargetHealth(double newHealth, ITarget target)
     {   
         newTargetHealth?.Invoke(newHealth, target);
-        if (BattlePurpose is DestroyOneTargetPurpose && newHealth <= 0)
+        if (BattleSettings.BattlePurpose is DestroyOneTargetPurpose && newHealth <= 0)
         {
             FinishBattle(BattleFinishingReason.TargetDied);
             return;
         }
 
-        if (BattlePurpose is RecoverOneOtherTargetPurpose && Targets.Count > 0 && target.MaxHealth <= newHealth)
+        if (BattleSettings.BattlePurpose is RecoverOneOtherTargetPurpose && Targets.Count > 0 && target.MaxHealth <= newHealth)
         {
-            if ((target is Dummy && BattlePurpose.WatchDummy) || (target is not Dummy && BattlePurpose.WatchDummy is false))
+            if ((target is Dummy && BattleSettings.BattlePurpose.WatchDummy) || (target is not Dummy && BattleSettings.BattlePurpose.WatchDummy is false))
                 FinishBattle(BattleFinishingReason.TargetRecovered);
         }
     }
@@ -210,8 +205,8 @@ public abstract class BattleBase : IBattleModelling
     /// <returns></returns>
     protected void LaunchBattleTimer()
     {
-        BattleTimeLeft = BattleTime;
-        _battleTimer = new Timer(BattleTimerCallback, null, 1000, (int)(1000 / BattleSpeed));
+        BattleTimeLeft = BattleSettings.BattleTime;
+        _battleTimer = new Timer(BattleTimerCallback, null, 1000, (int)(1000 / BattleSettings.BattleSpeed));
     }
 
     private void BattleTimerCallback(object? state)
@@ -242,7 +237,7 @@ public abstract class BattleBase : IBattleModelling
         }
 
         // Осталась одна команда, но цель убить
-        if (BattlePurpose is DestroyOneTargetPurpose && Targets.DistinctBy(x => x.TeamNumber).Count() <= 1)
+        if (BattleSettings.BattlePurpose is DestroyOneTargetPurpose && Targets.DistinctBy(x => x.TeamNumber).Count() <= 1)
         {
             FinishBattle(BattleFinishingReason.NoMoreTargetsFound);
         }

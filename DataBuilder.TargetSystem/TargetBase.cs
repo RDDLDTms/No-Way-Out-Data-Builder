@@ -156,7 +156,7 @@ namespace DataBuilder.TargetSystem
                 effect.OnEffectFinishedByTime += OnEffectFinishedByTime;
                 if (effectData is IPeriodicEffectCompleteData)
                     effect.OnEffectTick += OnEffectTick;
-                effect.Start(_battle!.BattleSpeed, effectDataWithDuration.Duration);
+                effect.Start(_battle!.BattleSettings.BattleSpeed, effectDataWithDuration.Duration);
             }
         }
 

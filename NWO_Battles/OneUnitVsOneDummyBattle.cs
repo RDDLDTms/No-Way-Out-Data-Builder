@@ -67,7 +67,7 @@ namespace NWO_Battles
             Actor.StartEffects.AddAndSpreadEffects(actorEffects.Select(_ => _.Item1).ToArray());
             Actor.StartEffects.AddEffectsData(actorEffects.Select(_ => _.Item2).ToArray());
 
-            Dummy.JoinBattle(this, BattlePurpose is DestroyOneTargetPurpose ? 2 : 1, 400);
+            Dummy.JoinBattle(this, BattleSettings.BattlePurpose is DestroyOneTargetPurpose ? 2 : 1, 400);
             Actor.JoinBattle(this, 1, 400);
         }
 

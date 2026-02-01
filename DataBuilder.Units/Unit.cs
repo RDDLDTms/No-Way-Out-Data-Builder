@@ -48,7 +48,7 @@ namespace DataBuilder.Units
         {
             base.JoinBattle(battle, teamNumber, globalCooldown);
             ActiveBehavior = new BattleBehavior(battle, this);
-            ActiveBehavior.Enable(battle.BattleSpeed, globalCooldown);
+            ActiveBehavior.Enable(battle.BattleSettings.BattleSpeed, globalCooldown);
             OnUnitBehaviorChanged?.Invoke(RussianName, ActiveBehavior);
         }
 

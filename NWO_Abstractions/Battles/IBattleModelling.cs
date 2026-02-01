@@ -80,9 +80,9 @@ public interface IBattleModelling : IDisposable
     public event NewDoubleValue? totalRecover;
 
     /// <summary>
-    /// Цель битвы
+    /// Настройки боя
     /// </summary>
-    public IBattlePurpose BattlePurpose { get; }
+    public IBattleSettings BattleSettings { get; }
 
     /// <summary>
     /// Бой остановлен по какой-то причине
@@ -105,11 +105,6 @@ public interface IBattleModelling : IDisposable
     public bool Started { get; }
 
     /// <summary>
-    /// Время боя
-    /// </summary>
-    public int BattleTime { get; }
-
-    /// <summary>
     /// Всего нанесено урона
     /// </summary>
     public int TotalDamage { get; }
@@ -118,11 +113,6 @@ public interface IBattleModelling : IDisposable
     /// Всего лечения
     /// </summary>
     public int TotalRecover { get; }
-
-    /// <summary>
-    /// Скорость боя
-    /// </summary>
-    public double BattleSpeed { get; }
 
     /// <summary>
     /// Времени боя осталось (в секундах)
