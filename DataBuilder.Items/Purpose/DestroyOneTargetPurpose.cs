@@ -4,7 +4,7 @@ namespace BataBuilder.Items
 {
     public class DestroyOneTargetPurpose : IBattlePurpose
     {
-        public string RussianDisplayName => "Уничтожить одну цель";
+        public string DisplayName => "Уничтожить одну цель";
 
         public string Description => "Требуется опустить здоровье одной цели до нуля.";
 

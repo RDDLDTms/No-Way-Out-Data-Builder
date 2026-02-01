@@ -12,11 +12,13 @@ namespace DataBuilder.Units
 
         public string UniversalName => "Dummy";
 
-        public string RussianDisplayName => "Манекен";
+        public string RussianName => "Манекен";
+
+        public string DisplayName => "Манекен";
 
         public Description Description => new();
 
-        public Guid Id => new();
+        public Guid StorageId => new();
 
         public Dummy(IDummySettings settings) : 
             base(settings.StartPercentage, settings.MaxHealth, settings.StartEffects, new(), new(), settings.IsAlive, settings.IsOrganic, settings.IsMech)

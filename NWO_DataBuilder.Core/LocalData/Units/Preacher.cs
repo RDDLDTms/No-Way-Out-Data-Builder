@@ -16,7 +16,7 @@ namespace NWO_DataBuilder.Core.Tests.Units
         public override bool IsOrganic => true;
         public override bool IsAlive => true;
         public override Faction Faction => Faction.Faith;
-        public override string RussianDisplayName => "Проповедник";
+        public override string RussianName => "Проповедник";
         public override string UniversalName => "Preacher";
         public override double MaxHealth => 95;
 

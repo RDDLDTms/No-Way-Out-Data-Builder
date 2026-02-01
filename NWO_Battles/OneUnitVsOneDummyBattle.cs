@@ -72,10 +72,10 @@ namespace NWO_Battles
         }
 
         private void Actor_OnEffectWithDurationFinished(IEffectWithDuration effect, EffectFinishReason finishReason) =>
-            OnEffectWithDurationFinished(effect, finishReason, Actor, Actor.RussianDisplayName);
+            OnEffectWithDurationFinished(effect, finishReason, Actor, Actor.RussianName);
 
         private void Dummy_OnEffectWithDurationFinished(IEffectWithDuration effect, EffectFinishReason finishReason) =>
-            OnEffectWithDurationFinished(effect, finishReason, Dummy, Dummy.RussianDisplayName);
+            OnEffectWithDurationFinished(effect, finishReason, Dummy, Dummy.RussianName);
 
         private void Actor_OnTargetRecovered(double newValue) => base.OnNewRecover(newValue);
 

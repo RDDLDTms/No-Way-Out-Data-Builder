@@ -12,7 +12,7 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageRangeType RangeType => LeverageRangeType.Range;
         public override LeverageTargeting Targeting => LeverageTargeting.Single;
         public override string UniversalName => "Despondency";
-        public override string RussianDisplayName => "Уныние";
+        public override string RussianName => "Уныние";
         public override string InstrumentalCase => "унынием";
 
         public DespondencyLev(ILeverageClass lClass) : base(lClass) { }

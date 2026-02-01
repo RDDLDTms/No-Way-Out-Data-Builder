@@ -11,7 +11,7 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageRangeType RangeType => LeverageRangeType.Melee;
         public override LeverageTargeting Targeting => LeverageTargeting.Single;
         public override string UniversalName => "Shaft strike";
-        public override string RussianDisplayName => "Удар древком";
+        public override string RussianName => "Удар древком";
         public override string InstrumentalCase => "ударом древка топора";
 
         public ShaftStrikeLev(ILeverageClass lClass) : base(lClass) { }

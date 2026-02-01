@@ -38,7 +38,7 @@ namespace NWO_DataBuilder.Core.ViewModels
             Dictionary<Guid, ILeverageClass> result = new();
             foreach (var nextLeverageType in LeverageTypes)
             {
-                result.Add(nextLeverageType.Id, nextLeverageType);
+                result.Add(nextLeverageType.StorageId, nextLeverageType);
             }
             return result;
         }

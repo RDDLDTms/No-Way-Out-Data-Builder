@@ -11,7 +11,7 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageRangeType RangeType => LeverageRangeType.Range;
         public override LeverageTargeting Targeting => LeverageTargeting.Place;
         public override string UniversalName => "Appeal of healer";
-        public override string RussianDisplayName => "Воззвание лекаря";
+        public override string RussianName => "Воззвание лекаря";
         public override string InstrumentalCase => "воззванием лекаря";
 
         public AppealOfHealerLev(ILeverageClass lClass, ILeverageOption lOption) : base(lClass, lOption) { }

@@ -13,10 +13,10 @@ namespace NWO_DataBuilder.Core.Tests.LeverageClasses
 
         public override string UniversalName => "Destruction";
 
-        public override string RussianDisplayName => "Разрушение";
+        public override string RussianName => "Разрушение";
 
         public override Description Description => new();
 
-        public override Guid Id => new("A7386483-8D22-465F-9793-5B0FCE213A7E");
+        public override Guid StorageId => new("A7386483-8D22-465F-9793-5B0FCE213A7E");
     }
 }

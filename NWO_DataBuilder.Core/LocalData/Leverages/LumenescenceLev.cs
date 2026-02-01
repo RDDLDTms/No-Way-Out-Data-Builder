@@ -12,7 +12,7 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageRangeType RangeType => LeverageRangeType.Range;
         public override LeverageTargeting Targeting => LeverageTargeting.Many;
         public override string UniversalName => "Lumenescence";
-        public override string RussianDisplayName => "Люминесценция";
+        public override string RussianName => "Люминесценция";
         public override string InstrumentalCase => "люминесценцией";
 
         public LumenescenceLev(ILeverageClass lClass) : base(lClass) { }

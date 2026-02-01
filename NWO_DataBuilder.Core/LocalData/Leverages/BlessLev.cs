@@ -13,12 +13,12 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageRangeType RangeType => LeverageRangeType.Range;
         public override LeverageTargeting Targeting => LeverageTargeting.Single;
         public override string UniversalName => "Bless";
-        public override string RussianDisplayName => "Благословение";
+        public override string RussianName => "Благословение";
         public override string InstrumentalCase => "благословением";
 
         public BlessLev(ILeverageClass lClass, ILeverageOption lOption) : base(lClass, lOption) 
         {
-            Effects.Add(new TargetPeriodicRecoveryEffect(lClass, UniversalName, RussianDisplayName));
+            Effects.Add(new TargetPeriodicRecoveryEffect(lClass, UniversalName, RussianName));
         }
     }
 }

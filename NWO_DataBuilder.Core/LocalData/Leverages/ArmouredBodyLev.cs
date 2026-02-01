@@ -11,7 +11,7 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageRangeType RangeType => LeverageRangeType.Melee;
         public override LeverageTargeting Targeting => LeverageTargeting.Many;
         public override string UniversalName => "Armoured body";
-        public override string RussianDisplayName => "Тело в доспехах";
+        public override string RussianName => "Тело в доспехах";
         public override string InstrumentalCase => "телом в доспехах";
 
         public ArmouredBodyLev(ILeverageClass lClass) : base(lClass) { }

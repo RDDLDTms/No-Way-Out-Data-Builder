@@ -12,7 +12,7 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageRangeType RangeType => LeverageRangeType.Range;
         public override LeverageTargeting Targeting => LeverageTargeting.Single;
         public override string UniversalName => "Shine";
-        public override string RussianDisplayName => "Сияние";
+        public override string RussianName => "Сияние";
         public override string InstrumentalCase => "сиянием";
 
         public ShineLev(ILeverageClass lClass) : base(lClass) { }

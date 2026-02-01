@@ -8,7 +8,7 @@ namespace NWO_DataBuilder.Core.Tests.LeverageOptions
     {
         public override string UniversalName => "Instant spell";
 
-        public override string RussianDisplayName => "Мгновенное заклинание";
+        public override string RussianName => "Мгновенное заклинание";
 
         public override Description Description => new("Заклинание, мгновенно срабатывающее при произнесении", Language.Russian);
     }

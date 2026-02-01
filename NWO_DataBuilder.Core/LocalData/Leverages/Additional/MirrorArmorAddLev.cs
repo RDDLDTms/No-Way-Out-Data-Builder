@@ -11,7 +11,7 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageRangeType RangeType => LeverageRangeType.Melee;
         public override LeverageTargeting Targeting => LeverageTargeting.Many;
         public override string UniversalName => "Mirror armor";
-        public override string RussianDisplayName => "Зеркальный доспех";
+        public override string RussianName => "Зеркальный доспех";
         public override string InstrumentalCase => "зеркальным искажением";
 
         public MirrorArmorAddLev(ILeverageClass lClass) : base(lClass) { }

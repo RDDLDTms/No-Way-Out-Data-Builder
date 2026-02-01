@@ -8,20 +8,20 @@ namespace DataBuilder.Leverages
     {
         public string UniversalName { get; private set; }
 
-        public string RussianDisplayName { get; private set; }
+        public string RussianName { get; private set; }
 
-        public string RussianDescription { get; private set; }
+        public string DisplayName { get; private set; }
 
-        public Guid Id { get; private set; }
+        public Guid StorageId { get; private set; }
 
         public Description Description => new();
 
-        public LeverageOption(string russianDisplayName, string universalName, string russianDescription)
+        public LeverageOption(string russianName, string universalName)
         {
             UniversalName = universalName;
-            RussianDisplayName = russianDisplayName;
-            RussianDescription = russianDescription;
-            Id = Guid.NewGuid();
+            RussianName = russianName;
+            DisplayName = russianName;
+            StorageId = Guid.NewGuid();
         }
     }
 }

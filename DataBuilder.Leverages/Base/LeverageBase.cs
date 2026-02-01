@@ -26,21 +26,23 @@ namespace DataBuilder.Leverages.Base
 
         public virtual string UniversalName { get; private set; } = string.Empty;
 
-        public virtual string RussianDisplayName { get; private set; } = string.Empty;
+        public virtual string RussianName { get; private set; } = string.Empty;
+
+        public string DisplayName { get; private set; } = string.Empty;
 
         public virtual string InstrumentalCase { get; private set; } = string.Empty;
 
         public Description Description { get; private set; } = new();
 
-        public Guid Id { get; private set; } = Guid.Empty;
+        public Guid StorageId { get; private set; } = Guid.Empty;
 
-        public LeverageBase(Guid id, Description description, string universalName, string russianDisplayName, ILeverageClass lClass, LeverageTargetType ltargetType, LeverageHitPoint lHitPoint,
+        public LeverageBase(Guid storageId, Description description, string universalName, string russianName, ILeverageClass lClass, LeverageTargetType ltargetType, LeverageHitPoint lHitPoint,
             LeverageRangeType rangeType, LeverageTargeting targeting, params ILeverageOption[] options) : this(lClass, options)
         {
-            Id = id;
+            StorageId = storageId;
             Description = description;
             UniversalName = universalName;
-            RussianDisplayName = russianDisplayName;
+            RussianName = russianName;
             Class = lClass;
             TargetType = ltargetType;
             HitPoint = lHitPoint;

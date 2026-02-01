@@ -11,7 +11,7 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageRangeType RangeType => LeverageRangeType.Melee;
         public override LeverageTargeting Targeting => LeverageTargeting.Many;
         public override string UniversalName => "Flaming axe";
-        public override string RussianDisplayName => "Пылающий топор";
+        public override string RussianName => "Пылающий топор";
         public override string InstrumentalCase => "пылающим двуручным топором";
 
         public FlamingAxeLev(ILeverageClass lClass, ILeverageOption lOption) : base(lClass, lOption) { }

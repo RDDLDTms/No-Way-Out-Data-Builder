@@ -16,7 +16,7 @@ namespace NWO_DataBuilder.Core.Tests.Units
         public override bool IsOrganic => true;
         public override bool IsAlive => true;
         public override Faction Faction => Faction.Knowledge;
-        public override string RussianDisplayName => "Сеятель хаоса";
+        public override string RussianName => "Сеятель хаоса";
         public override string UniversalName => "Chaos sower";
         public override double MaxHealth => 450;
 
@@ -33,23 +33,23 @@ namespace NWO_DataBuilder.Core.Tests.Units
             return _leveragesSources = new()
             {
                 new UnitLeveragesSource(touch, SkillPriority.PrimalPriority,
-                    new InstantLeverageData(touch.MainLeverage.Id, minValue: 15, maxValue: 30, cooldown: 5000),
-                    new InstantLeverageData(touch.AdditionalLeverages![0].Id, minValue: 5, maxValue: 9, cooldown: 5000)),
+                    new InstantLeverageData(touch.MainLeverage.StorageId, minValue: 15, maxValue: 30, cooldown: 5000),
+                    new InstantLeverageData(touch.AdditionalLeverages![0].StorageId, minValue: 5, maxValue: 9, cooldown: 5000)),
 
                 new UnitLeveragesSource(barrier, SkillPriority.SecondaryPriority,
-                    new InstantCreationData(barrier.MainLeverage.Id, cooldown: 8000, duration:5000)),
+                    new InstantCreationData(barrier.MainLeverage.StorageId, cooldown: 8000, duration:5000)),
 
                 new UnitLeveragesSource(viscousSphere, SkillPriority.HighPriority,
-                    new PercentageEffectCompleteData(viscousSphere.MainLeverage.Effects[0].Id, Id, cooldown: 3000, duration: 7000,  percentage: 50)),
+                    new PercentageEffectCompleteData(viscousSphere.MainLeverage.Effects[0].Id, StorageId, cooldown: 3000, duration: 7000,  percentage: 50)),
 
                 new UnitLeveragesSource(insanity, SkillPriority.AdvancedPriority,
                     new NonPeriodicEffectDataWithDuration(insanity.MainLeverage.Effects[0].Id, cooldown: 11000, duration: 5000)),
 
                 new UnitLeveragesSource(purifying, SkillPriority.SpecialSupportPriority,
-                    new EffectRemovalData(purifying.MainLeverage.Id, cooldown: 6000)),
+                    new EffectRemovalData(purifying.MainLeverage.StorageId, cooldown: 6000)),
 
                 new UnitLeveragesSource(seizure, SkillPriority.BasePriority,
-                    new InstantLeverageData(seizure.MainLeverage.Id, minValue: 3, maxValue: 5, cooldown: 2000))
+                    new InstantLeverageData(seizure.MainLeverage.StorageId, minValue: 3, maxValue: 5, cooldown: 2000))
             };
         }
     }

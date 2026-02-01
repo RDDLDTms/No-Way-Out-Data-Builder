@@ -13,9 +13,9 @@ namespace NWO_DataBuilder.Core.LocalImplementations.Services
             return new Leverage(id, description, universalName, russianDisplayName, leverageType, leverageTargetType, leverageHitPoint, leverageRangeType, leverageTargeting, leverageOptions);
         }
 
-        public ILeverageOption CreateLeverageOption(string russianDisplayName, string universalName, string russianDescription)
+        public ILeverageOption CreateLeverageOption(string russianName, string universalName)
         {
-            return new LeverageOption(russianDisplayName, universalName, russianDescription);
+            return new LeverageOption(russianName, universalName);
         }
 
         public ILeverageClass CreateLeverageClass(string russianDisplayName, string universalName, string color, string genitive, LeverageType type, LeverageClassRestrictions restrictions)

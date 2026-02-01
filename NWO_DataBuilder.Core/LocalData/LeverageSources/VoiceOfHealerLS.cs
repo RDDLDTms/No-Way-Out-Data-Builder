@@ -8,9 +8,9 @@ namespace  NWO_DataBuilder.Core.LocalData.LeverageSources
     public class VoiceOfHealerLS : LeverageSourceBase
     {
         public override string UniversalName => "Voice of healer";
-        public override string RussianDisplayName => "Глас лекаря";
+        public override string RussianName => "Глас лекаря";
         public override Description Description => new("Глас лекаря исцеляет цель и добавляет периодическое восстановление", Language.Russian);
-        public override Guid Id => new("49686B3C-A9B6-4A4E-8651-2ABAD42D06B64");
+        public override Guid StorageId => new("49686B3C-A9B6-4A4E-8651-2ABAD42D06B64");
 
         public VoiceOfHealerLS(ILeverage mainLeverage, ILeverage? additionalLeverage = null) : base(mainLeverage, additionalLeverage)
         {

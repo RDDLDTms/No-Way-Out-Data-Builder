@@ -13,10 +13,10 @@ namespace DataBuilder.StartData
 
         public override string UniversalName => StartEffectsUniversalNames.Wounds;
 
-        public override string RussianDisplayName => StartEffectsRussianNames.Wounds;
+        public override string RussianName => StartEffectsRussianNames.Wounds;
 
         public override Description Description => new();
 
-        public override Guid Id => new("A7386483-8D22-465F-9793-5B0FCE213A13");
+        public override Guid StorageId => new("A7386483-8D22-465F-9793-5B0FCE213A13");
     }
 }

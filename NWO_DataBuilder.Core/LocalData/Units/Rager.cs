@@ -17,7 +17,7 @@ namespace NWO_DataBuilder.Core.Tests.Units
         public override bool IsAlive => true;
         public override double MaxHealth => 666;
         public override Faction Faction => Faction.Faith;
-        public override string RussianDisplayName => "Яростень";
+        public override string RussianName => "Яростень";
         public override string UniversalName => "Rager";
 
         public override List<IUnitLeveragesSource> CreateLeveragesSources()
@@ -32,25 +32,25 @@ namespace NWO_DataBuilder.Core.Tests.Units
             return _leveragesSources = new()
             {
                 new UnitLeveragesSource(flamingAxe, SkillPriority.PrimalPriority,
-                    new InstantLeverageData(flamingAxe.MainLeverage.Id, minValue: 50, maxValue: 55, cooldown: 8000),
-                    new PeriodicEffectCompleteData(flamingAxe.AdditionalLeverages![0].Effects[0].Id, Id, cooldown: 14000, duration: 8000, minValue: 10, maxValue: 12, defaultDelay: 1000, startDelay: 1000 )),
+                    new InstantLeverageData(flamingAxe.MainLeverage.StorageId, minValue: 50, maxValue: 55, cooldown: 8000),
+                    new PeriodicEffectCompleteData(flamingAxe.AdditionalLeverages![0].Effects[0].Id, StorageId, cooldown: 14000, duration: 8000, minValue: 10, maxValue: 12, defaultDelay: 1000, startDelay: 1000 )),
 
                 new UnitLeveragesSource(flamingBroadsword, SkillPriority.SecondaryPriority,
-                    new InstantLeverageData(flamingBroadsword.MainLeverage.Id, minValue: 35, maxValue: 38, cooldown: 3000),
-                    new PeriodicEffectCompleteData(flamingBroadsword.AdditionalLeverages![0].Effects[0].Id, Id, cooldown: 6000, duration: 3000, minValue: 5, maxValue: 8, defaultDelay: 1000, startDelay: 1000 )),
+                    new InstantLeverageData(flamingBroadsword.MainLeverage.StorageId, minValue: 35, maxValue: 38, cooldown: 3000),
+                    new PeriodicEffectCompleteData(flamingBroadsword.AdditionalLeverages![0].Effects[0].Id, StorageId, cooldown: 6000, duration: 3000, minValue: 5, maxValue: 8, defaultDelay: 1000, startDelay: 1000 )),
 
                 new UnitLeveragesSource(explosiveRoar, SkillPriority.HighPriority,
-                    new InstantLeverageData(explosiveRoar.MainLeverage.Id, minValue: 30, maxValue: 67, cooldown: 10000)),
+                    new InstantLeverageData(explosiveRoar.MainLeverage.StorageId, minValue: 30, maxValue: 67, cooldown: 10000)),
 
                 new UnitLeveragesSource(shaftStrike, SkillPriority.MiddlePriority,
-                    new InstantLeverageData(shaftStrike.MainLeverage.Id, minValue: 13, maxValue: 18, cooldown: 4000)),
+                    new InstantLeverageData(shaftStrike.MainLeverage.StorageId, minValue: 13, maxValue: 18, cooldown: 4000)),
 
                 new UnitLeveragesSource(armouredBody, SkillPriority.SubsidiaryPriority,
-                    new InstantLeverageData(armouredBody.MainLeverage.Id, minValue: 10, maxValue: 20, cooldown: 5000)),
+                    new InstantLeverageData(armouredBody.MainLeverage.StorageId, minValue: 10, maxValue: 20, cooldown: 5000)),
 
                 new UnitLeveragesSource(strikeWithFire, SkillPriority.BasePriority,
-                    new InstantLeverageData(strikeWithFire.MainLeverage.Id, minValue: 5, maxValue: 8, cooldown: 3000),
-                    new PeriodicEffectCompleteData(strikeWithFire.AdditionalLeverages![0].Effects[0].Id, Id, cooldown: 6000, duration: 2000, minValue: 2, maxValue: 5, defaultDelay: 1000, startDelay: 1000 ))
+                    new InstantLeverageData(strikeWithFire.MainLeverage.StorageId, minValue: 5, maxValue: 8, cooldown: 3000),
+                    new PeriodicEffectCompleteData(strikeWithFire.AdditionalLeverages![0].Effects[0].Id, StorageId, cooldown: 6000, duration: 2000, minValue: 2, maxValue: 5, defaultDelay: 1000, startDelay: 1000 ))
             };
         }
     }

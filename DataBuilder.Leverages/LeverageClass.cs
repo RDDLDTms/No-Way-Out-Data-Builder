@@ -1,5 +1,4 @@
 ﻿using DataBuilder.BuilderObjects.Primal;
-using NWO_Abstractions;
 using NWO_Abstractions.Leverages;
 
 namespace DataBuilder.Leverages
@@ -12,11 +11,13 @@ namespace DataBuilder.Leverages
 
         public string RussianDescription { get; }
 
-        public string RussianDisplayName { get; }
+        public string RussianName { get; }
+
+        public string DisplayName { get; }
 
         public string Color { get; }
 
-        public Guid Id { get; }
+        public Guid StorageId { get; }
 
         public string Genitive { get; }
 
@@ -24,13 +25,13 @@ namespace DataBuilder.Leverages
 
         public LeverageClassRestrictions Restrictions { get; }
 
-        public LeverageClass(string universalName, string russianDisplayName, string color, string genitive, LeverageType type, LeverageClassRestrictions restrictions)
+        public LeverageClass(string universalName, string russianName, string color, string genitive, LeverageType type, LeverageClassRestrictions restrictions)
         {
             UniversalName = universalName;
-            RussianDisplayName = russianDisplayName;
+            RussianName = russianName;
             Color = color;
             Genitive = genitive;
-            Id = Guid.NewGuid();
+            StorageId = Guid.NewGuid();
             Type = type;
             Restrictions = restrictions;
         }

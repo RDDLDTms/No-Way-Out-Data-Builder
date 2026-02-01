@@ -14,12 +14,12 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageRangeType RangeType => LeverageRangeType.Range;
         public override LeverageTargeting Targeting => LeverageTargeting.Single;
         public override string UniversalName => "Defence";
-        public override string RussianDisplayName => "Защита";
+        public override string RussianName => "Защита";
         public override string InstrumentalCase => "защитой";
 
         public DefenceLev(ILeverageClass lClass, ILeverageOption lOption) : base(lClass, lOption)
         {
-            Effects.Add(new IncreaseEffectWithDuration(EffectType.Positive, lClass, UniversalName, RussianDisplayName));
+            Effects.Add(new IncreaseEffectWithDuration(EffectType.Positive, lClass, UniversalName, RussianName));
         }
     }
 }

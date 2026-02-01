@@ -203,7 +203,7 @@
 										Width="300">
 								<ComboBox.ItemTemplate>
 									<DataTemplate>
-										<TextBlock Text="{Binding RussianDisplayName}" FontFamily="{Binding}" />
+										<TextBlock Text="{Binding RussianName}" FontFamily="{Binding}" />
 									</DataTemplate>
 								</ComboBox.ItemTemplate>
 							</ComboBox>	
@@ -401,7 +401,7 @@
 								  Margin="0,8,0,0">
 							<ComboBox.ItemTemplate>
 								<DataTemplate>
-									<TextBlock Text="{Binding RussianDisplayName}" FontFamily="{Binding}" />
+									<TextBlock Text="{Binding DisplayName}" FontFamily="{Binding}" />
 								</DataTemplate>
 							</ComboBox.ItemTemplate>
 						</ComboBox>

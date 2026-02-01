@@ -12,7 +12,7 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageRangeType RangeType => LeverageRangeType.Range;
         public override LeverageTargeting Targeting => LeverageTargeting.Many;
         public override string UniversalName => "Purifying ritual";
-        public override string RussianDisplayName => "Ритуал очищения";
+        public override string RussianName => "Ритуал очищения";
         public override string InstrumentalCase => "ритуалом очищения";
 
         public PurifyingRitualLev(ILeverageClass lClass, ILeverageOption lOption) : base(lClass, lOption) { }

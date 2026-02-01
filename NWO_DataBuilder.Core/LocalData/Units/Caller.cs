@@ -17,7 +17,7 @@ namespace NWO_DataBuilder.Core.Tests.Units
         public override bool IsAlive => true;
         public override double MaxHealth => 250;
         public override Faction Faction => Faction.Faith;
-        public override string RussianDisplayName => "Взывающий";
+        public override string RussianName => "Взывающий";
         public override string UniversalName => "Caller";
 
         public override List<IUnitLeveragesSource> CreateLeveragesSources()
@@ -31,17 +31,17 @@ namespace NWO_DataBuilder.Core.Tests.Units
             return _leveragesSources = new()
             {
                 new UnitLeveragesSource(voiceOfHealer, SkillPriority.PrimalPriority,
-                    new InstantLeverageData(voiceOfHealer.MainLeverage.Id, minValue: 25, maxValue: 38, cooldown: 3000),
-                    new PeriodicEffectCompleteData(voiceOfHealer.AdditionalLeverages![0].Effects[0].Id, Id, cooldown: 12000, duration: 6000, minValue: 5, maxValue: 9, defaultDelay : 1000, startDelay : 1000)),
+                    new InstantLeverageData(voiceOfHealer.MainLeverage.StorageId, minValue: 25, maxValue: 38, cooldown: 3000),
+                    new PeriodicEffectCompleteData(voiceOfHealer.AdditionalLeverages![0].Effects[0].Id, StorageId, cooldown: 12000, duration: 6000, minValue: 5, maxValue: 9, defaultDelay : 1000, startDelay : 1000)),
 
                 new UnitLeveragesSource(appealOfHealer, SkillPriority.MiddlePriority,
-                    new InstantLeverageData(appealOfHealer.MainLeverage.Id, minValue: 15, maxValue: 20, cooldown: 5000)),
+                    new InstantLeverageData(appealOfHealer.MainLeverage.StorageId, minValue: 15, maxValue: 20, cooldown: 5000)),
 
                 new UnitLeveragesSource(allLSources[nameof(PurifyingRitualLS)], SkillPriority.SpecialSupportPriority,
-                    new EffectRemovalData(purifyingRitual.MainLeverage.Id, cooldown: 8000)),
+                    new EffectRemovalData(purifyingRitual.MainLeverage.StorageId, cooldown: 8000)),
 
                 new UnitLeveragesSource(armouredBody, SkillPriority.SubsidiaryPriority,
-                    new InstantLeverageData(armouredBody.MainLeverage.Id, minValue: 10, maxValue: 20, cooldown: 7000))
+                    new InstantLeverageData(armouredBody.MainLeverage.StorageId, minValue: 10, maxValue: 20, cooldown: 7000))
             };
         }
     }

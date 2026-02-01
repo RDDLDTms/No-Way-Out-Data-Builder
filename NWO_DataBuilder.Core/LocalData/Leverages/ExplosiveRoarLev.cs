@@ -11,7 +11,7 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageRangeType RangeType => LeverageRangeType.Range;
         public override LeverageTargeting Targeting => LeverageTargeting.Many;
         public override string UniversalName => "Explosive roar";
-        public override string RussianDisplayName => "Взрывной рык";
+        public override string RussianName => "Взрывной рык";
         public override string InstrumentalCase => "взрывным рыком";
 
         public ExplosiveRoarLev(ILeverageClass lClass, ILeverageOption lOption) : base(lClass, lOption) { }

@@ -13,21 +13,23 @@ namespace DataBuilder.Leverages
 
         public string InstrumentalCase { get; private set; }
 
-        public string RussianDisplayName { get; private set; }
+        public string DisplayName { get; private set; }
+
+        public string RussianName { get; private set; }
 
         public string RussianDescription { get; private set; }
 
-        public Guid Id { get; private set; }
+        public Guid StorageId { get; private set; }
 
         public Description Description => throw new NotImplementedException();
 
-        public FakeLeveragesSource(ILeverage mainLeverage, ILeverage[]? additionalLeverages, string universalName, string russianDisplayName, string russianDescription, string instrumentalCase)
+        public FakeLeveragesSource(ILeverage mainLeverage, ILeverage[]? additionalLeverages, string universalName, string russianName, string russianDescription, string instrumentalCase)
         {
-            Id = Guid.NewGuid();
+            StorageId = Guid.NewGuid();
             MainLeverage = mainLeverage;
             AdditionalLeverages = additionalLeverages;
             UniversalName = universalName;
-            RussianDisplayName = russianDisplayName;
+            RussianName = russianName;
             RussianDescription = russianDescription;
             InstrumentalCase = instrumentalCase;
         }

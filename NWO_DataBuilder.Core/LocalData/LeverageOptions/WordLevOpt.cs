@@ -8,7 +8,7 @@ namespace NWO_DataBuilder.Core.Tests.LeverageOptions
     {
         public override string UniversalName => "Word";
 
-        public override string RussianDisplayName => "Слово";
+        public override string RussianName => "Слово";
 
         public override Description Description => new("Произнесённое слово", Language.Russian);
     }

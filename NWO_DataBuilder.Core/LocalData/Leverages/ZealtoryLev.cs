@@ -10,7 +10,7 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageRangeType RangeType => LeverageRangeType.Range;
         public override LeverageTargeting Targeting => LeverageTargeting.Single;
         public override string UniversalName => "Zealtory";
-        public override string RussianDisplayName => "Фанатизм";
+        public override string RussianName => "Фанатизм";
         public override string InstrumentalCase => "фанатизмом";
 
         public ZealtoryLev(ILeverageClass lClass) : base(lClass) { }

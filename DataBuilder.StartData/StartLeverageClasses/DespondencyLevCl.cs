@@ -13,11 +13,11 @@ namespace DataBuilder.StartData
 
         public override string UniversalName => StartEffectsUniversalNames.Despondency;
 
-        public override string RussianDisplayName => StartEffectsRussianNames.Despondency;
+        public override string RussianName => StartEffectsRussianNames.Despondency;
 
         public override Description Description => new();
 
-        public override Guid Id => new("A7386483-8D22-465F-9793-5B0FCE213A12");
+        public override Guid StorageId => new("A7386483-8D22-465F-9793-5B0FCE213A12");
     }
 }
 

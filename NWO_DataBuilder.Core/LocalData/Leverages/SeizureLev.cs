@@ -11,7 +11,7 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageRangeType RangeType => LeverageRangeType.Melee;
         public override LeverageTargeting Targeting => LeverageTargeting.Single;
         public override string UniversalName => "Seizure";
-        public override string RussianDisplayName => "Изъятие";
+        public override string RussianName => "Изъятие";
         public override string InstrumentalCase => "изъятием";
 
         public SeizureLev(ILeverageClass lClass) : base(lClass) { }

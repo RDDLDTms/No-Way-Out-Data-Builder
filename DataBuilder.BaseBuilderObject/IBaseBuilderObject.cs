@@ -13,9 +13,14 @@ namespace DataBuilder.BuilderObjects
         public string UniversalName { get; }
 
         /// <summary>
-        /// Отображаемое имя на русском
+        /// Русское имя объекта
         /// </summary>
-        public string RussianDisplayName { get; }
+        public string RussianName { get; }
+
+        /// <summary>
+        /// Отображаемое имя объекта
+        /// </summary>
+        public string DisplayName { get; }
 
         /// <summary>
         /// Описание объекта
@@ -25,6 +30,6 @@ namespace DataBuilder.BuilderObjects
         /// <summary>
         /// Идентификатор объекта
         /// </summary>
-        public Guid Id { get; }
+        public Guid StorageId { get; }
     }
 }

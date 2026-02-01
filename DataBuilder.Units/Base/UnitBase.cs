@@ -23,7 +23,9 @@ namespace DataBuilder.Units
 
         public virtual Faction Faction => Faction.None;
 
-        public virtual string RussianDisplayName => string.Empty;
+        public virtual string DisplayName => string.Empty;
+
+        public virtual string RussianName => string.Empty;
 
         public virtual string UniversalName => string.Empty;
 
@@ -35,7 +37,7 @@ namespace DataBuilder.Units
 
         public virtual bool LeveragesSourcesCreated { get; set; } = false;
 
-        public virtual Guid Id => Guid.Empty;
+        public virtual Guid StorageId => Guid.Empty;
 
         public virtual Description Description { get; } = new();
 

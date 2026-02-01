@@ -35,7 +35,7 @@ namespace DataBuilder.Units
         public Guid Id { get; }
         public Description Description => Data.Description;
         public string UniversalName => Data.UniversalName;
-        public string RussianDisplayName => Data.RussianDisplayName;
+        public string RussianName => Data.RussianName;
 
         public Unit(IUnitData unitData, Guid unitId, IPercentageValues startPercentageValues) : 
             base(startPercentageValues, unitData.MaxHealth, unitData.StartEffects, unitData.Defences, unitData.Immunes, unitData.IsAlive, unitData.IsOrganic, unitData.IsMech)
@@ -49,7 +49,7 @@ namespace DataBuilder.Units
             base.JoinBattle(battle, teamNumber, globalCooldown);
             ActiveBehavior = new BattleBehavior(battle, this);
             ActiveBehavior.Enable(battle.BattleSpeed, globalCooldown);
-            OnUnitBehaviorChanged?.Invoke(RussianDisplayName, ActiveBehavior);
+            OnUnitBehaviorChanged?.Invoke(RussianName, ActiveBehavior);
         }
 
         public override void LeaveBattle()
@@ -57,7 +57,7 @@ namespace DataBuilder.Units
             if (ActiveBehavior is not PeacefulStandingBehavior)
             {
                 ActiveBehavior = Behaviors.First(x => x is PeacefulStandingBehavior);
-                OnUnitBehaviorChanged?.Invoke(RussianDisplayName, ActiveBehavior);
+                OnUnitBehaviorChanged?.Invoke(RussianName, ActiveBehavior);
             }
             base.LeaveBattle();
         }
@@ -80,13 +80,13 @@ namespace DataBuilder.Units
 
         public void CallUnitWaitingEvent()
         {
-            OnUnitWaiting?.Invoke(RussianDisplayName);
+            OnUnitWaiting?.Invoke(RussianName);
         }
 
         public void CallUnitUseSkillOnTargetsEvent(ISkillResult skillResult, SkillPriority skillPriority, IEnumerable<ITarget> targets)
         {
             OnUnitAction?.Invoke(
-                RussianDisplayName, 
+                RussianName, 
                 LeveragesSources.First(x => x.SkillPriority == skillPriority), 
                 skillResult, targets);
         }

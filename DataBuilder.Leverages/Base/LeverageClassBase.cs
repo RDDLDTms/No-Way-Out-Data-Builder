@@ -13,10 +13,12 @@ namespace DataBuilder.Leverages.Base
 
         public virtual string UniversalName => string.Empty;
 
-        public virtual string RussianDisplayName => string.Empty;
+        public virtual string RussianName => string.Empty;
+
+        public string DisplayName { get; } = string.Empty;
 
         public virtual Description Description => new();
 
-        public virtual Guid Id => Guid.Empty;
+        public virtual Guid StorageId => Guid.Empty;
     }
 }

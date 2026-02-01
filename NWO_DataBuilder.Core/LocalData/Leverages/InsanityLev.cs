@@ -13,12 +13,12 @@ namespace NWO_DataBuilder.Core.LocalData.Leverages
         public override LeverageRangeType RangeType => LeverageRangeType.Range;
         public override LeverageTargeting Targeting => LeverageTargeting.Place;
         public override string UniversalName => "Insanity";
-        public override string RussianDisplayName => "Помешательство";
+        public override string RussianName => "Помешательство";
         public override string InstrumentalCase => "помешательством";
 
         public InsanityLev(ILeverageClass lClass) : base(lClass) 
         {
-            Effects.Add(new TargetControlEffectWithDuration(lClass, UniversalName, RussianDisplayName));
+            Effects.Add(new TargetControlEffectWithDuration(lClass, UniversalName, RussianName));
         }
     }
 }

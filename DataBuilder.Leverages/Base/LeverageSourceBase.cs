@@ -8,9 +8,10 @@ namespace DataBuilder.Leverages.Base
         public ILeverage MainLeverage { get; }
         public ILeverage[] AdditionalLeverages { get; }
         public virtual string UniversalName { get; private set; } = string.Empty;
-        public virtual string RussianDisplayName { get; private set; } = string.Empty;
+        public virtual string RussianName { get; private set; } = string.Empty;
+        public virtual string DisplayName { get; private set; } = string.Empty;
         public virtual Description Description => new();
-        public virtual Guid Id => Guid.Empty;
+        public virtual Guid StorageId => Guid.Empty;
 
         public LeverageSourceBase(ILeverage mainLeverage, params ILeverage[] additionalLeverages)
         {

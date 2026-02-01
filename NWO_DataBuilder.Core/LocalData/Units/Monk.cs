@@ -18,7 +18,7 @@ namespace NWO_DataBuilder.Core.Tests
         public override bool IsAlive => true;
         public override double MaxHealth => 70;
         public override Faction Faction => Faction.Faith;
-        public override string RussianDisplayName => "Монах";
+        public override string RussianName => "Монах";
         public override string UniversalName => "Monk";
 
         public override List<IUnitLeveragesSource> CreateLeveragesSources()
@@ -32,16 +32,16 @@ namespace NWO_DataBuilder.Core.Tests
             return _leveragesSources = new()
             {
                 new UnitLeveragesSource(defence, SkillPriority.HighPriority,
-                    new PercentageEffectCompleteData(defence.MainLeverage.Effects[0].Id, Id, cooldown: 10000, duration: 7000, percentage: 30)),
+                    new PercentageEffectCompleteData(defence.MainLeverage.Effects[0].Id, StorageId, cooldown: 10000, duration: 7000, percentage: 30)),
 
                 new UnitLeveragesSource(wordOfHealer, SkillPriority.AdvancedPriority,
-                    new InstantLeverageData(wordOfHealer.MainLeverage.Id, minValue: 20, maxValue: 27, cooldown: 6000)),
+                    new InstantLeverageData(wordOfHealer.MainLeverage.StorageId, minValue: 20, maxValue: 27, cooldown: 6000)),
 
                 new UnitLeveragesSource(bless, SkillPriority.MiddlePriority,
-                    new PeriodicEffectCompleteData(bless.MainLeverage.Effects[0].Id, Id, cooldown: 8000, duration: 6000, minValue: 4, maxValue: 7, defaultDelay: 1000, startDelay : 0)),
+                    new PeriodicEffectCompleteData(bless.MainLeverage.Effects[0].Id, StorageId, cooldown: 8000, duration: 6000, minValue: 4, maxValue: 7, defaultDelay: 1000, startDelay : 0)),
 
                 new UnitLeveragesSource(purifyingRitual, SkillPriority.SpecialSupportPriority,
-                    new EffectRemovalData(purifyingRitual.MainLeverage.Id, cooldown: 10000))
+                    new EffectRemovalData(purifyingRitual.MainLeverage.StorageId, cooldown: 10000))
             };
         }
 
