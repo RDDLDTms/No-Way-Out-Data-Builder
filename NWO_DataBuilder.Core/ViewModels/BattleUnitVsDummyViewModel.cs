@@ -27,7 +27,7 @@ namespace NWO_DataBuilder.Core.ViewModels
 
         public ReadOnlyObservableCollection<IEffect> UnitNegativeEffects => _unitNegativeEffectsList;
 
-        public ReadOnlyObservableCollection<BattleTextMessage> MessagesList => _messagesList;
+        public ReadOnlyObservableCollection<IBattleMessage> MessagesList => _messagesList;
 
         public ReadOnlyObservableCollection<IUnit> AllUnits => _allUnits;
 
@@ -83,8 +83,8 @@ namespace NWO_DataBuilder.Core.ViewModels
 
             BattleSpeedText = $"{BattleSpeed}x";
 
-            _battleMessages = new ObservableCollection<BattleTextMessage>();
-            _messagesList = new ReadOnlyObservableCollection<BattleTextMessage>(_battleMessages);
+            _battleMessages = new ObservableCollection<IBattleMessage>();
+            _messagesList = new ReadOnlyObservableCollection<IBattleMessage>(_battleMessages);
 
             _dummyNegativeEffects = new ObservableCollection<IEffect>();
             _dummyNegativeEffectsList = new ReadOnlyObservableCollection<IEffect>(_dummyNegativeEffects);
@@ -401,7 +401,7 @@ namespace NWO_DataBuilder.Core.ViewModels
         {
             RxApp.MainThreadScheduler.Schedule(() =>
             {
-                _battleMessages.Add(new BattleTextMessage(newMessage));
+                _battleMessages.Add(new BattleMessage(newMessage));
             });
         }
 
@@ -415,10 +415,10 @@ namespace NWO_DataBuilder.Core.ViewModels
         private ObservableCollection<IEffect> _unitNegativeEffects;
         private ObservableCollection<IEffect> _unitPositiveEffects;
 
-        private ObservableCollection<BattleTextMessage> _battleMessages;
+        private ObservableCollection<IBattleMessage> _battleMessages;
         private ObservableCollection<IBattlePurpose> _purposes;
 
-        private ReadOnlyObservableCollection<BattleTextMessage> _messagesList;
+        private ReadOnlyObservableCollection<IBattleMessage> _messagesList;
         private ReadOnlyObservableCollection<IUnit> _allUnits;
         private ReadOnlyObservableCollection<IBattlePurpose> _allPurposes;
 
